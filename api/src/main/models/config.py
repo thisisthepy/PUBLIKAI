@@ -1,7 +1,5 @@
-from browser import module_init
-print, pyprint = module_init(__name__, "models.config")
-########################################################################################################################
 from typing import Iterable
+from datetime import datetime
 
 
 class ChatHistory(list):
@@ -30,7 +28,7 @@ class ChatHistory(list):
         return [
             {
                 'role': "system",
-                'content': system_prompt
+                'content': f"Current time is {datetime.now()}. " + system_prompt
             },
             *self,
             {

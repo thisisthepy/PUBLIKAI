@@ -5,15 +5,20 @@ from pydantic import BaseModel
 import asyncio
 import uvicorn
 import json
+import os
 
-from model import llama3
-from model.llama3 import ChatHistory
+STATIC_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), "../test/static")
+
+from models.config import ChatHistory
+from models import llama3
+
 
 token_streamer = llama3.token_streamer
 
 class Message(BaseModel):
     role: str
     content: str
+
 
 app = FastAPI()
 
@@ -45,10 +50,13 @@ async def websocket_endpoint(websocket: WebSocket):
 
     for token in token_streamer(*llama3.chat(chat_history, user_prompt)):
         await websocket.send_text(token)
-        await asyncio.sleep(0.001)  # 1ms delay between tokens
+        await asyncio.sleep(0.0001)  # 0.1ms delay between tokens
 
     await websocket.send_text("<EOS>")  # EOS toke to signal the end of the conversation
     await websocket.close()
+
+
+app.mount("/", StaticFiles(directory=STATIC_DIR, html=True), name="static")
 
 
 if __name__ == '__main__':

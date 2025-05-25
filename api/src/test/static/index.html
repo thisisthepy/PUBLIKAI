@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Chat with Llama3.1</title>
+    <title>FluxChat</title>
 
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
@@ -19,9 +19,9 @@
             sys.modules[module_name] = sys.modules[_id]
             return browser.window.console.log, print
 
-        browser.__dict__['module_init'] = module_init  # 모듈 초기화 함수 등록
+        browser.__dict__['module_init'] = module_init
     </script>
-    <script type="text/python" src="/model/config.py"></script>
+    <script type="text/python" src="/models/config.py"></script>
     <script type="text/python" src="/index.py"></script>
 </head>
 <body onload="brython()">
