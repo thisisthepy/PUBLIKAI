@@ -4,6 +4,8 @@ from datetime import datetime
 
 class ChatHistory(list):
     """ Chat history class """
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
 
     def append(self, role: str | Iterable[str], content: str | Iterable[str]):
         if isinstance(content, str):

@@ -10,7 +10,7 @@
     <script src="https://cdn.jsdelivr.net/npm/brython@3/brython.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/brython@3/brython_stdlib.js"></script>
 
-    <link rel="stylesheet" href="/index.css">
+    <link rel="stylesheet" href="/static/index.css">
     <script type="text/python">
         import browser
 
@@ -21,8 +21,8 @@
 
         browser.__dict__['module_init'] = module_init
     </script>
-    <script type="text/python" src="/models/config.py"></script>
-    <script type="text/python" src="/index.py"></script>
+    <script type="text/python" src="/static/models/config.py"></script>
+    <script type="text/python" src="/static/index.py"></script>
 </head>
 <body onload="brython()">
     <h1 class="mb-4">Llama3.1</h1>

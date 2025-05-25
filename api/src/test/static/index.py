@@ -1,4 +1,4 @@
-from browser import bind, document, window
+from browser import aio, bind, document, window
 
 from models.config import ChatHistory
 import json
@@ -6,14 +6,42 @@ import json
 chat_history = ChatHistory()
 ws = False
 
-WEBSOCKET_URL = "ws://127.0.0.1:8000/ws"
+MODEL_ID = "llama3"
+SERVER_URL = "127.0.0.1:8000"
+WEBSOCKET_URL = f"ws://{SERVER_URL}/api/chat/streaming"
+SESSION_URL = f"http://{SERVER_URL}/api/models/{MODEL_ID}/sessions/"
+SESSION_UNLOAD_URL = f"http://{SERVER_URL}/api/sessions/"
+__SESSION_ID = None
+
+
+async def get_session_id():
+    global __SESSION_ID
+
+    response = await window.fetch(SESSION_URL, {'method': "POST"})
+    if response.status != 200:
+        raise Exception("Failed to create session")
+
+    data = await response.json()
+    __SESSION_ID = data['session_id']
+    print(f"Session ID: {__SESSION_ID}")
+    return __SESSION_ID
+
+
+aio.run(get_session_id())
+
+
+@bind(window, 'unload')
+def on_unload(_):
+    if __SESSION_ID:
+        window.navigator.sendBeacon(SESSION_UNLOAD_URL + __SESSION_ID, b"")
 
 
 def on_open(_):
     print("Websocket connection is now open")
 
     data = document['message_text'].value.strip()
-    if data:
+    if data and __SESSION_ID:
+        ws.send(json.dumps({"session_id": __SESSION_ID}))  # 세션 ID 전송
         ws.send(json.dumps(chat_history))  # chat history 전송
         ws.send(data)  # user prompt 전송
         chat_history.append("user", data)  # chat history 업데이트
