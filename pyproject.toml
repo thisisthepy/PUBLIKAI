@@ -1,9 +1,18 @@
 [project]
 name = "fluxchatui"
 version = "1.0.0"
-description = "Add your description here"
+description = "This is a open-source multi-platform AI Chat UI written with Compose Multiplatform."
 readme = "README.md"
 requires-python = ">=3.11"
 dependencies = [
-
-]  # !do not add torch here!
+    "uvicorn>=0.34.2",
+    "fastapi>=0.115.12",
+    "websockets>=15.0.1",
+    "hf-xet>=1.1.2",
+    "huggingface_hub>=0.31.2",
+    "transformers>=4.45.3",
+    "llama-cpp-python",
+    "torchvision",
+    "torchaudio",
+    "torch",
+]  # !do not add version-specfic torch here!
