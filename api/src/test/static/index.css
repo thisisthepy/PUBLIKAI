@@ -1,0 +1,168 @@
+@font-face {
+    font-family: 'SUITE-Regular';
+    src: url('https://fastly.jsdelivr.net/gh/projectnoonnu/noonfonts_2304-2@1.0/SUITE-Regular.woff2') format('woff2');
+    font-weight: 400;
+    font-style: normal;
+}
+
+body {
+    background-color: #ffffff;
+    font-family: 'SUITE-Regular', 'Arial', sans-serif;
+    height: 100vh;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+}
+
+h1 {
+    font-size: 20px;
+    font-weight: 800;
+    color: #666666;
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    margin: 0;
+    z-index: 1000;
+    background-color: #ffffff;
+    padding: 5px 10px;
+    border-radius: 5px;
+}
+
+h1:hover {
+    background-color: #e0e0e0;
+}
+
+.chat-container {
+    max-width: 600px;
+    width: 100%;
+    margin: 0 auto;
+    padding: 20px;
+    background-color: #ffffff;
+    border-radius: 10px;
+    box-shadow: none;
+    border: none;
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+}
+
+#messages {
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+    height: 400px;
+    overflow-y: auto;
+    scrollbar-width: none;
+    padding-bottom: 10px;
+    flex-grow: 1;
+}
+
+#messages li {
+    padding: 12px 15px;
+    border-radius: 15px;
+    margin-bottom: 10px;
+    max-width: 80%;
+    word-wrap: break-word;
+    display: block;
+    clear: both;
+}
+
+.message-client {
+    background-color: #e1f5fe;
+    color: #0277bd;
+    text-align: left;
+    margin-left: auto;
+    border: 1px solid #b3e5fc;
+    border-radius: 15px;
+    float: right;
+}
+
+.message-user {
+    background-color: #f4f4f4;
+    color: #333333;
+    text-align: right;
+    margin-left: auto;
+    border: 1px solid rgba(132, 129, 129, 0.12);
+    border-radius: 20px;
+    float: right;
+    padding: 4px 12px;
+    word-wrap: break-word;
+    white-space: pre-wrap;
+}
+
+.message-server {
+    background-color: #ffffff;
+    color: #333333;
+    text-align: left;
+    border: 1px solid rgba(237, 237, 237, 0.62);
+    border-radius: 20px;
+    display: inline-block;
+    position: relative;
+    padding-left: 50px;
+    overflow: visible;
+    margin-bottom: 10px;
+    word-wrap: break-word;
+    white-space: pre-wrap;
+}
+
+.message-server .icon {
+    position: absolute;
+    left: 4px;
+    top: -28px;
+    font-size: 17px;
+    color: #454545;
+}
+
+.form-inline {
+    display: flex;
+    align-items: center;
+    margin-top: 20px;
+}
+
+.form-control {
+    background-color: #f4f4f4;
+    border-radius: 20px;
+    padding: 10px 15px;
+    border: 1px solid #fff;
+    box-shadow: none;
+    flex-grow: 1;
+    resize: none;
+    overflow: auto;
+    scrollbar-width: none;
+    max-height: 100px;
+    min-height: 20px;
+}
+
+.form-control:focus {
+    background-color: #f4f4f4;
+    border-color: #ddd;
+    box-shadow: none;
+}
+
+.btn-icon {
+    border: none; /* 테두리 제거 */
+    background-color: #151515; /* 버튼 배경색 */
+    border-radius: 50%; /* 원형으로 만들기 */
+    padding: 10px; /* 내부 여백 */
+    font-size: 18px; /* 아이콘 크기 조정 */
+    color: #ffffff; /* 아이콘 색상 */
+    cursor: pointer; /* 마우스 포인터를 클릭 커서로 변경 */
+    display: flex; /* 아이콘을 중앙에 위치시키기 위해 flexbox 사용 */
+    align-items: center;
+    justify-content: center;
+    height: 40px; /* 버튼 높이 */
+    width: 40px; /* 버튼 너비 */
+}
+
+.btn-icon:hover {
+    color: #bcbcbc; /* 호버 시 아이콘 색상을 흰색으로 유지 */
+}
+
+.btn-icon:focus {
+    border-color: #ddd;
+    box-shadow: none;
+    color: #fff; /* 아이콘 색상 */
+    outline: none; /* 포커스 시 테두리 제거 */
+}

@@ -1,0 +1,9 @@
+[project]
+name = "fluxchatui"
+version = "1.0.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.11"
+dependencies = [
+
+]  # !do not add torch here!
