@@ -1,2 +1,2 @@
 from .model import *
-Model = Qwen3Model
+Model = Cnuma3Model

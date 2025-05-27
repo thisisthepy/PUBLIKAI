@@ -44,13 +44,16 @@ class BaseModel:
         """ Clean up resources for the model """
         self.__class__.__instance = None
 
-    def __call__(self, prompt: list, temperature: float) -> Iterator:
+    def __call__(
+            self, prompt: list, temperature: float, tools: list | None = None, tool_choice: str = "auto"
+    ) -> Iterator:
         """ Call the model with the given arguments """
         raise NotImplementedError("Call method must be implemented by subclasses.")
 
     def chat(
             self, chat_history: ChatHistory, user_prompt: str,
-            system_prompt: str, temperature: float = 0.5, print_prompt: bool = True
+            system_prompt: str, temperature: float = 0.5, print_prompt: bool = True,
+            tools: list | None = None, tool_choice: str = "auto"
     ) -> tuple[Iterator, bool]:
         """ Process a chat request """
         prompt = chat_history.create_prompt(system_prompt, user_prompt)
@@ -62,7 +65,7 @@ class BaseModel:
                 print(line)
             print()
 
-        return self(prompt, temperature=temperature), print_prompt
+        return self(prompt, temperature=temperature, tools=tools, tool_choice=tool_choice), print_prompt
 
     def stream_tokens(self, *args, **kwargs) -> Iterator[str]:
         """ Stream tokens for the chat response """
