@@ -11,6 +11,7 @@ dependencies = [
     "hf-xet>=1.1.2",
     "huggingface_hub>=0.31.2",
     "transformers>=4.45.3",
+    "bitsandbytes>=0.45.5",
     "llama-cpp-python",
     "torchvision",
     "torchaudio",
