@@ -1,19 +1,14 @@
-import traceback
-from typing import Iterator
+from llama_cpp import Llama, CreateChatCompletionStreamResponse
 
-from llama_cpp import  CreateChatCompletionStreamResponse
-
-from .config import ChatHistory
+from .core import CoreRuntime
 
 
-class BaseModel:
+class GGUFRuntime(CoreRuntime):
     """
     Base model class that can be extended by other models. (Singleton pattern)
     """
     __instance = None
     _initialized = False
-
-    supported_backends = []
 
     def __new__(cls, *args, **kwargs):
         """ Ensure only one instance of the model is created """

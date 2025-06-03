@@ -1,15 +1,27 @@
+from transformers import AutoModelForCausalLM, AutoTokenizer, BitsAndBytesConfig
+import torch
 import os
 
-import torch
-from transformers import AutoModelForCausalLM, AutoTokenizer, BitsAndBytesConfig
+from .core import CoreRuntime
 
 
-SAVE_PATH = os.path.join(os.path.dirname(__file__), "pretrained")
+SAVE_PATH = os.path.join(os.path.dirname(__file__), ".cache")
 if not os.path.exists(SAVE_PATH):
     os.makedirs(SAVE_PATH)
 
 
-# 4bit 양자화 설정
+class BinRuntime(CoreRuntime):
+    def __init__(self, model_id: str):
+        self.model_id = model_id
+        self.tokenizer =
+
+
+
+
+
+
+
+
 quantization_config = BitsAndBytesConfig(
     load_in_4bit=True,
     bnb_4bit_compute_dtype=torch.float16,
