@@ -32,6 +32,9 @@ deployment.xml
 deploymentTargetDropDown.xml
 deploymentTargetSelector.xml
 render.experimental.xml
+vcs.xml
+modules.xml
+./idea/artifacts/*
 
 # Keystore files
 *.jks
