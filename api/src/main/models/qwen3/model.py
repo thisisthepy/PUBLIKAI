@@ -7,7 +7,7 @@ from ...backend import BackendType, CoreRuntime
 # Set model id
 model_id = "Qwen/Qwen3-14B-Instruct"
 gguf_model_id = "Qwen/Qwen3-14B-GGUF"
-context_length = 128000  # Set context length to 128000 tokens (max 32768)
+context_length = 40960  # Set context length to 40960 tokens (max 40960)
 
 
 # Prompt setting
@@ -60,7 +60,6 @@ class Qwen3Model(BaseModel):
                 model_id=self.gguf_model_id,
                 context_length=self.context_length,
                 filename="*Q4_K_M.gguf",  # 4bit quantized model
-                chat_format="qwen3",
                 verbose=False,
                 backend=backend.value
             )
