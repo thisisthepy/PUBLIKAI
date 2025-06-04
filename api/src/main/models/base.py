@@ -22,10 +22,15 @@ class BaseModel:
             cls.__instance = super(BaseModel, cls).__new__(cls)
         return cls.__instance
 
-    def __init__(self, backend: BackendType = BackendType.DEFAULT):
+    def __init__(self, backend: BackendType | None = None):
         if not self._initialized:
             self._initialized = True
+            self.runtime = self._get_runtime(backend)
             print("INFO:     Model", self.model_id, "is LOADED")
+
+    def _get_runtime(self, backend: BackendType | None = None):
+        if backend not in self.supported_backends:
+            raise ValueError(f"Unsupported backend: {backend}. Supported backends are: {self.supported_backends}")
 
     def __del__(self):
         """ Clean up resources when the model is deleted """

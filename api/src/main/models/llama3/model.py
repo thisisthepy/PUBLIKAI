@@ -32,18 +32,18 @@ class Llama3Model(BaseModel):
     context_length = context_length
     supported_backends = tuple([BackendType.GGUF])
 
-    def __init__(self, backend: BackendType = BackendType.GGUF):
-        if not self._initialized:
-            self.runtime = CoreRuntime(
-                model_id=self.model_id,
-                context_length=self.context_length,
-                filename="*Q4_K_M.gguf",  # 4bit quantized model
-                n_ctx=context_length,
-                verbose=False,
-                backend=backend.value
-            )
+    def _get_runtime(self, backend: BackendType | None = None):
+        if backend is None:  # Default to GGUF backend
+            backend = self.supported_backends[0]
+        super()._get_runtime(backend)
 
-            super().__init__()
+        return CoreRuntime(
+            model_id=self.model_id,
+            context_length=self.context_length,
+            filename="*Q4_K_M.gguf",  # 4bit quantized model
+            verbose=False,
+            backend=backend.value
+        )
 
     def chat(
         self,

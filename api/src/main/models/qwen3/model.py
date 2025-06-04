@@ -5,8 +5,8 @@ from ...backend import BackendType, CoreRuntime
 
 
 # Set model id
-model_id = "Qwen/Qwen3-14B-GGUF"
-model_oid = "Qwen/Qwen3-14B-Instruct"  # Original model id for Qwen 3 14B Instruct
+model_id = "Qwen/Qwen3-14B-Instruct"
+gguf_model_id = "Qwen/Qwen3-14B-GGUF"
 context_length = 128000  # Set context length to 128000 tokens (max 32768)
 
 
@@ -45,63 +45,71 @@ class Qwen3Model(BaseModel):
     Qwen 3 14B 4bitQ Instruct model implementation.
     This class extends BaseModel and provides methods for chatting and token streaming.
     """
+    model_id = model_id
+    gguf_model_id = gguf_model_id
+    context_length = context_length
+    supported_backends = tuple([BackendType.GGUF, BackendType.BIN])
 
-    def __init__(self):
-        if not self._initialized:
-            # Set model id
-            self.model_id = model_id
-            self.context_length = context_length
-            self._token_streamer = llama_cpp_token_streamer
+    def _get_runtime(self, backend: BackendType | None = None):
+        if backend is None:  # Default to GGUF backend
+            backend = self.supported_backends[0]
+        super()._get_runtime(backend)
 
-            # Load model
-            self.model = Llama.from_pretrained(
-                repo_id=model_id,
-                chat_format="qwen3",
+        if backend == BackendType.GGUF:
+            return CoreRuntime(
+                model_id=self.gguf_model_id,
+                context_length=self.context_length,
                 filename="*Q4_K_M.gguf",  # 4bit quantized model
-                n_ctx=context_length,
-                verbose=False
+                chat_format="qwen3",
+                verbose=False,
+                backend=backend.value
+            )
+        elif backend == BackendType.BIN:
+            return CoreRuntime(
+                model_id=self.model_id,
+                context_length=self.context_length,
+                device_map="cuda:0",
+                backend=backend.value
             )
 
-            super().__init__()
-
-    def __call__(
-            self, prompt: list, temperature: float, tools: list | None = None, tool_choice: str = "auto"
-    ) -> Iterator[CreateChatCompletionStreamResponse]:
-        return self.model.create_chat_completion(
-            messages=prompt,
-            temperature=temperature,
-            stream=True,
-
-            # description at https://huggingface.co/Qwen/Qwen3-14B
-            top_p=0.95,
-            top_k=40,
-            min_p=0,
+    def chat(
+        self,
+        chat_history: ChatHistory,
+        user_prompt: str,
+        system_prompt: str = system_prompt,
+        tools: Optional[List[Dict[str, str]]] = None,
+        temperature: float = 0.2,
+        top_p: float = 0.95,
+        top_k: int = 40,
+        min_p: float = 0,
+        typical_p: float = 1.0,
+        stream: bool = True,
+        max_new_tokens: int = 512,
+        repeat_penalty: float = 1.0,
+        print_output: bool = False
+    ) -> Union[Generator[str, None, None], str]:
+        return super().chat(
+            chat_history=chat_history,
+            user_prompt=user_prompt,
+            system_prompt=system_prompt,
 
             # function calling support
             tools=tools,
-            tool_choice=
+
+            # description at https://huggingface.co/Qwen/Qwen3-14B
+            temperature=temperature,
+            top_p=top_p,
+            top_k=top_k,
+            min_p=min_p,
+            typical_p=typical_p,
+            stream=stream,
+            max_new_tokens=max_new_tokens,
+            repeat_penalty=repeat_penalty,
+            print_output=print_output
         )
 
-    def chat(
-            self, chat_history: ChatHistory, user_prompt: str,
-            system_prompt: str, temperature: float = 0.6, print_prompt: bool = True,
-            tools: list | None = None, tool_choice: str = "auto"
-    ) -> tuple[Iterator, bool]:
-        return super().chat(
-            chat_history=chat_history, user_prompt=user_prompt,
-            system_prompt=system_prompt, temperature=temperature, print_prompt=print_prompt
-        )
 
-    def stream_tokens(self, *args, **kwargs) -> Iterator[str]:
-        """
-        Stream tokens for the chat response.
-        This method uses the llama_cpp_token_streamer to yield tokens from the model.
-        """
-        return self._token_streamer(*args, **kwargs)
-
-
-
-
+'''
     def format_function_schemas(self, function_schemas: List[Dict[str, Any]]) -> str:
         """
         Format function schemas for inclusion in the system prompt.
@@ -238,3 +246,4 @@ Parameters: {json.dumps(func['parameters'], indent=2)}
         chat_history.add_assistant_message(full_response)
 
         return full_response
+'''
