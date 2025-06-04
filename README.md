@@ -154,6 +154,21 @@ app/
 ### Clone this repo
 ```bash
 git clone https://github.com/thisisthepy/FluxChatUI.git
+cd FluxChatUI
 ```
 
-### 
+
+### Install dependencies
+```bash
+uv sync
+```
+- Llama-cpp-python fix for Qwen
+```bash
+CMAKE_ARGS="-DGGML_CUDA=on -DLLAVA_BUILD=off -DCMAKE_CUDA_ARCHITECTURES=native" FORCE_CMAKE=1 uv pip install llama-cpp-python --no-cache-dir --force-reinstall --upgrade
+```
+
+
+### Run the server
+```bash
+python -m api run server
+```
