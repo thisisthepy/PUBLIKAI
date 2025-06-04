@@ -15,5 +15,9 @@ dependencies = [
     "llama-cpp-python",
     "torchvision",
     "torchaudio",
-    "torch",
+    "torch"
 ]  # !do not add version-specfic torch here!
+
+[[tool.uv.index]]
+name = "llama-cpp-python"
+url = "https://abetlen.github.io/llama-cpp-python/whl/cu121"
