@@ -37,18 +37,18 @@ try:
             stream: bool = False,
             max_new_tokens: int = 512,
             repeat_penalty: float = 1.0
-        ) -> Union[Generator[str], str]:
+        ) -> Union[Generator[str, None, None], str]:
             generation_kwargs = dict(
-                input_ids=messages,
+                messages=messages,
                 tools=tools,
-                max_new_tokens=max_new_tokens,
+                max_tokens=max_new_tokens,
                 temperature=temperature,
                 top_p=top_p,
                 top_k=top_k,
                 min_p=min_p,
                 typical_p=typical_p,
                 repeat_penalty=repeat_penalty,
-                streamer=stream
+                stream=stream
             )
             outputs = self.model.create_chat_completion(**generation_kwargs)
 

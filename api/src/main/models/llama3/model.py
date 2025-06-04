@@ -60,7 +60,7 @@ class Llama3Model(BaseModel):
         max_new_tokens: int = 512,
         repeat_penalty: float = 1.0,
         print_output: bool = False
-    ) -> Union[Generator[str], str]:
+    ) -> Union[Generator[str, None, None], str]:
         return super().chat(
             chat_history=chat_history,
             user_prompt=user_prompt,

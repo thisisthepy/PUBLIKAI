@@ -53,7 +53,7 @@ class BaseModel:
         max_new_tokens: int = 512,
         repeat_penalty: float = 1.0,
         print_output: bool = False
-    ) -> Union[Generator[str], str]:
+    ) -> Union[Generator[str, None, None], str]:
         """ Process a chat request """
         prompt = chat_history.create_prompt(system_prompt, user_prompt)
         chat_history.append("user", user_prompt)
@@ -84,8 +84,9 @@ class BaseModel:
             try:
                 for word in outputs:
                     if word:
-                        print(word, end="")
-                    yield word
+                        if print_output:
+                            print(word, end="")
+                        yield word
             except ValueError:  # Over token limit error
                 traceback.print_exc()
                 message = "\n\nERROR: Chat is unexpectedly terminated due to token limit. Please shorten your prompt or chat history."

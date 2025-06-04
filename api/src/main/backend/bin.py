@@ -59,7 +59,7 @@ try:
             stream: bool = False,
             max_new_tokens: int = 512,
             repeat_penalty: float = 1.0
-        ) -> Union[Generator[str], str]:
+        ) -> Union[Generator[str, None, None], str]:
             prompt = self.tokenizer.apply_chat_template(
                 messages,
                 tools=tools,

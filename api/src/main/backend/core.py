@@ -20,6 +20,7 @@ class CoreRuntime:
             default (bool): Whether this backend should be set as the default.
         """
         cls.__backends[backend_name] = backend_class
+        print(f"INFO:     Backend '{backend_name}' is registered successfully.")
         if cls.__default_backend is None or default:
             cls.__default_backend = backend_name
 
@@ -46,7 +47,7 @@ class CoreRuntime:
             if cls.__default_backend is None:
                 raise ValueError("None of the backends are registered. Please register at least one backend before using this runtime.")
             backend = cls.__backends.get(backend_str, cls.__backends[cls.__default_backend])
-        return backend(model_id, context_length, cache_dir, **kwargs)
+        return super().__new__(backend)
 
     def __call__(
         self,
@@ -60,5 +61,5 @@ class CoreRuntime:
         stream: bool = False,
         max_new_tokens: int = 512,
         repeat_penalty: float = 1.0
-    ) -> Union[Generator[str], str]:
+    ) -> Union[Generator[str, None, None], str]:
         raise NotImplementedError("The generate method must be implemented by subclasses.")

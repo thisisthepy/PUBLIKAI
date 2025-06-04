@@ -108,7 +108,7 @@ async def chat_with_streaming(websocket: WebSocket):
     chat_history.extend(json.loads(await websocket.receive_text()))
     user_prompt = await websocket.receive_text()
 
-    for token in model.chat(chat_history, user_prompt):
+    for token in model.chat(chat_history, user_prompt, print_output=True):
         await websocket.send_text(token)
         await asyncio.sleep(0.0001)  # 0.1ms delay between tokens
 
