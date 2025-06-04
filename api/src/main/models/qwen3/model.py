@@ -1,8 +1,7 @@
-from typing import Iterator
+from typing import List, Dict, Union, Generator, Optional
 
-from llama_cpp import Llama, CreateChatCompletionStreamResponse
-
-from ..base import ChatHistory, BaseModel, llama_cpp_token_streamer
+from ..base import ChatHistory, BaseModel
+from ...backend import BackendType, CoreRuntime
 
 
 # Set model id

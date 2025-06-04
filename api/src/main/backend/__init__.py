@@ -1,9 +1,16 @@
 from enum import Enum
 from .core import CoreRuntime
-from .bin import BinRuntime
-from .gguf import GGUFRuntime
+try:
+    from .bin import BinRuntime
+except Exception as _ignored:
+    pass
+try:
+    from .gguf import GGUFRuntime
+except Exception as _ignored:
+    pass
 
 
 class BackendType(Enum):
-    BIN = BinRuntime
-    GGUF = GGUFRuntime
+    DEFAULT = None
+    BIN = "BinRuntime"
+    GGUF = "GGUFRuntime"

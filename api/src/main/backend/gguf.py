@@ -1,88 +1,66 @@
-from llama_cpp import Llama, CreateChatCompletionStreamResponse
+try:
+    from llama_cpp import Llama, CreateChatCompletionStreamResponse
 
-from .core import CoreRuntime
+    from typing import List, Dict, Optional, Union, Generator
+    import os
 
-
-class GGUFRuntime(CoreRuntime):
-    """
-    Base model class that can be extended by other models. (Singleton pattern)
-    """
-    __instance = None
-    _initialized = False
-
-    def __new__(cls, *args, **kwargs):
-        """ Ensure only one instance of the model is created """
-        if cls.__instance is None:
-            cls.__instance = super(BaseModel, cls).__new__(cls)
-        return cls.__instance
-
-    def __init__(self):
-        if not self._initialized:
-            self._initialized = True
-
-            if not hasattr(self, 'model_id'):
-                raise ValueError("Model ID must be set.")
-
-            if not hasattr(self, 'context_length'):
-                raise ValueError("Context length must be set.")
-
-            print("INFO:     Model", self.model_id, "is LOADED")
-
-    def __del__(self):
-        """ Clean up resources when the model is deleted """
-        if hasattr(self, 'model'):
-            if hasattr(self.model, 'free'):
-                self.model.free()
-            del self.model
-        self._initialized = False
-        print("INFO:     Model", self.model_id, "is UNLOADED")
-
-    def clean_up(self):
-        """ Clean up resources for the model """
-        self.__class__.__instance = None
-
-    def __call__(
-            self, prompt: list, temperature: float, tools: list | None = None, tool_choice: str = "auto"
-    ) -> Iterator:
-        """ Call the model with the given arguments """
-        raise NotImplementedError("Call method must be implemented by subclasses.")
-
-    def chat(
-            self, chat_history: ChatHistory, user_prompt: str,
-            system_prompt: str, temperature: float = 0.5, print_prompt: bool = True,
-            tools: list | None = None, tool_choice: str = "auto"
-    ) -> tuple[Iterator, bool]:
-        """ Process a chat request """
-        prompt = chat_history.create_prompt(system_prompt, user_prompt)
-        chat_history.append("user", user_prompt)
-
-        if print_prompt:
-            print("PROMPT:")
-            for line in prompt:
-                print(line)
-            print()
-
-        return self(prompt, temperature=temperature, tools=tools, tool_choice=tool_choice), print_prompt
-
-    def stream_tokens(self, *args, **kwargs) -> Iterator[str]:
-        """ Stream tokens for the chat response """
-        raise NotImplementedError("Token streamer method must be implemented by subclasses.")
+    from .core import CoreRuntime
 
 
-def llama_cpp_token_streamer(tokens: Iterator[CreateChatCompletionStreamResponse], print_prompt: bool = True) -> Iterator[str]:
-    """ Llama.cpp Token streamer """
-    if print_prompt:
-        print("ANSWER:")
+    class GGUFRuntime(CoreRuntime):
+        def __init__(self,
+            model_id: str,
+            context_length: int = 12000,
+            cache_dir: Optional[Union[str, os.PathLike[str]]] = None,
+            **kwargs
+        ):
+            self.model_id = model_id
+            self.context_length = context_length
 
-    try:
-        for token in tokens:
-            delta: dict = token['choices'][0]['delta']
-            token_delta = delta.get('content')
-            if token_delta:
-                print(token_delta, end="")
-            yield token_delta if token_delta else ""
-    except ValueError:  # Over token limit error
-        traceback.print_exc()
-        yield "\n\nERROR: Chat is unexpectedly terminated due to token limit. Please shorten your prompt or chat history."
-    finally:
-        print()
+            kwargs['repo_id'] = model_id
+            kwargs['cache_dir'] = cache_dir
+            kwargs['n_ctx'] = context_length
+            if 'verbose' not in kwargs:
+                kwargs['verbose'] = False
+
+            self.model = Llama.from_pretrained(**kwargs)
+
+        def __call__(
+            self,
+            messages: List[Dict[str, str]],
+            tools: Optional[List[Dict[str, str]]] = None,
+            temperature: float = 0.2,
+            top_p: float = 0.95,
+            top_k: int = 40,
+            min_p: float = 0.05,
+            typical_p: float = 1.0,
+            stream: bool = False,
+            max_new_tokens: int = 512,
+            repeat_penalty: float = 1.0
+        ) -> Union[Generator[str], str]:
+            generation_kwargs = dict(
+                input_ids=messages,
+                tools=tools,
+                max_new_tokens=max_new_tokens,
+                temperature=temperature,
+                top_p=top_p,
+                top_k=top_k,
+                min_p=min_p,
+                typical_p=typical_p,
+                repeat_penalty=repeat_penalty,
+                streamer=stream
+            )
+            outputs = self.model.create_chat_completion(**generation_kwargs)
+
+            if stream:
+                for token in outputs:
+                    delta: dict = token['choices'][0]['delta']
+                    token_delta = delta.get('content')
+                    if token_delta:
+                        yield token_delta
+            else:
+                return outputs['choices'][0]['text']
+
+    CoreRuntime.register_backend("GGUFRuntime", GGUFRuntime, default=True)
+except ImportError:
+    print("WARNING: llama_cpp module is not installed. Please install it to use GGUFRuntime.")

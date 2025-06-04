@@ -39,7 +39,7 @@ def models():
 def test_hello():
     """ Test endpoint to check if the server is running """
     temp_model = Session.load_model(model_name="default")
-    response = "".join(token for token in temp_model.stream_tokens(*temp_model.chat(ChatHistory(), "Hello?")))
+    response = temp_model.chat(ChatHistory(), "Hello?", stream=False, print_output=True)
     del temp_model
     Session.clean_up()
     return response
@@ -86,7 +86,7 @@ async def chat(request: Request, user_prompt: str, history: Optional[List[Messag
     if history:
         chat_history.extend(history)
 
-    response = "".join(token for token in model.stream_tokens(*model.chat(chat_history, user_prompt)))
+    response = model.chat(chat_history, user_prompt, stream=False, print_output=True)
     del model
     return response
 
@@ -108,7 +108,7 @@ async def chat_with_streaming(websocket: WebSocket):
     chat_history.extend(json.loads(await websocket.receive_text()))
     user_prompt = await websocket.receive_text()
 
-    for token in model.stream_tokens(*model.chat(chat_history, user_prompt)):
+    for token in model.chat(chat_history, user_prompt):
         await websocket.send_text(token)
         await asyncio.sleep(0.0001)  # 0.1ms delay between tokens
 

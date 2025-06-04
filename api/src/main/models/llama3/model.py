@@ -1,8 +1,7 @@
-from typing import Iterator
+from typing import List, Dict, Union, Generator, Optional
 
-from llama_cpp import Llama, CreateChatCompletionStreamResponse
-
-from ..base import ChatHistory, BaseModel, llama_cpp_token_streamer
+from ..base import ChatHistory, BaseModel
+from ...backend import BackendType, CoreRuntime
 
 
 # Set model id
@@ -29,42 +28,51 @@ class Llama3Model(BaseModel):
     Llama 3.1 8B 4bitQ Instruct model implementation.
     This class extends BaseModel and provides methods for chatting and token streaming.
     """
+    model_id = model_id
+    context_length = context_length
+    supported_backends = tuple([BackendType.GGUF])
 
-    def __init__(self):
+    def __init__(self, backend: BackendType = BackendType.GGUF):
         if not self._initialized:
-            # Set model id
-            self.model_id = model_id
-            self.context_length = context_length
-            self._token_streamer = llama_cpp_token_streamer
-
-            # Load model
-            self.model = Llama.from_pretrained(
-                repo_id=model_id,
+            self.runtime = CoreRuntime(
+                model_id=self.model_id,
+                context_length=self.context_length,
                 filename="*Q4_K_M.gguf",  # 4bit quantized model
                 n_ctx=context_length,
-                verbose=False
+                verbose=False,
+                backend=backend.value
             )
 
             super().__init__()
 
-    def __call__(self, prompt: list, temperature: float) -> Iterator[CreateChatCompletionStreamResponse]:
-        return self.model.create_chat_completion(
-            messages=prompt,
-            temperature=temperature,
-            stream=True
-        )
-
     def chat(
-            self, chat_history: ChatHistory, user_prompt: str,
-            system_prompt: str = system_prompt, temperature: float = 0.5, print_prompt: bool = True):
+        self,
+        chat_history: ChatHistory,
+        user_prompt: str,
+        system_prompt: str = system_prompt,
+        tools: Optional[List[Dict[str, str]]] = None,
+        temperature: float = 0.2,
+        top_p: float = 0.95,
+        top_k: int = 40,
+        min_p: float = 0.05,
+        typical_p: float = 1.0,
+        stream: bool = True,
+        max_new_tokens: int = 512,
+        repeat_penalty: float = 1.0,
+        print_output: bool = False
+    ) -> Union[Generator[str], str]:
         return super().chat(
-            chat_history=chat_history, user_prompt=user_prompt,
-            system_prompt=system_prompt, temperature=temperature, print_prompt=print_prompt
+            chat_history=chat_history,
+            user_prompt=user_prompt,
+            system_prompt=system_prompt,
+            tools=tools,
+            temperature=temperature,
+            top_p=top_p,
+            top_k=top_k,
+            min_p=min_p,
+            typical_p=typical_p,
+            stream=stream,
+            max_new_tokens=max_new_tokens,
+            repeat_penalty=repeat_penalty,
+            print_output=print_output
         )
-
-    def stream_tokens(self, *args, **kwargs) -> Iterator[str]:
-        """
-        Stream tokens for the chat response.
-        This method uses the llama_cpp_token_streamer to yield tokens from the model.
-        """
-        return self._token_streamer(*args, **kwargs)

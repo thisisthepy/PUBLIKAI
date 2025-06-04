@@ -1,9 +1,8 @@
 import traceback
-from typing import Iterator
-
-from llama_cpp import  CreateChatCompletionStreamResponse
+from typing import Generator, Tuple, Optional, List, Dict, Union
 
 from .config import ChatHistory
+from ..backend import BackendType
 
 
 class BaseModel:
@@ -13,7 +12,9 @@ class BaseModel:
     __instance = None
     _initialized = False
 
-    supported_backends = []
+    model_id = ""
+    context_length = 0
+    supported_backends: Tuple[BackendType] = tuple([BackendType.DEFAULT])
 
     def __new__(cls, *args, **kwargs):
         """ Ensure only one instance of the model is created """
@@ -21,24 +22,15 @@ class BaseModel:
             cls.__instance = super(BaseModel, cls).__new__(cls)
         return cls.__instance
 
-    def __init__(self):
+    def __init__(self, backend: BackendType = BackendType.DEFAULT):
         if not self._initialized:
             self._initialized = True
-
-            if not hasattr(self, 'model_id'):
-                raise ValueError("Model ID must be set.")
-
-            if not hasattr(self, 'context_length'):
-                raise ValueError("Context length must be set.")
-
             print("INFO:     Model", self.model_id, "is LOADED")
 
     def __del__(self):
         """ Clean up resources when the model is deleted """
-        if hasattr(self, 'model'):
-            if hasattr(self.model, 'free'):
-                self.model.free()
-            del self.model
+        if hasattr(self, 'runtime'):
+            del self.runtime
         self._initialized = False
         print("INFO:     Model", self.model_id, "is UNLOADED")
 
@@ -46,48 +38,61 @@ class BaseModel:
         """ Clean up resources for the model """
         self.__class__.__instance = None
 
-    def __call__(
-            self, prompt: list, temperature: float, tools: list | None = None, tool_choice: str = "auto"
-    ) -> Iterator:
-        """ Call the model with the given arguments """
-        raise NotImplementedError("Call method must be implemented by subclasses.")
-
     def chat(
-            self, chat_history: ChatHistory, user_prompt: str,
-            system_prompt: str, temperature: float = 0.5, print_prompt: bool = True,
-            tools: list | None = None, tool_choice: str = "auto"
-    ) -> tuple[Iterator, bool]:
+        self,
+        chat_history: ChatHistory,
+        user_prompt: str,
+        system_prompt: str = "",
+        tools: Optional[List[Dict[str, str]]] = None,
+        temperature: float = 0.2,
+        top_p: float = 0.95,
+        top_k: int = 40,
+        min_p: float = 0.05,
+        typical_p: float = 1.0,
+        stream: bool = True,
+        max_new_tokens: int = 512,
+        repeat_penalty: float = 1.0,
+        print_output: bool = False
+    ) -> Union[Generator[str], str]:
         """ Process a chat request """
         prompt = chat_history.create_prompt(system_prompt, user_prompt)
         chat_history.append("user", user_prompt)
 
-        if print_prompt:
+        if print_output:
             print("PROMPT:")
             for line in prompt:
                 print(line)
             print()
 
-        return self(prompt, temperature=temperature, tools=tools, tool_choice=tool_choice), print_prompt
+        outputs = self.runtime(
+            messages=prompt,
+            tools=tools,
+            temperature=temperature,
+            top_p=top_p,
+            top_k=top_k,
+            min_p=min_p,
+            typical_p=typical_p,
+            stream=stream,
+            max_new_tokens=max_new_tokens,
+            repeat_penalty=repeat_penalty
+        )
 
-    def stream_tokens(self, *args, **kwargs) -> Iterator[str]:
-        """ Stream tokens for the chat response """
-        raise NotImplementedError("Token streamer method must be implemented by subclasses.")
+        if print_output:
+            print("ANSWER:")
 
-
-def llama_cpp_token_streamer(tokens: Iterator[CreateChatCompletionStreamResponse], print_prompt: bool = True) -> Iterator[str]:
-    """ Llama.cpp Token streamer """
-    if print_prompt:
-        print("ANSWER:")
-
-    try:
-        for token in tokens:
-            delta: dict = token['choices'][0]['delta']
-            token_delta = delta.get('content')
-            if token_delta:
-                print(token_delta, end="")
-            yield token_delta if token_delta else ""
-    except ValueError:  # Over token limit error
-        traceback.print_exc()
-        yield "\n\nERROR: Chat is unexpectedly terminated due to token limit. Please shorten your prompt or chat history."
-    finally:
-        print()
+        if stream:
+            try:
+                for word in outputs:
+                    if word:
+                        print(word, end="")
+                    yield word
+            except ValueError:  # Over token limit error
+                traceback.print_exc()
+                message = "\n\nERROR: Chat is unexpectedly terminated due to token limit. Please shorten your prompt or chat history."
+                if print_output:
+                    print(message, end="")
+                yield message
+            finally:
+                print()
+        else:
+            print(outputs)

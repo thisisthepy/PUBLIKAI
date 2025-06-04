@@ -1,6 +1,8 @@
 """
 Core Runtime for managing backend implementations.
 """
+from typing import Optional, List, Dict, Union, Generator
+import os
 
 
 class CoreRuntime:
@@ -31,7 +33,12 @@ class CoreRuntime:
         else:
             raise ValueError(f"Backend '{backend_name}' is not registered.")
 
-    def __new__(cls, *args, **kwargs):
+    def __new__(cls,
+        model_id: str,
+        context_length: int = 12000,
+        cache_dir: Optional[Union[str, os.PathLike[str]]] = None,
+        **kwargs
+    ):
         if cls != CoreRuntime:
             backend = cls
         else:
@@ -39,4 +46,19 @@ class CoreRuntime:
             if cls.__default_backend is None:
                 raise ValueError("None of the backends are registered. Please register at least one backend before using this runtime.")
             backend = cls.__backends.get(backend_str, cls.__backends[cls.__default_backend])
-        return backend(*args, **kwargs)
+        return backend(model_id, context_length, cache_dir, **kwargs)
+
+    def __call__(
+        self,
+        messages: List[Dict[str, str]],
+        tools: Optional[List[Dict[str, str]]] = None,
+        temperature: float = 0.2,
+        top_p: float = 0.95,
+        top_k: int = 40,
+        min_p: float = 0.05,
+        typical_p: float = 1.0,
+        stream: bool = False,
+        max_new_tokens: int = 512,
+        repeat_penalty: float = 1.0
+    ) -> Union[Generator[str], str]:
+        raise NotImplementedError("The generate method must be implemented by subclasses.")
