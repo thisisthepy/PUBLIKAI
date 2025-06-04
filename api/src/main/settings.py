@@ -17,7 +17,11 @@ MODEL_LIST = dict(
         model_description="Llama 3.1 8B 4bitQ Instruct"
     ),
     qwen3=ModelSettings(
-        model_name="Qwen 3.5",
+        model_name="Qwen 3",
+        model_description="Qwen 3 14B 4bitQ IT"
+    ),
+    cnuma3=ModelSettings(
+        model_name="CNUMA 3",
         model_description="Qwen 3 14B 4bitQ IT"
     ),
 )
@@ -62,15 +66,10 @@ class Session:
     @classmethod
     def load_model(cls, model_name: str):
         """ Load a model by its name """
-        match model_name:
-            case "llama3":
-                from .models import llama3
-                return llama3.Model()
-            case "qwen3":
-                from .models import qwen3
-                return qwen3.Model()
-            case _:
-                raise ValueError(f"Model '{model_name}' is not supported.")
+        if model_name not in MODEL_LIST:
+            raise ValueError(f"Model '{model_name}' is not supported.")
+        exec(f"from .models import {model_name}", globals())
+        return globals()[model_name].Model()
 
     @classmethod
     def close(cls, session_id: str):
