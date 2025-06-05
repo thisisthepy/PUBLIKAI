@@ -36,7 +36,8 @@ try:
             typical_p: float = 1.0,
             stream: bool = False,
             max_new_tokens: int = 512,
-            repeat_penalty: float = 1.0
+            repeat_penalty: float = 1.0,
+            **kwargs
         ) -> Union[Generator[str, None, None], str]:
             generation_kwargs = dict(
                 messages=messages,
@@ -50,6 +51,7 @@ try:
                 repeat_penalty=repeat_penalty,
                 stream=stream
             )
+            generation_kwargs.update(kwargs)
             outputs = self.model.create_chat_completion(**generation_kwargs)
 
             if stream:

@@ -1,4 +1,6 @@
-from ..qwen3 import Qwen3Model
+from typing import List, Dict, Union, Generator, Optional
+
+from ..qwen3 import ChatHistory, Qwen3Model
 
 
 # Prompt setting
@@ -124,5 +126,40 @@ print("INFO:     Use default system prompt -", system_prompt)
 
 
 class Cnuma3Model(Qwen3Model):
-    pass
+    def chat(
+        self,
+        chat_history: ChatHistory,
+        user_prompt: str,
+        system_prompt: str = system_prompt,
+        tools: Optional[List[Dict[str, str]]] = None,
+        temperature: float = 0.6,
+        top_p: float = 0.95,
+        top_k: int = 20,
+        min_p: float = 0,
+        typical_p: float = 1.0,
+        stream: bool = True,
+        max_new_tokens: int = 0,
+        repeat_penalty: float = 1.0,
+        print_output: bool = False,
+        **kwargs
+    ) -> Union[Generator[str, None, None], str]:
+        return super().chat(
+            chat_history=chat_history,
+            user_prompt=user_prompt,
+            system_prompt=system_prompt,
 
+            # function calling support
+            tools=tools,
+
+            # description at https://huggingface.co/Qwen/Qwen3-14B
+            temperature=temperature,
+            top_p=top_p,
+            top_k=top_k,
+            min_p=min_p,
+            typical_p=typical_p,
+            stream=stream,
+            max_new_tokens=max_new_tokens,
+            repeat_penalty=repeat_penalty,
+            print_output=print_output,
+            **kwargs
+        )

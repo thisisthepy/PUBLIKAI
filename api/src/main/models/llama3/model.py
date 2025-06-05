@@ -59,7 +59,8 @@ class Llama3Model(BaseModel):
         stream: bool = True,
         max_new_tokens: int = 512,
         repeat_penalty: float = 1.0,
-        print_output: bool = False
+        print_output: bool = False,
+        **kwargs
     ) -> Union[Generator[str, None, None], str]:
         return super().chat(
             chat_history=chat_history,
@@ -74,5 +75,6 @@ class Llama3Model(BaseModel):
             stream=stream,
             max_new_tokens=max_new_tokens,
             repeat_penalty=repeat_penalty,
-            print_output=print_output
+            print_output=print_output,
+            **kwargs
         )

@@ -77,15 +77,16 @@ class Qwen3Model(BaseModel):
         user_prompt: str,
         system_prompt: str = system_prompt,
         tools: Optional[List[Dict[str, str]]] = None,
-        temperature: float = 0.2,
+        temperature: float = 0.6,
         top_p: float = 0.95,
-        top_k: int = 40,
+        top_k: int = 20,
         min_p: float = 0,
         typical_p: float = 1.0,
         stream: bool = True,
         max_new_tokens: int = 512,
         repeat_penalty: float = 1.0,
-        print_output: bool = False
+        print_output: bool = False,
+        **kwargs
     ) -> Union[Generator[str, None, None], str]:
         return super().chat(
             chat_history=chat_history,
@@ -104,7 +105,8 @@ class Qwen3Model(BaseModel):
             stream=stream,
             max_new_tokens=max_new_tokens,
             repeat_penalty=repeat_penalty,
-            print_output=print_output
+            print_output=print_output,
+            **kwargs
         )
 
 

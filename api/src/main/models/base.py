@@ -57,7 +57,8 @@ class BaseModel:
         stream: bool = True,
         max_new_tokens: int = 512,
         repeat_penalty: float = 1.0,
-        print_output: bool = False
+        print_output: bool = False,
+        **kwargs
     ) -> Union[Generator[str, None, None], str]:
         """ Process a chat request """
         prompt = chat_history.create_prompt(system_prompt, user_prompt)
@@ -69,7 +70,7 @@ class BaseModel:
                 print(line)
             print()
 
-        outputs = self.runtime(
+        generation_kwargs = dict(
             messages=prompt,
             tools=tools,
             temperature=temperature,
@@ -81,6 +82,8 @@ class BaseModel:
             max_new_tokens=max_new_tokens,
             repeat_penalty=repeat_penalty
         )
+        generation_kwargs.update(kwargs)
+        outputs = self.runtime(**generation_kwargs)
 
         if print_output:
             print("ANSWER:")

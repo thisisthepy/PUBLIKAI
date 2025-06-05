@@ -60,6 +60,7 @@ class CoreRuntime:
         typical_p: float = 1.0,
         stream: bool = False,
         max_new_tokens: int = 512,
-        repeat_penalty: float = 1.0
+        repeat_penalty: float = 1.0,
+        **kwargs
     ) -> Union[Generator[str, None, None], str]:
         raise NotImplementedError("The generate method must be implemented by subclasses.")

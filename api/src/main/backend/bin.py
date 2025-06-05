@@ -58,7 +58,8 @@ try:
             typical_p: float = 1.0,
             stream: bool = False,
             max_new_tokens: int = 512,
-            repeat_penalty: float = 1.0
+            repeat_penalty: float = 1.0,
+            **kwargs
         ) -> Union[Generator[str, None, None], str]:
             prompt = self.tokenizer.apply_chat_template(
                 messages,
@@ -71,7 +72,7 @@ try:
             generation_kwargs = dict(
                 input_ids=inputs,
                 max_new_tokens=max_new_tokens,
-                temperature=temperature,
+                temperature=temperature if temperature > 0 else None,
                 top_p=top_p,
                 top_k=top_k,
                 min_p=min_p,
@@ -81,6 +82,7 @@ try:
                 do_sample=True,
                 pad_token_id=self.tokenizer.eos_token_id
             )
+            generation_kwargs.update(kwargs)
 
             if stream:
                 thread = threading.Thread(target=self.model.generate, kwargs=generation_kwargs)
