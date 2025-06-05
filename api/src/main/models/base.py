@@ -15,6 +15,7 @@ class BaseModel:
     model_id = ""
     context_length = 0
     supported_backends: Tuple[BackendType] = tuple([BackendType.DEFAULT])
+    supported_tools: List[Dict[str, str]] = None
 
     def __new__(cls, *args, **kwargs):
         """ Ensure only one instance of the model is created """
@@ -62,7 +63,10 @@ class BaseModel:
     ) -> Union[Generator[str, None, None], str]:
         """ Process a chat request """
         prompt = chat_history.create_prompt(system_prompt, user_prompt)
-        chat_history.append("user", user_prompt)
+        if user_prompt is not None:
+            chat_history.append("user", user_prompt)
+        else:
+            prompt = prompt[:-1]  # Remove the last user prompt if it's None
 
         if print_output:
             print("PROMPT:")
@@ -72,7 +76,7 @@ class BaseModel:
 
         generation_kwargs = dict(
             messages=prompt,
-            tools=tools,
+            tools=tools if tools is not None else self.supported_tools,
             temperature=temperature,
             top_p=top_p,
             top_k=top_k,
