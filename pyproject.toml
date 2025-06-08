@@ -3,7 +3,7 @@ name = "fluxchatui"
 version = "1.0.0"
 description = "This is a open-source multi-platform AI Chat UI written with Compose Multiplatform."
 readme = "README.md"
-requires-python = ">=3.11"
+requires-python = ">=3.11,<3.13"
 dependencies = [
     "uvicorn>=0.34.2",
     "fastapi>=0.115.12",
@@ -12,8 +12,35 @@ dependencies = [
     "huggingface_hub>=0.31.2",
     "transformers>=4.45.3",
     "bitsandbytes>=0.45.5",
-    "llama-cpp-python>=0.3.9",
-    "torchvision",
-    "torchaudio",
-    "torch"
+    "accelerate>=1.7.0",
+    "llama-cpp-python @ https://github.com/JamePeng/llama-cpp-python/releases/download/v0.3.9-cu126-AVX2-win-20250606/llama_cpp_python-0.3.9-cp311-cp311-win_amd64.whl ; python_version == '3.11' and platform_system == 'Windows'",
+    "llama-cpp-python @ https://github.com/JamePeng/llama-cpp-python/releases/download/v0.3.9-cu126-AVX2-win-20250606/llama_cpp_python-0.3.9-cp312-cp312-win_amd64.whl ; python_version == '3.12' and platform_system == 'Windows'",
+    "llama-cpp-python @ https://github.com/JamePeng/llama-cpp-python/releases/download/v0.3.9-cu126-AVX2-linux-20250606/llama_cpp_python-0.3.9-cp311-cp311-linux_x86_64.whl ; python_version == '3.11' and platform_system == 'Linux'",
+    "llama-cpp-python @ https://github.com/JamePeng/llama-cpp-python/releases/download/v0.3.9-cu126-AVX2-linux-20250606/llama_cpp_python-0.3.9-cp312-cp312-linux_x86_64.whl ; python_version == '3.12' and platform_system == 'Linux'",
+    "llama-cpp-python>=0.3.9 ; platform_system != 'Windows' and platform_system != 'Linux'",
+    "torch ; platform_system == 'Windows'",
+    "torchvision ; platform_system == 'Windows'",
+    "torchaudio ; platform_system == 'Windows'",
+    "torch ; platform_system == 'Linux'",
+    "torchvision ; platform_system == 'Linux'",
+    "torchaudio ; platform_system == 'Linux'",
+    "torchaudio ; platform_system == 'Linux'"
 ]  # !do not add version-specfic torch here!
+
+
+[tool.uv.sources]
+torch = [
+    { index = "pytorch-windows", marker = "platform_system == 'Windows'" },
+]
+torchvision = [
+    { index = "pytorch-windows", marker = "platform_system == 'Windows'" },
+]
+torchaudio = [
+    { index = "pytorch-windows", marker = "platform_system == 'Windows'" },
+]
+
+
+[[tool.uv.index]]
+name = "pytorch-windows"
+url = "https://download.pytorch.org/whl/cu128"
+explicit = true
