@@ -1,6 +1,7 @@
 from typing import List, Dict, Union, Generator, Optional
 
 from ..qwen3 import ChatHistory, Qwen3Model
+from .function import FunctionCalling, Cnuma3Functions
 
 
 # Prompt setting
@@ -126,6 +127,8 @@ print("INFO:     Use default system prompt -", system_prompt)
 
 
 class Cnuma3Model(Qwen3Model):
+    supported_tools: FunctionCalling = Cnuma3Functions
+
     def chat(
         self,
         chat_history: ChatHistory,

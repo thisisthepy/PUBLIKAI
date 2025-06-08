@@ -1,6 +1,6 @@
 from typing import List, Dict, Union, Generator, Optional
 
-from ..base import ChatHistory, BaseModel
+from ..base import ChatHistory, FunctionCalling, BaseModel
 from ...backend import BackendType, CoreRuntime
 
 
@@ -49,6 +49,7 @@ class Qwen3Model(BaseModel):
     gguf_model_id = gguf_model_id
     context_length = context_length
     supported_backends = tuple([BackendType.GGUF, BackendType.BIN])
+    supported_tools: FunctionCalling = BaseModel.supported_tools
 
     def _get_runtime(self, backend: BackendType | None = None):
         if backend is None:  # Default to GGUF backend
@@ -108,143 +109,3 @@ class Qwen3Model(BaseModel):
             print_output=print_output,
             **kwargs
         )
-
-
-'''
-    def format_function_schemas(self, function_schemas: List[Dict[str, Any]]) -> str:
-        """
-        Format function schemas for inclusion in the system prompt.
-        """
-        if not function_schemas:
-            return ""
-
-        formatted_functions = []
-        for func in function_schemas:
-            func_desc = f"""
-Function: {func['name']}
-Description: {func['description']}
-Parameters: {json.dumps(func['parameters'], indent=2)}
-"""
-            formatted_functions.append(func_desc)
-
-        return "\n".join(formatted_functions)
-
-    def extract_function_calls(self, response_text: str) -> List[Dict[str, Any]]:
-        """
-        Extract function calls from the model's response.
-        """
-        function_calls = []
-
-        # Look for function calls in the response
-        if "<function_call>" in response_text and "</function_call>" in response_text:
-            import re
-            pattern = r'<function_call>(.*?)</function_call>'
-            matches = re.findall(pattern, response_text, re.DOTALL)
-
-            for match in matches:
-                try:
-                    func_call = json.loads(match.strip())
-                    function_calls.append(func_call)
-                except json.JSONDecodeError:
-                    continue
-
-        return function_calls
-
-    def chat_with_functions(
-            self,
-            chat_history: ChatHistory,
-            user_prompt: str,
-            function_schemas: Optional[List[Dict[str, Any]]] = None,
-            function_implementations: Optional[Dict[str, callable]] = None,
-            system_prompt: str = system_prompt_with_functions,
-            temperature: float = 0.5,
-            print_prompt: bool = True
-    ):
-        # Prepare the system prompt with function schemas
-        if function_schemas:
-            func_schemas_text = self.format_function_schemas(function_schemas)
-            full_system_prompt = f"{system_prompt}\n\nAvailable Functions:\n{func_schemas_text}"
-        else:
-            full_system_prompt = system_prompt
-
-        # Add user prompt to chat history
-        chat_history.add_user_message(user_prompt)
-
-        # Prepare messages for the model
-        messages = [{"role": "system", "content": full_system_prompt}]
-        messages.extend(chat_history.get_messages())
-
-        if print_prompt:
-            print(f"User: {user_prompt}")
-
-        # Convert function schemas to tools format if provided
-        tools = None
-        if function_schemas:
-            tools = [{"type": "function", "function": schema} for schema in function_schemas]
-
-        # Get model response
-        response_stream = self.model.create_chat_completion(
-            messages=messages,
-            temperature=temperature,
-            stream=True,
-            tools=tools,
-            tool_choice="auto" if tools else None
-        )
-
-        # Collect the response
-        full_response = ""
-        for chunk in response_stream:
-            if chunk['choices'][0]['delta'].get('content'):
-                content = chunk['choices'][0]['delta']['content']
-                full_response += content
-                print(content, end='', flush=True)
-
-            # Check for tool calls
-            if chunk['choices'][0]['delta'].get('tool_calls'):
-                tool_calls = chunk['choices'][0]['delta']['tool_calls']
-                for tool_call in tool_calls:
-                    if tool_call['type'] == 'function':
-                        func_name = tool_call['function']['name']
-                        func_args = json.loads(tool_call['function']['arguments'])
-
-                        print(f"\n[Function Call: {func_name}({func_args})]")
-
-                        # Execute function if implementation is provided
-                        if function_implementations and func_name in function_implementations:
-                            try:
-                                result = function_implementations[func_name](**func_args)
-                                print(f"[Function Result: {result}]")
-
-                                # Add function result to chat history
-                                chat_history.add_assistant_message(f"Function call: {func_name}")
-                                chat_history.add_user_message(f"Function result: {result}")
-
-                                # Continue the conversation with function result
-                                continue_messages = messages + [
-                                    {"role": "assistant", "content": full_response},
-                                    {"role": "user", "content": f"Function {func_name} returned: {result}. Please provide a response based on this result."}
-                                ]
-
-                                continue_response = self.model.create_chat_completion(
-                                    messages=continue_messages,
-                                    temperature=temperature,
-                                    stream=True
-                                )
-
-                                print("\nAssistant: ", end='')
-                                for chunk in continue_response:
-                                    if chunk['choices'][0]['delta'].get('content'):
-                                        content = chunk['choices'][0]['delta']['content']
-                                        full_response += content
-                                        print(content, end='', flush=True)
-
-                            except Exception as e:
-                                print(f"[Function Error: {e}]")
-
-        print()  # New line after response
-
-        # Add assistant response to chat history
-        chat_history.add_assistant_message(full_response)
-
-        return full_response
-'''

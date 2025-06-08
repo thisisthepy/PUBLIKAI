@@ -1,6 +1,6 @@
 from typing import List, Dict, Union, Generator, Optional
 
-from ..base import ChatHistory, BaseModel
+from ..base import ChatHistory, FunctionCalling, BaseModel
 from ...backend import BackendType, CoreRuntime
 
 
@@ -31,6 +31,7 @@ class Llama3Model(BaseModel):
     model_id = model_id
     context_length = context_length
     supported_backends = tuple([BackendType.GGUF])
+    supported_tools: FunctionCalling = FunctionCalling.DISABLED
 
     def _get_runtime(self, backend: BackendType | None = None):
         if backend is None:  # Default to GGUF backend

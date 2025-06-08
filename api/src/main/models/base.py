@@ -1,8 +1,22 @@
 import traceback
+from re import finditer, DOTALL
+from dataclasses import dataclass
 from typing import Generator, Tuple, Optional, List, Dict, Union
 
 from .config import ChatHistory
 from ..backend import BackendType
+from ..utils import FunctionCalling, FunctionCallResult
+
+
+@dataclass
+class Tags:
+    """
+    Tags for the model, used for filtering and searching.
+    """
+    REASONING: str = "<think>"
+    REASONING_END: str = "</think>"
+    TOOLCALL: str = "<tool_call>"
+    TOOLCALL_END: str = "</tool_call>"
 
 
 class BaseModel:
@@ -15,7 +29,8 @@ class BaseModel:
     model_id = ""
     context_length = 0
     supported_backends: Tuple[BackendType] = tuple([BackendType.DEFAULT])
-    supported_tools: List[Dict[str, str]] = None
+    supported_tools: FunctionCalling = FunctionCalling.DEFAULT
+    special_tags = Tags()
 
     def __new__(cls, *args, **kwargs):
         """ Ensure only one instance of the model is created """
@@ -44,6 +59,70 @@ class BaseModel:
         """ Clean up resources for the model """
         self.__class__.__instance = None
 
+    def parse_tool_calling(
+        self,
+        outputs,
+        chat_history: ChatHistory,
+        tools: List[Dict[str, str]],
+        stream: bool = True
+    ) -> Union[Generator[str, None, None], str]:
+        """ Parse tool calling from the model's output """
+        if len(tools) == 0:
+            return outputs
+
+        result_obj = FunctionCallResult()
+        result_obj.register_tools(tools, self.supported_tools.implementations)
+
+        if stream:
+            started = False
+            buffer = ""
+            for word in outputs:
+                if self.special_tags.TOOLCALL in word:  # Start of a tool call
+                    started = True
+                    if buffer:
+                        buffer = 0
+                elif self.special_tags.TOOLCALL_END in word:  # End of a tool call
+                    if buffer:
+                        result_obj.stage(
+                            buffer,
+                            (self.special_tags.TOOLCALL, self.special_tags.TOOLCALL_END)
+                        )
+                        state = result_obj.state
+                        if state is not None:
+                            yield state
+                    buffer = ""
+                    started = False
+                else:
+                    if started:
+                        buffer += word
+                        state = result_obj.state
+                        if state is not None:
+                            yield state
+                    else:
+                        yield word
+        else:
+            original_outputs = outputs
+            outputs = outputs.replace(self.special_tags.TOOLCALL, "").replace(self.special_tags.TOOLCALL_END, "")
+
+            for match in finditer(r"<tool_call>\s*(\{.*?\})\s*</tool_call>", original_outputs, DOTALL):
+                json_string = match.group(1)  # Extract the JSON string from the match
+                outputs.replace(json_string, "")  # Remove the tool call from the output
+                result_obj.stage(
+                    json_string,
+                    (self.special_tags.TOOLCALL, self.special_tags.TOOLCALL_END)
+                )
+
+        while True:
+            final_result = result_obj.finalize(
+                chat_history,
+                (self.special_tags.TOOLCALL_HISTORY, self.special_tags.TOOLCALL_HISTORY_END)
+            )
+            if stream:
+                if final_result is not False:
+                    yield final_result
+            else:
+                return outputs + final_result
+
     def chat(
         self,
         chat_history: ChatHistory,
@@ -61,7 +140,24 @@ class BaseModel:
         print_output: bool = False,
         **kwargs
     ) -> Union[Generator[str, None, None], str]:
-        """ Process a chat request """
+        """ Process a chat request
+
+        Args:
+            chat_history (ChatHistory): Chat history
+            user_prompt (str): User prompt
+            system_prompt (str, optional): System prompt. Defaults to "".
+            tools (Optional[List[Dict[str, str]]], optional): Tools. Defaults to None. Pass empty list to disable tools.
+            temperature (float, optional): Temperature. Defaults to 0.2.
+            top_p (float, optional): Top p. Defaults to 0.95.
+            top_k (int, optional): Top k. Defaults to 40.
+            min_p (float, optional): Min p. Defaults to 0.05.
+            typical_p (float, optional): Typical p. Defaults to 1.0.
+            stream (bool, optional): Stream. Defaults to True.
+            max_new_tokens (int, optional): Max new tokens. Defaults to 512.
+            repeat_penalty (float, optional): Repeat penalty. Defaults to 1.0.
+            print_output (bool, optional): Print output. Defaults to False.
+            **kwargs: Additional arguments
+        """
         prompt = chat_history.create_prompt(system_prompt, user_prompt)
         if user_prompt is not None:
             chat_history.append("user", user_prompt)
@@ -74,9 +170,11 @@ class BaseModel:
                 print(line)
             print()
 
+        tools = tools if tools is not None else self.supported_tools.schemas
+
         generation_kwargs = dict(
             messages=prompt,
-            tools=tools if tools is not None else self.supported_tools,
+            tools=tools,
             temperature=temperature,
             top_p=top_p,
             top_k=top_k,
@@ -87,7 +185,12 @@ class BaseModel:
             repeat_penalty=repeat_penalty
         )
         generation_kwargs.update(kwargs)
-        outputs = self.runtime(**generation_kwargs)
+        outputs = self.parse_tool_calling(
+            self.runtime(**generation_kwargs),
+            chat_history=chat_history,
+            tools=tools,
+            stream=stream
+        )
 
         if print_output:
             print("ANSWER:")
