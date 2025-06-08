@@ -1,18 +1,18 @@
 from json import dumps, loads, JSONDecodeError
+from typing import ClassVar, Union
 from dataclasses import dataclass
 from datetime import datetime
-from typing import ClassVar
 from copy import deepcopy
 
 from concurrent.futures import ThreadPoolExecutor
 import threading
 
 from . import weather
-from . import calculator
-from . import embedding
-from . import web_search
 from . import calendar
 from . import currency
+from . import calculator
+#from . import embedding
+#from . import web_search
 
 
 @dataclass
@@ -24,11 +24,34 @@ class FunctionCalling:
     DEFAULT: ClassVar['FunctionCalling'] = None
 
 
-@dataclass
 class FunctionSchema(dict):
-    name: str
-    description: str
-    parameters: dict
+    def __init__(self, name: str, description: str, parameters: dict, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.update({
+            "name": name,
+            "description": description,
+            "parameters": parameters
+        })
+
+    @property
+    def name(self) -> str:
+        return self['name']
+
+    @name.setter
+    def name(self, value: str):
+        self['name'] = value
+
+    @property
+    def description(self) -> str:
+        return self['description']
+
+    @description.setter
+    def description(self, value: str):
+        self['description'] = value
+
+    @property
+    def parameters(self) -> dict:
+        return self['parameters']
 
 
 class FunctionCallResult(list):
@@ -77,7 +100,7 @@ class FunctionCallResult(list):
         self,
         history_list: list,
         tag: tuple[str, str] = ("<tool_call>", "</tool_call>")
-    ) -> str | False:
+    ) -> Union[str, False]:
         # Check if there are any pending tool calls
         with self.__queue_mutex:
             if len(self.job_list) != self.__completed_jobs:
