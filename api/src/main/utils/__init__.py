@@ -61,7 +61,7 @@ class FunctionCallResult(list):
         self.job_list = []
         self.append(dict(
             role="assistant",
-            content=None,
+            content="",
             tool_calls=self.job_list
         ))
 
@@ -106,20 +106,24 @@ class FunctionCallResult(list):
             if len(self.job_list) != self.__completed_jobs:
                 return False
             else:  # If no pending tool calls, finalize the result
+                if len(self) < 2:  # If there is no history, return an empty string
+                    return ""
+
                 # Update the history with the current state
-                history_list.extend(deepcopy(self))
+                history_list.extend(deepcopy(list(self)))
 
                 # Dump client-side tool call history
-                state = self.state
-                if state is None:
-                    state = ""
-                for data in self:
+                state = ""
+                if self.__message_queue:
+                    state = "\n" + "\n".join(self.__message_queue)
+                for data in self[1:]:
                     if 'tool_call_id' in data:
                         data['content'] = f"<cached_result:{data['tool_call_id']}>"
-                result = state + "\n" + tag[0] + dumps(self) + tag[1]
+                result = state + "\n" + tag[0] + "\n" + dumps(self, ensure_ascii=False) + "\n" + tag[1]
 
                 # Clear the job list and message queue
                 self.job_list = []
+                self[:] = self[:1]
                 self.__completed_jobs = 0
                 self.__message_queue = []
                 return result
@@ -137,9 +141,9 @@ class FunctionCallResult(list):
                 name=name,
                 arguments=arguments
             )))
-            self.__message_queue.append(tag[0] + dumps(dict(call=dict(id=job_id, function=dict(
+            self.__message_queue.append(tag[0] + "\n" + dumps(dict(call=dict(id=job_id, function=dict(
                 name=name, arguments=deepcopy(arguments)
-            )))) + tag[1])
+            ))), ensure_ascii=False) + "\n" + tag[1])
 
             self.__thread_pool.submit(self.do, job_id, name, arguments, tag)
 
@@ -164,9 +168,9 @@ class FunctionCallResult(list):
             self.append(dict(role="tool", tool_call_id=job_id, content=result))
 
             # Client side
-            self.__message_queue.append(tag[0] + dumps(dict(result=dict(id=job_id, function=dict(
+            self.__message_queue.append(tag[0] + "\n" + dumps(dict(result=dict(id=job_id, function=dict(
                 content=f"<cached_result:{job_id}>"
-            )))) + tag[1])  # for immediate response
+            ))), ensure_ascii=False) + "\n" + tag[1])  # for immediate response
 
             # Increment the completed job count
             self.__completed_jobs += 1
@@ -183,7 +187,7 @@ FunctionCalling.DEFAULT = FunctionCalling(
                 "properties": {
                     "location": {
                         "type": "string",
-                        "description": "The location to get weather for"
+                        "description": "The location to get weather for (in English only)"
                     },
                     "unit": {
                         "type": "string",
@@ -202,7 +206,7 @@ FunctionCalling.DEFAULT = FunctionCalling(
                 "properties": {
                     "location": {
                         "type": "string",
-                        "description": "The location to get forecast for"
+                        "description": "The location to get forecast for (in English only)"
                     },
                     "days": {
                         "type": "integer",

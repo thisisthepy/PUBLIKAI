@@ -112,14 +112,25 @@ class BaseModel:
                     (self.special_tags.TOOLCALL, self.special_tags.TOOLCALL_END)
                 )
 
+        # Finalize the tool calls
+        print("")
+        spinner = ['⠋','⠙','⠹','⠸','⠼','⠴','⠦','⠧','⠇','⠏']
+        stat = 0
         while True:
             final_result = result_obj.finalize(
                 chat_history,
-                (self.special_tags.TOOLCALL_HISTORY, self.special_tags.TOOLCALL_HISTORY_END)
+                (self.special_tags.TOOLCALL, self.special_tags.TOOLCALL_END)
             )
+            if stat % 2 == 0:
+                print(f"\r{spinner[(stat//2) % len(spinner)]} Waiting for tool calls to finish...", end="", flush=True)
+            if final_result is False:
+                stat += 1
+                continue
+            print("\r[✔] Tool calls are finalized successfully.")
+
             if stream:
-                if final_result is not False:
-                    yield final_result
+                yield final_result
+                break
             else:
                 return outputs + final_result
 
@@ -158,57 +169,66 @@ class BaseModel:
             print_output (bool, optional): Print output. Defaults to False.
             **kwargs: Additional arguments
         """
-        prompt = chat_history.create_prompt(system_prompt, user_prompt)
-        if user_prompt is not None:
-            chat_history.append("user", user_prompt)
-        else:
-            prompt = prompt[:-1]  # Remove the last user prompt if it's None
+        initial_operation = True
+        function_called = True
+        while function_called:
+            function_called = False
 
-        if print_output:
-            print("PROMPT:")
-            for line in prompt:
-                print(line)
-            print()
+            prompt = chat_history.create_prompt(system_prompt, user_prompt)
+            if user_prompt is not None:
+                chat_history.append("user", user_prompt)
+            else:
+                prompt = prompt[:-1]  # Remove the last user prompt if it's None
+            user_prompt = None  # Reset user prompt to None after appending
 
-        tools = tools if tools is not None else self.supported_tools.schemas
+            if print_output and initial_operation:
+                print("PROMPT:")
+                for line in prompt:
+                    print(line)
+                print("\nANSWER:")
+            initial_operation = False
 
-        generation_kwargs = dict(
-            messages=prompt,
-            tools=tools,
-            temperature=temperature,
-            top_p=top_p,
-            top_k=top_k,
-            min_p=min_p,
-            typical_p=typical_p,
-            stream=stream,
-            max_new_tokens=max_new_tokens,
-            repeat_penalty=repeat_penalty
-        )
-        generation_kwargs.update(kwargs)
-        outputs = self.parse_tool_calling(
-            self.runtime(**generation_kwargs),
-            chat_history=chat_history,
-            tools=tools,
-            stream=stream
-        )
+            tools = tools if tools is not None else self.supported_tools.schemas
 
-        if print_output:
-            print("ANSWER:")
+            generation_kwargs = dict(
+                messages=prompt,
+                tools=tools,
+                temperature=temperature,
+                top_p=top_p,
+                top_k=top_k,
+                min_p=min_p,
+                typical_p=typical_p,
+                stream=stream,
+                max_new_tokens=max_new_tokens,
+                repeat_penalty=repeat_penalty
+            )
+            generation_kwargs.update(kwargs)
+            outputs = self.parse_tool_calling(
+                self.runtime(**generation_kwargs),
+                chat_history=chat_history,
+                tools=tools,
+                stream=stream
+            )
 
-        if stream:
-            try:
-                for word in outputs:
-                    if word:
-                        if print_output:
-                            print(word, end="")
-                        yield word
-            except ValueError:  # Over token limit error
-                traceback.print_exc()
-                message = "\n\nERROR: Chat is unexpectedly terminated due to token limit. Please shorten your prompt or chat history."
-                if print_output:
-                    print(message, end="")
-                yield message
-            finally:
-                print()
-        else:
-            print(outputs)
+            if stream:
+                try:
+                    for word in outputs:
+                        if word:
+                            if self.special_tags.TOOLCALL in word and self.special_tags.TOOLCALL_END in word:
+                                function_called = True  # flag on
+                            if print_output: print(word, end="")
+                            yield word
+                except ValueError as e:  # Over token limit error
+                    traceback.print_exc()
+                    if "token" in str(e) and "limit" in str(e):
+                        message = "\n\nERROR: Chat is unexpectedly terminated due to token limit. Please shorten your prompt or chat history."
+                    else:
+                        message = f"\n\nERROR: {type(e)} - Something went wrong while processing the chat. Please try again later.\n{e}"
+                    if print_output: print(message, end="")
+                    yield message
+                finally:
+                    print()
+            else:
+                if self.special_tags.TOOLCALL in outputs and self.special_tags.TOOLCALL_END in outputs:
+                    function_called = True  # flag on
+                print(outputs)
