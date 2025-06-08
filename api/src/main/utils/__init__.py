@@ -210,9 +210,9 @@ FunctionCalling.DEFAULT = FunctionCalling(
                     },
                     "days": {
                         "type": "integer",
-                        "description": "Number of days to forecast (1-16, supported by Open-Meteo API)",
-                        "minimum": 1,
-                        "maximum": 16
+                        "description": "Number of days to forecast (0-15, supported by Open-Meteo API)",
+                        "minimum": 0,
+                        "maximum": 15
                     },
                     "unit": {
                         "type": "string",

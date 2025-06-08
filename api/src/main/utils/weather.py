@@ -123,7 +123,7 @@ class WeatherAPI:
         
         Args:
             location: City name
-            days: Number of days (1-16)
+            days: Number of days (0-15)
             unit: Temperature unit
             
         Returns:
@@ -136,6 +136,7 @@ class WeatherAPI:
                 return coord_data
             
             # Get forecast
+            days += 1  # Include today in forecast
             params = {
                 'latitude': coord_data['latitude'],
                 'longitude': coord_data['longitude'],
