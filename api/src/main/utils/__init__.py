@@ -11,6 +11,8 @@ from . import weather
 from . import calculator
 from . import embedding
 from . import web_search
+from . import calendar
+from . import currency
 
 
 @dataclass
@@ -195,6 +197,71 @@ FunctionCalling.DEFAULT = FunctionCalling(
             }
         ),
         FunctionSchema(
+            name="get_calendar_events",
+            description="Get calendar events (holidays and special observances) for a specific date",
+            parameters={
+                "type": "object",
+                "properties": {
+                    "date": {
+                        "type": "string",
+                        "description": "Date in YYYY-MM-DD format"
+                    },
+                    "country": {
+                        "type": "string",
+                        "description": "ISO country code (US, KR, JP, GB, etc.)",
+                        "default": "US"
+                    }
+                },
+                "required": ["date"]
+            }
+        ),
+        FunctionSchema(
+            name="get_upcoming_holidays",
+            description="Get upcoming holidays within the specified number of days",
+            parameters={
+                "type": "object",
+                "properties": {
+                    "country": {
+                        "type": "string",
+                        "description": "ISO country code (US, KR, JP, GB, etc.)",
+                        "default": "US"
+                    },
+                    "days": {
+                        "type": "integer",
+                        "description": "Number of days to look ahead (default: 30)",
+                        "default": 30,
+                        "minimum": 1,
+                        "maximum": 365
+                    }
+                },
+                "required": []
+            }
+        ),
+        FunctionSchema(
+            name="get_exchange_rate",
+            description="Get exchange rate and convert currency amount",
+            parameters={
+                "type": "object",
+                "properties": {
+                    "from_currency": {
+                        "type": "string",
+                        "description": "Source currency code (e.g., USD, EUR, KRW)"
+                    },
+                    "to_currency": {
+                        "type": "string",
+                        "description": "Target currency code (e.g., USD, EUR, KRW)"
+                    },
+                    "amount": {
+                        "type": "number",
+                        "description": "Amount to convert (default: 1.0)",
+                        "default": 1.0,
+                        "minimum": 0.01
+                    }
+                },
+                "required": ["from_currency", "to_currency"]
+            }
+        ),
+        FunctionSchema(
             name="calculate",
             description="Perform mathematical calculations",
             parameters={
@@ -213,6 +280,9 @@ FunctionCalling.DEFAULT = FunctionCalling(
     implementations=dict(
         get_weather=weather.get_weather,
         get_weather_forecast=weather.get_weather_forecast,
+        get_calendar_events=calendar.get_calendar_events,
+        get_upcoming_holidays=calendar.get_upcoming_holidays,
+        get_exchange_rate=currency.get_exchange_rate,
         calculate=calculator.calculate
     )
 )
