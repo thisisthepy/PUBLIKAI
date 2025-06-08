@@ -7,7 +7,7 @@ chat_history = ChatHistory()
 ws = False
 
 MODEL_ID = "qwen3"
-SERVER_URL = "127.0.0.1:8000"
+SERVER_URL = "127.0.0.1:23100"
 WEBSOCKET_URL = f"ws://{SERVER_URL}/api/chat/streaming"
 SESSION_URL = f"http://{SERVER_URL}/api/models/{MODEL_ID}/sessions/"
 SESSION_UNLOAD_URL = f"http://{SERVER_URL}/api/sessions/"
