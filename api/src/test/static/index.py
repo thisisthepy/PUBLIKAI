@@ -85,8 +85,9 @@ def on_close(_):
     # websocket is closed
     print("Websocket connection is now closed")
     target = document['messages'].lastChild
-    chat_history.append("assistant", target.textContent)  # chat history 업데이트
-    #target.textContent = re.sub(r'\*\*(.*?)\*\*', r'<strong>\1</strong>', target.textContent.strip())
+    message_content = target.querySelector(".message-content")
+    chat_history.append("assistant", message_content.textContent)  # chat history 업데이트
+    message_content.innerHTML = re.sub(r'\*\*(.*?)\*\*', r'<strong>\1</strong>', message_content.innerHTML.strip())
     ws = None
 
 
@@ -106,11 +107,13 @@ def update_screen(text: str, user_content: bool = True, think: bool = False):
         asst.classList.add("message")
         asst.classList.add("message-server")
         asst.classList.add("d-none")  # 메시지 도달 되기 전까지 안보이도록
-        asst.innerHTML = """
-            <i class="fas fa-robot icon"></i>
-            <i class="think-desc">0초 동안 생각 중...</i>
-            <span class="think"></span>
-        """.strip()  # 아이콘을 왼쪽에 추가
+        asst.innerHTML = '<i class="fas fa-robot icon"></i>' \
+            + '<div class="think-container">' \
+            + '<i class="think-desc">0초 동안 생각 중...</i>' \
+            + '<button class="think-toggle" onclick="toggleThinking(this)">▼</button>' \
+            + '<div class="think-content d-none"></div>' \
+            + '</div>' \
+            + '<span class="message-content"></span>'
         message_list.appendChild(asst)
         target = user
     else:
@@ -120,14 +123,15 @@ def update_screen(text: str, user_content: bool = True, think: bool = False):
             target.classList.remove("d-none")  # 메시지 도달 되면 보이도록
             thinking_started = time.time()
         if think:
-            elapsed = int(desc.innerHTML.split("초")[0])
-            elapsed += int(time.time() - thinking_started)
-            desc.innerHTML = f"{elapsed}초 동안 생각 중..."
+            elapsed = float(desc.innerHTML.split("초")[0])
+            elapsed += float(time.time() - thinking_started)
+            desc.innerHTML = f"{elapsed:.1f}초 동안 생각 중..."
             thinking_started = time.time()  # 생각 시작 시간 갱신
-            target = target.querySelector(".think")
-            target.innerHTML = target.innerHTML.lstrip()
+            target = target.querySelector(".think-content")
         else:
             desc.innerHTML = desc.innerHTML.replace("생각 중...", "생각 완료")  # 생각 완료 표시
+            target = target.querySelector(".message-content")
+        target.innerHTML = target.innerHTML.lstrip()
 
     target.innerHTML += text
     message_list.scrollTop = message_list.scrollHeight
@@ -156,3 +160,16 @@ def keydown_disable(e):
     if e.key == "Enter" and not e.shiftKey:  # shift + Enter는 줄바꿈
         e.preventDefault()  # 기본 Enter 동작 방지
         document["form"].requestSubmit()  # 폼 전송
+
+
+# JavaScript 함수를 window 객체에 추가
+window.toggleThinking = lambda btn: toggle_thinking(btn)
+
+def toggle_thinking(btn):
+    think_content = btn.parentElement.querySelector(".think-content")
+    if "d-none" in think_content.classList:
+        think_content.classList.remove("d-none")
+        btn.innerHTML = "▲"
+    else:
+        think_content.classList.add("d-none")
+        btn.innerHTML = "▼"

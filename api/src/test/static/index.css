@@ -115,12 +115,57 @@ h1:hover {
     color: #454545;
 }
 
-.message-server .think-desc {
+.message-server .think-container {
     position: absolute;
-    left: 34px;
+    left: 35px;
     top: -29px;
+    display: flex;
+    align-items: center;
+    gap: 2px;
+}
+
+.message-server .think-desc {
     font-size: 14px;
     color: #454545;
+    margin: 0;
+}
+
+.message-server .think-toggle {
+    background: none;
+    border: none;
+    color: #454545;
+    font-size: 12px;
+    cursor: pointer;
+    padding: 2px 4px;
+    border-radius: 3px;
+    transition: background-color 0.2s;
+}
+
+.message-server .think-toggle:hover {
+    background-color: #f0f0f0;
+}
+
+.message-server .think-toggle:focus,
+.message-server .think-toggle:active {
+    outline: none;
+    border: none;
+}
+
+.message-server .think-content {
+    position: absolute;
+    left: -34px;
+    top: 25px;
+    background-color: #f8f9fa;
+    border: 1px solid #e9ecef;
+    border-radius: 10px;
+    padding: 10px;
+    width: 550px;
+    max-width: 90vw;
+    font-size: 13px;
+    color: #666;
+    white-space: pre-wrap;
+    word-wrap: break-word;
+    z-index: 100;
 }
 
 .form-inline {
@@ -173,4 +218,8 @@ h1:hover {
     box-shadow: none;
     color: #fff; /* 아이콘 색상 */
     outline: none; /* 포커스 시 테두리 제거 */
+}
+
+.d-none {
+    display: none !important;
 }
