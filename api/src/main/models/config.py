@@ -49,7 +49,7 @@ class ChatHistory(list):
         return [
             {
                 'role': "system",
-                'content': f"Current time is {datetime.now()} {time.tzname[0]} / {datetime.now(timezone.utc)} UTC ({date.today().strftime('%A')}). " + system_prompt
+                'content': f"The user's local time is {datetime.now()} {date.today().strftime('%a').upper()} ({time.tzname[0]}). For reference, the corresponding UTC time is {datetime.now(timezone.utc)}. " + system_prompt
             },
             *self,
             {

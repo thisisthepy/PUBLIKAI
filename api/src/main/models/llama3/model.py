@@ -58,7 +58,7 @@ class Llama3Model(BaseModel):
         min_p: float = 0.05,
         typical_p: float = 1.0,
         stream: bool = True,
-        max_new_tokens: int = 512,
+        max_new_tokens: int = 0,
         repeat_penalty: float = 1.0,
         print_output: bool = False,
         **kwargs

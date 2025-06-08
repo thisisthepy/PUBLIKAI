@@ -126,7 +126,7 @@ class BaseModel:
             if final_result is False:
                 stat += 1
                 continue
-            print("\r[✔] Tool calls are finalized successfully.")
+            print("\r[✔] Tool calls are finalized successfully.", flush=True)
 
             if stream:
                 yield final_result
@@ -146,7 +146,7 @@ class BaseModel:
         min_p: float = 0.05,
         typical_p: float = 1.0,
         stream: bool = True,
-        max_new_tokens: int = 512,
+        max_new_tokens: int = 1024,
         repeat_penalty: float = 1.0,
         print_output: bool = False,
         **kwargs
@@ -164,7 +164,7 @@ class BaseModel:
             min_p (float, optional): Min p. Defaults to 0.05.
             typical_p (float, optional): Typical p. Defaults to 1.0.
             stream (bool, optional): Stream. Defaults to True.
-            max_new_tokens (int, optional): Max new tokens. Defaults to 512.
+            max_new_tokens (int, optional): Max new tokens. Defaults to 1024.
             repeat_penalty (float, optional): Repeat penalty. Defaults to 1.0.
             print_output (bool, optional): Print output. Defaults to False.
             **kwargs: Additional arguments
