@@ -187,7 +187,7 @@ FunctionCalling.DEFAULT = FunctionCalling(
                 "properties": {
                     "location": {
                         "type": "string",
-                        "description": "The location to get weather for (in English only)"
+                        "description": "The location to get weather for (location must be set in English only)"
                     },
                     "unit": {
                         "type": "string",
@@ -206,7 +206,7 @@ FunctionCalling.DEFAULT = FunctionCalling(
                 "properties": {
                     "location": {
                         "type": "string",
-                        "description": "The location to get forecast for (in English only)"
+                        "description": "The location to get forecast for (location must be set in English only)"
                     },
                     "days": {
                         "type": "integer",
