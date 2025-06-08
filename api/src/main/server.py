@@ -1,6 +1,6 @@
 from fastapi import FastAPI, WebSocket, Request, HTTPException
+from fastapi.responses import RedirectResponse, FileResponse
 from fastapi.staticfiles import StaticFiles
-from fastapi.responses import FileResponse
 from pydantic import BaseModel
 import uvicorn
 
@@ -21,6 +21,12 @@ class Message(BaseModel):
 
 app = FastAPI()
 app.mount("/static", StaticFiles(directory=STATIC_DIR, html=True), name="static")
+
+
+@app.get("/")
+def root():
+    """ Redirect to the chat page """
+    return RedirectResponse(url="/chat")
 
 
 @app.get("/chat")
@@ -84,7 +90,7 @@ async def chat(request: Request, user_prompt: str, history: Optional[List[Messag
 
     chat_history = ChatHistory()
     if history:
-        chat_history.extend(history)
+        chat_history.extend([h.model_dump() for h in history])
 
     response = model.chat(chat_history, user_prompt, stream=False, print_output=True)
     del model
