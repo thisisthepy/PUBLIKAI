@@ -170,6 +170,31 @@ FunctionCalling.DEFAULT = FunctionCalling(
             }
         ),
         FunctionSchema(
+            name="get_weather_forecast",
+            description="Get weather forecast for a location",
+            parameters={
+                "type": "object",
+                "properties": {
+                    "location": {
+                        "type": "string",
+                        "description": "The location to get forecast for"
+                    },
+                    "days": {
+                        "type": "integer",
+                        "description": "Number of days to forecast (1-16, supported by Open-Meteo API)",
+                        "minimum": 1,
+                        "maximum": 16
+                    },
+                    "unit": {
+                        "type": "string",
+                        "enum": ["celsius", "fahrenheit"],
+                        "description": "Temperature unit"
+                    }
+                },
+                "required": ["location"]
+            }
+        ),
+        FunctionSchema(
             name="calculate",
             description="Perform mathematical calculations",
             parameters={
@@ -187,6 +212,7 @@ FunctionCalling.DEFAULT = FunctionCalling(
 
     implementations=dict(
         get_weather=weather.get_weather,
+        get_weather_forecast=weather.get_weather_forecast,
         calculate=calculator.calculate
     )
 )
