@@ -78,6 +78,9 @@ def on_message(evt):
                     tool_call = json.loads(evt.data.replace("<tool_call>", "").replace("</tool_call>", ""))
                     if "history" in tool_call:
                         chat_history.raw_extend(tool_call['history'])
+                        print("Tool call history updated")
+                    else:  # TODO: tool call notification 처리 (call, result)
+                        pass
 
 
 def on_close(_):
@@ -93,48 +96,49 @@ def on_close(_):
 
 thinking_started = 0
 def update_screen(text: str, user_content: bool = True, think: bool = False):
-    global thinking_started
-    message_list = document['messages']
-    if user_content:
-        # user content
-        user = document.createElement("li")
-        message_list.appendChild(user)
-        user.classList.add("message")
-        user.classList.add("message-user")
+    try:
+        global thinking_started
+        message_list = document['messages']
+        if user_content:
+            # user content
+            user = document.createElement("li")
+            message_list.appendChild(user)
+            user.classList.add("message")
+            user.classList.add("message-user")
 
-        # assistant content
-        asst = document.createElement("li")
-        asst.classList.add("message")
-        asst.classList.add("message-server")
-        asst.classList.add("d-none")  # 메시지 도달 되기 전까지 안보이도록
-        asst.innerHTML = '<i class="fas fa-robot icon"></i>' \
-            + '<div class="think-container">' \
-            + '<i class="think-desc">0초 동안 생각 중...</i>' \
-            + '<button class="think-toggle" onclick="toggleThinking(this)">▼</button>' \
-            + '<div class="think-content d-none"></div>' \
-            + '</div>' \
-            + '<span class="message-content"></span>'
-        message_list.appendChild(asst)
-        target = user
-    else:
-        target = document['messages'].lastChild
-        desc = target.querySelector(".think-desc")
-        if "d-none" in target.classList:
-            target.classList.remove("d-none")  # 메시지 도달 되면 보이도록
-            thinking_started = time.time()
-        if think:
-            elapsed = float(desc.innerHTML.split("초")[0])
-            elapsed += float(time.time() - thinking_started)
-            desc.innerHTML = f"{elapsed:.1f}초 동안 생각 중..."
-            thinking_started = time.time()  # 생각 시작 시간 갱신
-            target = target.querySelector(".think-content")
+            # assistant content
+            asst = document.createElement("li")
+            asst.classList.add("message")
+            asst.classList.add("message-server")
+            asst.classList.add("d-none")  # 메시지 도달 되기 전까지 안보이도록
+            asst.innerHTML = '<i class="bi bi-diamond-fill icon"></i>' \
+                + '<div class="think-container">' \
+                + '<i class="think-desc">0초 동안 생각 중...</i>' \
+                + '<button class="think-toggle" onclick="toggleThinking(this)">▼</button>' \
+                + '<div class="think-content d-none"></div>' \
+                + '</div>' \
+                + '<span class="message-content"></span>'
+            message_list.appendChild(asst)
+            user.innerHTML += text
+            message_list.scrollTop = message_list.scrollHeight
         else:
-            desc.innerHTML = desc.innerHTML.replace("생각 중...", "생각 완료")  # 생각 완료 표시
-            target = target.querySelector(".message-content")
-        target.innerHTML = target.innerHTML.lstrip()
-
-    target.innerHTML += text
-    message_list.scrollTop = message_list.scrollHeight
+            target = document['messages'].lastChild
+            desc = target.querySelector(".think-desc")
+            if "d-none" in target.classList:
+                target.classList.remove("d-none")  # 메시지 도달 되면 보이도록
+                thinking_started = time.time()
+            if think:
+                elapsed = float(desc.innerHTML.split("초")[0])
+                elapsed += float(time.time() - thinking_started)
+                desc.innerHTML = f"{elapsed:.1f}초 동안 생각 중..."
+                thinking_started = time.time()  # 생각 시작 시간 갱신
+                target = target.querySelector(".think-content")
+            else:
+                desc.innerHTML = desc.innerHTML.replace("생각 중...", "생각 완료")  # 생각 완료 표시
+                target = target.querySelector(".message-content")
+            target.innerHTML = target.innerHTML.lstrip() + text
+    except Exception as e:
+        print("Error updating screen:", e)
 
 
 @bind('#form', 'submit')
@@ -164,6 +168,8 @@ def keydown_disable(e):
 
 # JavaScript 함수를 window 객체에 추가
 window.toggleThinking = lambda btn: toggle_thinking(btn)
+window.showHistory = lambda: chat_history  # chat history 출력 함수
+
 
 def toggle_thinking(btn):
     think_content = btn.parentElement.querySelector(".think-content")

@@ -119,7 +119,7 @@ class FunctionCallResult(list):
                 for data in self[1:]:
                     if 'tool_call_id' in data:
                         data['content'] = f"<cached_result:{data['tool_call_id']}>"
-                result = state + "\n" + tag[0] + "\n" + dumps(self, ensure_ascii=False) + "\n" + tag[1]
+                result = state + "\n" + tag[0] + "\n" + dumps(dict(history=self, ensure_ascii=False)) + "\n" + tag[1]
 
                 # Clear the job list and message queue
                 self.job_list = []

@@ -125,4 +125,7 @@ async def chat_with_streaming(websocket: WebSocket):
 
 
 if __name__ == '__main__':
-    uvicorn.run(app, host="127.0.0.1", port=23100)
+    uvicorn.run(
+        app, host="127.0.0.1", port=23100,
+        ws_ping_interval=60, ws_ping_timeout=30, ws_per_message_deflate=False, timeout_keep_alive=300
+    )
