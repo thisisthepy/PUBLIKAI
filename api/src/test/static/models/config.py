@@ -26,15 +26,6 @@ class ChatHistory(list):
             except TypeError:
                 self.append(**item.dict())
 
-    def create_prompt(self, system_prompt: str, user_prompt: str = ""):
-        return [
-            {
-                'role': "system",
-                'content': system_prompt
-            },
-            *self,
-            {
-                'role': "user",
-                'content': user_prompt
-            }
-        ]
+    def raw_extend(self, history: Iterable):
+        """ Append raw items without cleaning them """
+        super().extend(history)

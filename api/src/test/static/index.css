@@ -115,6 +115,14 @@ h1:hover {
     color: #454545;
 }
 
+.message-server .think-desc {
+    position: absolute;
+    left: 34px;
+    top: -29px;
+    font-size: 14px;
+    color: #454545;
+}
+
 .form-inline {
     display: flex;
     align-items: center;

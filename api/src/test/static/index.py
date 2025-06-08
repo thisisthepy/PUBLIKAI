@@ -1,7 +1,9 @@
 from browser import aio, bind, document, window
 
 from models.config import ChatHistory
+import time
 import json
+import re
 
 chat_history = ChatHistory()
 ws = False
@@ -49,6 +51,7 @@ def on_open(_):
         document['message_text'].value = ""  # 입력창 초기화
 
 
+thinking_found = False
 def on_message(evt):
     # message received from server
     print("Message received:", evt.data)
@@ -57,7 +60,24 @@ def on_message(evt):
         return
 
     if evt.data:
-        update_screen(evt.data, False)
+        global thinking_found
+        if thinking_found:
+            if evt.data == "</think>":
+                thinking_found = False
+                print("Thinking/Reasoning ended")
+            else:
+                update_screen(evt.data, False, think=True)
+        else:
+            if evt.data == "<think>":
+                thinking_found = True
+                print("Thinking/Reasoning started")
+            else:
+                if "<tool_call>" not in evt.data:  # 일반 메시지인 경우
+                    update_screen(evt.data, False)
+                else:
+                    tool_call = json.loads(evt.data.replace("<tool_call>", "").replace("</tool_call>", ""))
+                    if "history" in tool_call:
+                        chat_history.raw_extend(tool_call['history'])
 
 
 def on_close(_):
@@ -66,10 +86,13 @@ def on_close(_):
     print("Websocket connection is now closed")
     target = document['messages'].lastChild
     chat_history.append("assistant", target.textContent)  # chat history 업데이트
+    #target.textContent = re.sub(r'\*\*(.*?)\*\*', r'<strong>\1</strong>', target.textContent.strip())
     ws = None
 
 
-def update_screen(text: str, user_content: bool = True):
+thinking_started = 0
+def update_screen(text: str, user_content: bool = True, think: bool = False):
+    global thinking_started
     message_list = document['messages']
     if user_content:
         # user content
@@ -83,13 +106,28 @@ def update_screen(text: str, user_content: bool = True):
         asst.classList.add("message")
         asst.classList.add("message-server")
         asst.classList.add("d-none")  # 메시지 도달 되기 전까지 안보이도록
-        asst.innerHTML = '<i class="fas fa-robot icon"></i>'  # 아이콘을 왼쪽에 추가
+        asst.innerHTML = """
+            <i class="fas fa-robot icon"></i>
+            <i class="think-desc">0초 동안 생각 중...</i>
+            <span class="think"></span>
+        """.strip()  # 아이콘을 왼쪽에 추가
         message_list.appendChild(asst)
         target = user
     else:
         target = document['messages'].lastChild
+        desc = target.querySelector(".think-desc")
         if "d-none" in target.classList:
             target.classList.remove("d-none")  # 메시지 도달 되면 보이도록
+            thinking_started = time.time()
+        if think:
+            elapsed = int(desc.innerHTML.split("초")[0])
+            elapsed += int(time.time() - thinking_started)
+            desc.innerHTML = f"{elapsed}초 동안 생각 중..."
+            thinking_started = time.time()  # 생각 시작 시간 갱신
+            target = target.querySelector(".think")
+            target.innerHTML = target.innerHTML.lstrip()
+        else:
+            desc.innerHTML = desc.innerHTML.replace("생각 중...", "생각 완료")  # 생각 완료 표시
 
     target.innerHTML += text
     message_list.scrollTop = message_list.scrollHeight
