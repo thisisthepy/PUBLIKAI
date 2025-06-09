@@ -11,8 +11,8 @@ from . import weather
 from . import calendar
 from . import currency
 from . import calculator
+from . import web_search
 #from . import embedding
-#from . import web_search
 
 
 @dataclass
@@ -301,6 +301,77 @@ FunctionCalling.DEFAULT = FunctionCalling(
                 },
                 "required": ["expression"]
             }
+        ),
+        FunctionSchema(
+            name="search_web",
+            description="Search the web for information using SerpApi with robust fallbacks",
+            parameters={
+                "type": "object",
+                "properties": {
+                    "query": {
+                        "type": "string",
+                        "description": "Search query string"
+                    },
+                    "max_results": {
+                        "type": "integer",
+                        "description": "Maximum number of results to return (default: 10)",
+                        "default": 10,
+                        "minimum": 1,
+                        "maximum": 50
+                    },
+                    "engine": {
+                        "type": "string",
+                        "description": "Search engine to use (google, bing, duckduckgo)",
+                        "enum": ["google", "bing", "duckduckgo"],
+                        "default": "google"
+                    }
+                },
+                "required": ["query"]
+            }
+        ),
+        FunctionSchema(
+            name="search_website",
+            description="Search within a specific website or perform general web search",
+            parameters={
+                "type": "object",
+                "properties": {
+                    "query": {
+                        "type": "string",
+                        "description": "Search query string"
+                    },
+                    "site_url": {
+                        "type": "string",
+                        "description": "Specific website domain to search within (optional, e.g., 'docs.python.org')"
+                    },
+                    "max_results": {
+                        "type": "integer",
+                        "description": "Maximum number of results to return (default: 10)",
+                        "default": 10,
+                        "minimum": 1,
+                        "maximum": 50
+                    }
+                },
+                "required": ["query"]
+            }
+        ),
+        FunctionSchema(
+            name="fetch_webpage",
+            description="Fetch and parse content from a specific webpage URL",
+            parameters={
+                "type": "object",
+                "properties": {
+                    "url": {
+                        "type": "string",
+                        "description": "URL of the webpage to fetch"
+                    },
+                    "extract_text": {
+                        "type": "boolean",
+                        "description": "Whether to extract text content from the page (default: true)",
+                        "default": True
+                    }
+                },
+                "required": ["url"]
+            }
         )
     ],
 
@@ -310,6 +381,9 @@ FunctionCalling.DEFAULT = FunctionCalling(
         get_calendar_events=calendar.get_calendar_events,
         get_upcoming_holidays=calendar.get_upcoming_holidays,
         get_exchange_rate=currency.get_exchange_rate,
-        calculate=calculator.calculate
+        calculate=calculator.calculate,
+        search_web=web_search.search_web,
+        search_website=web_search.search_website,
+        fetch_webpage=web_search.fetch_webpage
     )
 )

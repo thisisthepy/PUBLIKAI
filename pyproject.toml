@@ -9,6 +9,9 @@ dependencies = [
     "fastapi>=0.115.12",
     "websockets>=15.0.1",
     "hf-xet>=1.1.2",
+    "bs4>=0.0.2",
+    "serpapi>=0.1.5",
+    "python-dotenv>=1.1.0",
     "huggingface_hub>=0.31.2",
     "transformers>=4.45.3",
     "bitsandbytes>=0.45.5",
@@ -24,7 +27,7 @@ dependencies = [
     "torch ; platform_system == 'Linux'",
     "torchvision ; platform_system == 'Linux'",
     "torchaudio ; platform_system == 'Linux'",
-    "torchaudio ; platform_system == 'Linux'"
+    "torchaudio ; platform_system == 'Linux'",
 ]  # !do not add version-specfic torch here!
 
 
