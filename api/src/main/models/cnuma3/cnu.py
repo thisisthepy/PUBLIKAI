@@ -11,12 +11,7 @@ from datetime import datetime, timedelta
 import re
 import os
 
-# Load environment variables
-try:
-    from dotenv import load_dotenv
-    load_dotenv()
-except ImportError:
-    pass
+from ...utils import web_search
 
 
 class CNUWebAPI:
@@ -37,8 +32,8 @@ class CNUWebAPI:
             "academic_calendar_undergrad": "/_prog/academic_calendar/?site_dvs_cd=kr&menu_dvs_cd=05020101",
             "academic_calendar_grad": "/_prog/academic_calendar/?site_dvs_cd=kr&menu_dvs_cd=05020102", 
             "shuttle_bus": "/html/kr/sub05/sub05_050403.html",
-            "graduation_requirements": "/html/kr/sub02/sub02_020501.html",
-            "notices": "/bbs/board.php?bo_table=notice",
+            "graduation_requirements": "/html/kr/sub02/",  # 수정된 URL
+            "notices": "/html/kr/sub04/sub04_040101.html",  # 수정된 URL
             "ai_notices": "/bbs/board.php?bo_table=notice"
         }
 
@@ -535,9 +530,8 @@ def search_cnu_site(query: str, site: str = "plus", max_results: int = 5) -> str
         else:
             site_url = "plus.cnu.ac.kr"
             site_name = "충남대학교"
-        
+
         # 사이트 내 검색 (site: 연산자 활용)
-        from . import web_search
         search_query = f"site:{site_url} {query}"
         
         result = web_search.search_web(search_query, max_results)
