@@ -2,6 +2,10 @@ from ...utils import FunctionCalling
 
 
 Cnuma3Functions = FunctionCalling(
-    schemas=[],
-    implementations={}
+    schemas=FunctionCalling.DEFAULT.schemas + [
+
+    ],
+    implementations=FunctionCalling.DEFAULT.implementations + {
+
+    }
 )
