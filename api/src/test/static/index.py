@@ -8,8 +8,8 @@ import re
 chat_history = ChatHistory()
 ws = False
 
-MODEL_ID = "qwen3"
-SERVER_URL = "127.0.0.1:23100"
+MODEL_ID = "cnuma3"  # "qwen3"
+SERVER_URL = window.location.host  # "127.0.0.1:23100"
 WEBSOCKET_URL = f"ws://{SERVER_URL}/api/chat/streaming"
 SESSION_URL = f"http://{SERVER_URL}/api/models/{MODEL_ID}/sessions/"
 SESSION_UNLOAD_URL = f"http://{SERVER_URL}/api/sessions/"
@@ -120,7 +120,7 @@ def update_screen(text: str, user_content: bool = True, think: bool = False):
                 + '<span class="message-content"></span>'
             message_list.appendChild(asst)
             user.innerHTML += text
-            message_list.scrollTop = message_list.scrollHeight
+            message_list.scrollTop = message_list.scrollHeight  # scroll to bottom
         else:
             target = document['messages'].lastChild
             desc = target.querySelector(".think-desc")
@@ -128,9 +128,12 @@ def update_screen(text: str, user_content: bool = True, think: bool = False):
                 target.classList.remove("d-none")  # 메시지 도달 되면 보이도록
                 thinking_started = time.time()
             if think:
-                elapsed = float(desc.innerHTML.split("초")[0])
-                elapsed += float(time.time() - thinking_started)
-                desc.innerHTML = f"{elapsed:.1f}초 동안 생각 중..."
+                if not hasattr(desc, 'elapsed'):
+                    desc.elapsed = float(desc.innerHTML.split("초")[0])
+                desc.elapsed += float(time.time() - thinking_started)
+                elapsed_msg = f"{int(desc.elapsed)}초 동안 생각 중..."
+                if desc.innerHTML != elapsed_msg:
+                    desc.innerHTML = elapsed_msg
                 thinking_started = time.time()  # 생각 시작 시간 갱신
                 target = target.querySelector(".think-content")
             else:
