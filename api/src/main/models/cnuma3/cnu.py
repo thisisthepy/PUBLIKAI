@@ -4,14 +4,18 @@ Chungnam National University specific functions for students
 """
 
 import requests
-import json
-from typing import List, Dict, Optional, Any
-from urllib.parse import urljoin, quote_plus
+from typing import Dict, Any
 from datetime import datetime, timedelta
-import re
+import sys
 import os
+import re
 
-from ...utils import web_search
+try:
+    from ...utils import web_search
+except ImportError:
+    parent = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+    sys.path.insert(0, parent)
+    from utils import web_search
 
 
 class CNUWebAPI:
