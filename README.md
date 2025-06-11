@@ -1,4 +1,4 @@
-# FluxChatUI-KMP
+# Gemstone AI
 
 This is a open-source multi-platform AI Chat UI written with Compose Multiplatform.
 
