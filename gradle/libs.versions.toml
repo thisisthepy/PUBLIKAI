@@ -13,6 +13,7 @@ androidx-testExt = "1.2.1"
 compose-hotReload = "1.0.0-alpha10"
 compose-multiplatform = "1.8.1"
 compose-webview = "1.9.40"
+jewel = "0.28.0-252.15920"
 junit = "4.13.2"
 kotlin = "2.1.21"
 kotlinx-coroutines = "1.10.2"
@@ -20,6 +21,9 @@ runtime-android = "1.8.2"
 
 [libraries]
 compose-webview-multiplatform = { module = "io.github.kevinnzou:compose-webview-multiplatform", version.ref = "compose-webview" }
+jewel-standalone = { module = "org.jetbrains.jewel:jewel-int-ui-standalone", version.ref = "jewel" }
+jewel-decorated-window = { module = "org.jetbrains.jewel:jewel-int-ui-decorated-window", version.ref = "jewel" }
+jewel-foundation = { module = "org.jetbrains.jewel:jewel-foundation", version.ref = "jewel" }
 kotlin-test = { module = "org.jetbrains.kotlin:kotlin-test", version.ref = "kotlin" }
 kotlin-testJunit = { module = "org.jetbrains.kotlin:kotlin-test-junit", version.ref = "kotlin" }
 junit = { module = "junit:junit", version.ref = "junit" }

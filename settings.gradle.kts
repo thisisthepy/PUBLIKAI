@@ -1,4 +1,4 @@
-rootProject.name = "FluxChatUI"
+rootProject.name = "Gemstone"
 enableFeaturePreview("TYPESAFE_PROJECT_ACCESSORS")
 
 pluginManagement {
@@ -12,6 +12,9 @@ pluginManagement {
         }
         mavenCentral()
         gradlePluginPortal()
+        maven {
+            url = uri("https://maven.pkg.jetbrains.space/public/p/compose/dev")
+        }
     }
 }
 
@@ -27,6 +30,8 @@ dependencyResolutionManagement {
         mavenCentral()
         maven {
             url = uri("https://jogamp.org/deployment/maven")
+            url = uri("https://packages.jetbrains.team/maven/p/kpm/public/")
+            url = uri("https://packages.jetbrains.team/maven/p/ij/intellij-dependencies/")
         }
     }
 }

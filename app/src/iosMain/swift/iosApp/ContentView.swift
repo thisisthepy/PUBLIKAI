@@ -1,6 +1,6 @@
 import UIKit
 import SwiftUI
-import FluxChat
+import Gemstone
 
 
 struct ComposeView: UIViewControllerRepresentable {

@@ -25,7 +25,7 @@ kotlin {
         iosSimulatorArm64()
     ).forEach { iosTarget ->
         iosTarget.binaries.framework {
-            baseName = "FluxChat"
+            baseName = "Gemstone"
             isStatic = true
         }
     }
@@ -34,12 +34,12 @@ kotlin {
     
     @OptIn(ExperimentalWasmDsl::class)
     wasmJs {
-        moduleName = "fluxchat"
+        moduleName = "gemstone"
         browser {
             val rootDirPath = project.rootDir.path
             val projectDirPath = project.projectDir.path
             commonWebpackConfig {
-                outputFileName = "fluxchat.js"
+                outputFileName = "gemstone.js"
                 devServer = (devServer ?: KotlinWebpackConfig.DevServer()).apply {
                     static = (static ?: mutableListOf()).apply {
                         // Serve sources to debug inside browser
@@ -78,19 +78,24 @@ kotlin {
             api(libs.kotlin.test)
         }
         desktopMain.dependencies {
-            api(compose.material3)
-            api(compose.desktop.currentOs)
+            api(compose.desktop.currentOs) {
+                exclude(group = "org.jetbrains.compose.material3")
+            }
             api(libs.kotlinx.coroutinesSwing)
+
+            implementation(libs.jewel.standalone)
+            implementation(libs.jewel.decorated.window)
+            implementation(libs.jewel.foundation)
         }
     }
 }
 
 android {
-    namespace = "io.github.thisisthepy.fluxchat"
+    namespace = "io.github.thisisthepy.gemstone"
     compileSdk = libs.versions.android.compileSdk.get().toInt()
 
     defaultConfig {
-        applicationId = "io.github.thisisthepy.fluxchat"
+        applicationId = "io.github.thisisthepy.gemstone"
         minSdk = libs.versions.android.minSdk.get().toInt()
         targetSdk = libs.versions.android.targetSdk.get().toInt()
         versionCode = 1
@@ -119,12 +124,27 @@ dependencies {
 
 compose.desktop {
     application {
-        mainClass = "fluxchat.Main_desktopKt"
+        mainClass = "gemstone.Main_desktopKt"
 
         nativeDistributions {
             targetFormats(TargetFormat.Dmg, TargetFormat.Msi, TargetFormat.Deb)
-            packageName = "io.github.thisisthepy.fluxchat"
+            packageName = "Gemstone AI"
             packageVersion = "1.0.0"
+            macOS {
+                iconFile.set(project.file("src/desktopMain/resources/simple_white.icns"))
+                installationPath = "/Applications/StoneManager"
+                bundleID = "io.github.thisisthepy.gemstone"
+            }
+            windows {
+                iconFile.set(project.file("src/desktopMain/resources/simple_white.ico"))
+                dirChooser = true
+                installationPath = "C:\\Program Files\\Gemstone"
+                perUserInstall = true
+            }
+            linux {
+                iconFile.set(project.file("src/desktopMain/resources/simple_white.png"))
+                installationPath = "/usr/local/bin/gemstone"
+            }
         }
     }
 }
