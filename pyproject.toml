@@ -3,7 +3,7 @@ name = "fluxchatui"
 version = "1.0.0"
 description = "This is a open-source multi-platform AI Chat UI written with Compose Multiplatform."
 readme = "README.md"
-requires-python = ">=3.11,<3.13"
+requires-python = ">=3.12,<3.13"
 dependencies = [
     "uvicorn>=0.34.2",
     "fastapi>=0.115.12",

@@ -1,31 +1,87 @@
-# Gemstone AI
+# 💎 Gemstone AI
 
-This is a open-source multi-platform AI Chat UI written with Compose Multiplatform.
+<div align="center">
+  <img src="https://img.shields.io/badge/Kotlin-Multiplatform-7F52FF?style=for-the-badge&logo=kotlin" alt="Kotlin Multiplatform"/>
+  <img src="https://img.shields.io/badge/Compose-Multiplatform-4285F4?style=for-the-badge&logo=jetpackcompose" alt="Compose Multiplatform"/>
+  <img src="https://img.shields.io/badge/Python-3.12+-3776AB?style=for-the-badge&logo=python" alt="Python"/>
+</div>
 
+<div align="center">
+  <h3>🌟 Universal AI Chat System with On-Device Intelligence</h3>
+  <p>This is a open-source multi-platform AI Chat System written with Kotlin Compose Multiplatform and Python.</p>
+</div>
 
-## Stacks
-### Model Serving API
-- PyTorch
-- Transformers
-- BitsAndBytes
+---
 
-### Mobile/Web Client APP
-- Kotlin Multiplatform Mobile
-- Compose Multiplatform Mobile
+## ✨ Key Features
 
-
-## Model
-### Server
-- Qwen 3 14b 4bitQ (BitsAndBytes)
-- To be done...
-
-### On-Device
-- Llama 3.1 8B (llama.cpp)
-- Qwen 3 14b 4bitQ (llama.cpp)
-- To be done...
+- 🎯 **Universal Platform Support** - Run on Web, Android, iOS, Windows, Linux, and macOS
+- 🧠 **On-Device AI** - Privacy-first local AI processing with Python Multiplatform
+- 🎨 **Modern UI** - Beautiful, responsive interface built with Compose Multiplatform
+- 💾 **Offline Capability** - Full functionality without internet connection
+- 🔄 **Real-time Chat** - WebSocket-based real-time messaging
+- 📱 **Cross-Platform Sync** - Seamless experience across all devices
 
 
-## Architecture
+## 🚀 Platform Support
+
+<div align="center">
+  <table>
+    <tr>
+      <td align="center">🌐 <strong>Web</strong></td>
+      <td align="center">📱 <strong>Android</strong></td>
+      <td align="center">🍎 <strong>iOS</strong></td>
+    </tr>
+    <tr>
+      <td align="center">🪟 <strong>Windows</strong></td>
+      <td align="center">🐧 <strong>Linux</strong></td>
+      <td align="center">🍎 <strong>macOS</strong></td>
+    </tr>
+  </table>
+</div>
+
+> **Note:** Developed with Python Multiplatform
+
+## 🛠️ Technology Stacks
+
+### 🔧 Model Serving API
+> **⚡ Note:** Planning to support OpenAI-like API for AI model serving.
+
+- **Transformers/BitsAndBytes & PyTorch** (INT4/INT8)
+- **Transformers/AutoGPTQ & PyTorch** (SAFETENSORS)  
+- **Llama-cpp-python & Numpy** (GGUF)
+
+### 📱 Mobile/Web Client APP
+- **Kotlin Multiplatform Mobile**
+- **Compose Multiplatform Mobile**
+
+> **🔮 Note:** Scheduled to adapt Python Multiplatform for On-Device AI model serving.
+
+## 🤖 Supported Models
+
+### 🖥️ Server Models
+- **Qwen 3 14b 4bitQ** (BitsAndBytes)
+- **To be done...**
+
+### 📱 On-Device Models  
+- **Llama 3.1 8B** (llama.cpp)
+- **Qwen 3 14b 4bitQ** (llama.cpp)
+- **To be done...**
+
+## 🏗️ APP Architecture
+
+Gemstone AI follows Clean Architecture principles with clear separation of concerns:
+
+```
+📁 app/
+├── 🎯 domain/           # Business logic and entities
+├── 🔄 adapter/          # Controllers and presenters
+└── 🛠️ framework/        # UI, database, network, and AI infrastructure
+```
+
+<details>
+<summary>📁 Detailed Project Structure (Click to expand)</summary>
+
 ```
 app/
 ├── domain/
@@ -149,26 +205,100 @@ app/
         └── FileManager.kt
 ```
 
+</details>
 
-## Installation
-### Clone this repo
+## 🚀 Installation
+
+### 📋 Prerequisites
+- **Git**
+- **Python 3.12+**
+- **Java 21+** (for Kotlin Multiplatform)
+- **Xcode 14+** - For iOS development (macOS only)
+
+### 🔧 Setup
+
+#### 1️⃣ Clone this repository
 ```bash
-git clone https://github.com/thisisthepy/FluxChatUI.git
-cd FluxChatUI
+git clone https://github.com/thisisthepy/Gemstone.git
+cd Gemstone
 ```
 
-
-### Install dependencies
+#### 2️⃣ Install Python dependencies
 ```bash
 uv sync
 ```
-- Llama-cpp-python fix for Qwen
+
+#### 3️⃣ Install Llama-cpp-python with CUDA support (Optional)
+> For GPU acceleration with NVIDIA cards
+
 ```bash
-CMAKE_ARGS="-DGGML_CUDA=on -DLLAVA_BUILD=off -DCMAKE_CUDA_ARCHITECTURES=native" FORCE_CMAKE=1 uv pip install llama-cpp-python --no-cache-dir --force-reinstall --upgrade
+CMAKE_ARGS="-DGGML_CUDA=on -DLLAVA_BUILD=off -DCMAKE_CUDA_ARCHITECTURES=native" \
+FORCE_CMAKE=1 uv pip install llama-cpp-python --no-cache-dir --force-reinstall --upgrade
 ```
 
-
-### Run the server
+#### 4️⃣ Run the server
 ```bash
 python -m api run server
 ```
+
+## 🎯 Usage
+
+### 🖥️ Desktop Application
+```bash
+./gradlew :app:run
+```
+
+### 📱 Android
+```bash
+./gradlew :app:installDebug
+```
+
+### 🌐 Web
+```bash
+./gradlew :app:wasmJsBrowserDevelopmentRun
+```
+
+### 🍎 iOS
+```bash
+./gradlew :app:iosSimulatorArm64Test
+```
+
+## 🤝 Contributing
+
+We welcome contributions! Please see our [Contributing Guide](CONTRIBUTING.md) for details.
+
+### 🐛 Bug Reports
+- Use the [issue tracker](https://github.com/thisisthepy/Gemstone/issues)
+- Provide detailed reproduction steps
+- Include platform and version information
+
+### 💡 Feature Requests
+- Check existing [feature requests](https://github.com/thisisthepy/Gemstone/issues?q=is%3Aissue+is%3Aopen+label%3Aenhancement)
+- Propose new ideas with clear use cases
+- Consider implementation complexity
+
+## 📄 License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+## 🙏 Acknowledgments
+
+- **JetBrains** for Kotlin Multiplatform and Compose
+- **Hugging Face** for the Transformers library
+- **Llama.cpp** for efficient local model serving
+- **Llama-cpp-python** for Python bindings
+- **Meta** for Llama models
+- **Alibaba** for Qwen models
+- **Google** for Gemma models
+
+
+---
+
+<div align="center">
+  <p><strong>🎉 Ready to chat with AI across all your devices!</strong></p>
+  <p>
+    <a href="https://github.com/thisisthepy/FluxChatUI/issues">🐛 Report Bug</a> |
+    <a href="https://github.com/thisisthepy/FluxChatUI/discussions">💬 Discussions</a> |
+    <a href="https://github.com/thisisthepy/FluxChatUI">⭐ Star on GitHub</a>
+  </p>
+</div>
