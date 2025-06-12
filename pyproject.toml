@@ -28,6 +28,9 @@ dependencies = [
     "torchvision ; platform_system == 'Linux'",
     "torchaudio ; platform_system == 'Linux'",
     "torchaudio ; platform_system == 'Linux'",
+    #"langchain",
+    #"faiss-cpu",
+    #"sentence-transformers"
 ]  # !do not add version-specfic torch here!
 
 
