@@ -299,8 +299,8 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 <div align="center">
   <p><strong>🎉 Ready to chat with AI across all your devices!</strong></p>
   <p>
-    <a href="https://github.com/thisisthepy/FluxChatUI/issues">🐛 Report Bug</a> |
-    <a href="https://github.com/thisisthepy/FluxChatUI/discussions">💬 Discussions</a> |
-    <a href="https://github.com/thisisthepy/FluxChatUI">⭐ Star on GitHub</a>
+    <a href="https://github.com/thisisthepy/thisisthepy/issues">🐛 Report Bug</a> |
+    <a href="">💬 Discuss on Discord</a> |
+    <a href="https://github.com/thisisthepy/thisisthepy">⭐ Star on GitHub</a>
   </p>
 </div>
