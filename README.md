@@ -5,8 +5,10 @@
   <img src="https://img.shields.io/badge/Compose-Multiplatform-4285F4?style=for-the-badge&logo=jetpackcompose" alt="Compose Multiplatform"/>
   <img src="https://img.shields.io/badge/Python-3.12+-3776AB?style=for-the-badge&logo=python" alt="Python"/>
 </div>
-
+<br>
 <div align="center">
+  <img src="app/src/desktopMain/resources/simple_white.png" alt="Gemstone AI Logo" width="200" height="200" />
+  <img src="app/src/desktopMain/resources/simple_black.png" alt="Gemstone AI Logo" width="200" height="200" />
   <h3>🌟 Universal AI Chat System with On-Device Intelligence</h3>
   <p>This is a open-source multi-platform AI Chat System written with Kotlin Compose Multiplatform and Python.</p>
 </div>
