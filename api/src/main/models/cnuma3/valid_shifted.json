@@ -1,0 +1,210 @@
+[
+  {
+    "question": "졸업하려면 학점이 얼마나 필요함?",
+    "label": 0
+  },
+  {
+    "question": "공지 최신거 어디서 봄?",
+    "label": 1
+  },
+  {
+    "question": "시험 기간 언제임?",
+    "label": 2
+  },
+  {
+    "question": "밥 뭐 나옴?",
+    "label": 3
+  },
+  {
+    "question": "버스 언제 옴?",
+    "label": 4
+  },
+  {
+    "question": "전공필수 몇 학점이야?",
+    "label": 0
+  },
+  {
+    "question": "중요한 공지 있음?",
+    "label": 1
+  },
+  {
+    "question": "수강신청 날짜 알려줌",
+    "label": 2
+  },
+  {
+    "question": "오늘 메뉴가 뭐임?",
+    "label": 3
+  },
+  {
+    "question": "셔틀 시간표 줌",
+    "label": 4
+  },
+  {
+    "question": "교양 들어야 할 학점 수는?",
+    "label": 0
+  },
+  {
+    "question": "새 공지사항 체크했음?",
+    "label": 1
+  },
+  {
+    "question": "개강 며칠 남았음?",
+    "label": 2
+  },
+  {
+    "question": "점심 뭐 먹을 수 있음?",
+    "label": 3
+  },
+  {
+    "question": "통학버스 타는 곳 어디임?",
+    "label": 4
+  },
+  {
+    "question": "복전 조건 뭐임?",
+    "label": 0
+  },
+  {
+    "question": "장학금 관련 소식 있음?",
+    "label": 1
+  },
+  {
+    "question": "중간고사 D-몇?",
+    "label": 2
+  },
+  {
+    "question": "식당 언제까지 열림?",
+    "label": 3
+  },
+  {
+    "question": "첫 버스 몇 시임?",
+    "label": 4
+  },
+  {
+    "question": "졸업 요건 충족했는지 어떻게 확인함?",
+    "label": 0
+  },
+  {
+    "question": "휴학 관련 공지 올라왔나?",
+    "label": 1
+  },
+  {
+    "question": "기말 일정 확정됨?",
+    "label": 2
+  },
+  {
+    "question": "저녁 먹을 거 있음?",
+    "label": 3
+  },
+  {
+    "question": "막차 놓치면 어쩜?",
+    "label": 4
+  },
+  {
+    "question": "부전공 학점은 몇 개임?",
+    "label": 0
+  },
+  {
+    "question": "기숙사 공지 확인 필요함",
+    "label": 1
+  },
+  {
+    "question": "계절학기 신청 시작했음?",
+    "label": 2
+  },
+  {
+    "question": "학식 가격 올랐음?",
+    "label": 3
+  },
+  {
+    "question": "야간 버스 운행함?",
+    "label": 4
+  },
+  {
+    "question": "전과 어떻게 함?",
+    "label": 0
+  },
+  {
+    "question": "도서관 공지 뭐 있음?",
+    "label": 1
+  },
+  {
+    "question": "종강 얼마 안 남았지?",
+    "label": 2
+  },
+  {
+    "question": "카페 메뉴 궁금함",
+    "label": 3
+  },
+  {
+    "question": "지하철역 가는 버스 있음?",
+    "label": 4
+  },
+  {
+    "question": "학점 드랍 언제까지 가능함?",
+    "label": 0
+  },
+  {
+    "question": "등록금 납부 공지 확인 요망",
+    "label": 1
+  },
+  {
+    "question": "보강 일정 나왔나?",
+    "label": 2
+  },
+  {
+    "question": "주말에도 밥 먹을 수 있음?",
+    "label": 3
+  },
+  {
+    "question": "기숙사 셔틀 몇 시에 있음?",
+    "label": 4
+  },
+  {
+    "question": "조기졸업 가능한 조건은?",
+    "label": 0
+  },
+  {
+    "question": "학생증 재발급 어떻게 함?",
+    "label": 1
+  },
+  {
+    "question": "방학 언제부터임?",
+    "label": 2
+  },
+  {
+    "question": "분식 코너 운영함?",
+    "label": 3
+  },
+  {
+    "question": "주차장에서 버스 정류장까지 걸어감?",
+    "label": 4
+  },
+  {
+    "question": "재수강 몇 번까지 됨?",
+    "label": 0
+  },
+  {
+    "question": "체육관 이용 규정 바뀜?",
+    "label": 1
+  },
+  {
+    "question": "추가 수강신청 언제 시작함?",
+    "label": 2
+  },
+  {
+    "question": "교직원 식당 학생도 이용 가능함?",
+    "label": 3
+  },
+  {
+    "question": "버스 배차 간격 얼마나 됨?",
+    "label": 4
+  },
+  {
+    "question": "최소 이수 학점 기준이 뭐임?",
+    "label": 0
+  },
+  {
+    "question": "새 공지 업데이트 됐나 확인 좀",
+    "label": 1
+  }
+]

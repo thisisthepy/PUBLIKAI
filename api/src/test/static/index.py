@@ -8,7 +8,7 @@ import re
 chat_history = ChatHistory()
 ws = False
 
-MODEL_ID = "qwen3"
+MODEL_ID = "cnuma3"  # "qwen3"
 SERVER_URL = window.location.host  # "127.0.0.1:23100"
 WEBSOCKET_URL = f"ws://{SERVER_URL}/api/chat/streaming"
 SESSION_URL = f"http://{SERVER_URL}/api/models/{MODEL_ID}/sessions/"
