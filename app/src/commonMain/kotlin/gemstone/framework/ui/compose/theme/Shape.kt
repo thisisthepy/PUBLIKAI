@@ -98,7 +98,7 @@ fun SecondaryFluxButton(
     interactionSource: MutableInteractionSource = remember { MutableInteractionSource() },
     elevation: ButtonElevation? = Dimen.BUTTON_ELEVATIONS_WHITE,
     shape: Shape = MaterialTheme.shapes.large,
-    border: BorderStroke? = BorderStroke(1.4.dp, Color.White.copy(alpha = 0.9f)),
+    border: BorderStroke? = null,
     colors: ButtonColors = ButtonColors(
         containerColor = MaterialTheme.colorScheme.secondary,
         contentColor = MaterialTheme.colorScheme.onSecondary,
@@ -140,6 +140,42 @@ fun TertiaryFluxButton(
         contentColor = MaterialTheme.colorScheme.onTertiary,
         disabledContainerColor = MaterialTheme.colorScheme.tertiary.copy(alpha = 0.5f),
         disabledContentColor = MaterialTheme.colorScheme.onTertiary.copy(alpha = 0.5f)
+    ),
+    contentPadding: PaddingValues = PaddingValues(Dimen.BUTTON_PADDING),
+    content: @Composable RowScope.() -> Unit
+) {
+    FluxButton(
+        onClick = onClick,
+        modifier = modifier,
+        clickAnimation = clickAnimation,
+        hoverAnimation = hoverAnimation,
+        enabled = enabled,
+        interactionSource = interactionSource,
+        elevation = elevation,
+        shape = shape,
+        border = border,
+        colors = colors,
+        contentPadding = contentPadding,
+        content = content
+    )
+}
+
+@Composable
+fun BlurredFluxButton(
+    onClick: () -> Unit,
+    modifier: Modifier = Modifier,
+    clickAnimation: ClickAnimation = Dimen.BUTTON_CLICK_ANIMATION,
+    hoverAnimation: HoverAnimation? = Dimen.BUTTON_HOVER_ANIMATION,
+    enabled: Boolean = true,
+    interactionSource: MutableInteractionSource = remember { NoRippleInteractionSource() },
+    elevation: ButtonElevation? = Dimen.BUTTON_ELEVATIONS_WHITE,
+    shape: Shape = MaterialTheme.shapes.large,
+    border: BorderStroke? = BorderStroke(1.4.dp, Color.White.copy(alpha = 0.9f)),
+    colors: ButtonColors = ButtonColors(
+        containerColor = MaterialTheme.colorScheme.surface,
+        contentColor = MaterialTheme.colorScheme.onSurface,
+        disabledContainerColor = MaterialTheme.colorScheme.surface.copy(alpha = 0.5f),
+        disabledContentColor = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.5f)
     ),
     contentPadding: PaddingValues = PaddingValues(Dimen.BUTTON_PADDING),
     content: @Composable RowScope.() -> Unit
@@ -251,7 +287,7 @@ fun SecondaryFluxIconButton(
     interactionSource: MutableInteractionSource = remember { MutableInteractionSource() },
     elevation: ButtonElevation? = Dimen.BUTTON_ELEVATIONS_WHITE,
     shape: Shape = MaterialTheme.shapes.large,
-    border: BorderStroke? = BorderStroke(1.4.dp, Color.White.copy(alpha = 0.9f)),
+    border: BorderStroke? = null,
     colors: ButtonColors = ButtonColors(
         containerColor = MaterialTheme.colorScheme.secondary,
         contentColor = MaterialTheme.colorScheme.onSecondary,
@@ -295,6 +331,44 @@ fun TertiaryFluxIconButton(
         contentColor = MaterialTheme.colorScheme.onTertiary,
         disabledContainerColor = MaterialTheme.colorScheme.tertiary.copy(alpha = 0.5f),
         disabledContentColor = MaterialTheme.colorScheme.onTertiary.copy(alpha = 0.5f)
+    ),
+    contentPadding: PaddingValues = PaddingValues(Dimen.BUTTON_PADDING)
+) {
+    FluxIconButton(
+        onClick = onClick,
+        iconResource = iconResource,
+        iconDescription = iconDescription,
+        modifier = modifier,
+        clickAnimation = clickAnimation,
+        hoverAnimation = hoverAnimation,
+        enabled = enabled,
+        interactionSource = interactionSource,
+        elevation = elevation,
+        shape = shape,
+        border = border,
+        colors = colors,
+        contentPadding = contentPadding
+    )
+}
+
+@Composable
+fun BlurredFluxIconButton(
+    onClick: () -> Unit,
+    iconResource: IconResource,
+    iconDescription: String,
+    modifier: Modifier = Modifier,
+    clickAnimation: ClickAnimation = Dimen.BUTTON_CLICK_ANIMATION,
+    hoverAnimation: HoverAnimation? = Dimen.BUTTON_HOVER_ANIMATION,
+    enabled: Boolean = true,
+    interactionSource: MutableInteractionSource = remember { NoRippleInteractionSource() },
+    elevation: ButtonElevation? = Dimen.BUTTON_ELEVATIONS_WHITE,
+    shape: Shape = MaterialTheme.shapes.large,
+    border: BorderStroke? = BorderStroke(1.4.dp, Color.White.copy(alpha = 0.9f)),
+    colors: ButtonColors = ButtonColors(
+        containerColor = MaterialTheme.colorScheme.surface,
+        contentColor = MaterialTheme.colorScheme.onSurface,
+        disabledContainerColor = MaterialTheme.colorScheme.surface.copy(alpha = 0.5f),
+        disabledContentColor = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.5f)
     ),
     contentPadding: PaddingValues = PaddingValues(Dimen.BUTTON_PADDING)
 ) {

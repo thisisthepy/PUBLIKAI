@@ -2,14 +2,12 @@ package gemstone.framework.ui.compose.screen.settings.component
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import gemstone.framework.ui.compose.theme.*
 import org.jetbrains.compose.resources.DrawableResource
-import gemstone.framework.ui.compose.theme.ClickAnimation
-import gemstone.framework.ui.compose.theme.FluxIconButton
-import gemstone.framework.ui.compose.theme.IconResource
-import gemstone.framework.ui.compose.theme.SubtitleText
 
 
 @Composable
@@ -27,10 +25,11 @@ fun SettingTitleBar(
         verticalAlignment = Alignment.CenterVertically
     ) {
         SubtitleText(title)
-        FluxIconButton(
+        SecondaryFluxIconButton(
             onClick = onClick,
             iconResource = IconResource.Drawable(iconResource),
             iconDescription = iconDescription,
+            modifier = Modifier,
             clickAnimation = iconAnimation
         )
     }

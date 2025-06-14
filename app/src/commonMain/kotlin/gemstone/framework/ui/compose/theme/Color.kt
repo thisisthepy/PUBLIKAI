@@ -47,13 +47,13 @@ object BlackLightColorSet: AppColorSet() {
     override val materialColorScheme = lightColorScheme(
         primary = Color(0xFF262626),
         onPrimary = Color(0xFFBEBEBE),
-        secondary = Color.White.copy(alpha = 0.7f),
+        secondary = Color.White,
         onSecondary = Color(0xFF414244),
         tertiary = Color(0xFFD6D6D6),
         onTertiary = Color(0xFF414244),
         background = Color(0xFFF2F2F2),
         onBackground = Color(0xFF262626),
-        surface = Color(0x66FFFFFF),
+        surface = Color(0xFFF7F7F7).copy(alpha = 0.9f),
         onSurface = Color(0xFF414244)
     )
     override val appBackgroundColorEnd: Color = Color(0xFFEFEFEF)

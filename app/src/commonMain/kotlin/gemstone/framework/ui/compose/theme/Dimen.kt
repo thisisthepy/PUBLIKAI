@@ -16,7 +16,7 @@ object Dimen {
 
     // Button settings
     val BUTTON_PADDING = 8.dp
-    val BUTTON_ELEVATION_WHITE = 22.dp
+    val BUTTON_ELEVATION_WHITE = 18.dp
     val BUTTON_ELEVATION_BLACK = 22.dp
     val BUTTON_ELEVATIONS_WHITE
         @Composable get() = ButtonDefaults.buttonElevation(
@@ -39,4 +39,18 @@ object Dimen {
     val BIG_BUTTON_PADDING = 14.dp
     val BIG_BUTTON_SIZE = 48.dp
     val BIG_BUTTON_CORNER_RADIUS = CornerSize(20.dp)
+
+    // Surface settings
+    val SURFACE_CORNER_RADIUS = CornerSize(26.dp)
+    val SURFACE_ELEVATION = 30.dp
+    val SURFACE_ELEVATIONS
+        @Composable get() = ButtonDefaults.elevatedButtonElevation(
+            defaultElevation = SURFACE_ELEVATION,
+            pressedElevation = SURFACE_ELEVATION * 0.8f,
+            hoveredElevation = SURFACE_ELEVATION * 0.9f,
+            focusedElevation = SURFACE_ELEVATION * 0.9f,
+            disabledElevation = SURFACE_ELEVATION * 0.5f
+        )
+    val SURFACE_CLICK_ANIMATION = ClickAnimation(1f, 0.97f)
+    val SURFACE_HOVER_ANIMATION = HoverAnimation(0f, 0f)
 }

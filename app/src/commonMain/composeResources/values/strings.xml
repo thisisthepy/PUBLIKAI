@@ -6,7 +6,9 @@
     <!-- Sidebar -->
     <string name="sidebar_notification_section">Notifications</string>
     <string name="sidebar_models_section">Models</string>
+    <string name="sidebar_models_section_desc">Model Settings</string>
     <string name="sidebar_recent_chats_section">Recent Chats</string>
+    <string name="sidebar_recent_chats_section_desc">Search Recent Chats</string>
 
     <!-- Chatting -->
     <string name="chat_title_placeholder">New Chat</string>

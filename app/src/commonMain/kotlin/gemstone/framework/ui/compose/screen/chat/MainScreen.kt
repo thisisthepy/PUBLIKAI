@@ -58,7 +58,8 @@ fun MainScreen() {
             val navController = rememberNavController()
             var isTransitioning by remember { mutableStateOf(true) }
             val halfLinearHalfEaseOut = CubicBezierEasing(0.55f, 0.6f, 0.75f, 1.0f)
-            val animationSpec = tween<IntOffset>(300, easing = halfLinearHalfEaseOut)
+            val animationPeriod = 250
+            val animationSpec = tween<IntOffset>(animationPeriod, easing = halfLinearHalfEaseOut)
 
             LaunchedEffect(navController) {
                 val listener = NavController.OnDestinationChangedListener { _, _, _ ->
@@ -116,10 +117,10 @@ fun MainScreen() {
                         AnimatedVisibility(
                             visible = isTransitioning,
                             enter = fadeIn(
-                                animationSpec = tween(300, easing = halfLinearHalfEaseOut)
+                                animationSpec = tween(animationPeriod, easing = halfLinearHalfEaseOut)
                             ),
                             exit = fadeOut(
-                                animationSpec = tween(300, easing = halfLinearHalfEaseOut)
+                                animationSpec = tween(animationPeriod, easing = halfLinearHalfEaseOut)
                             )
                         ) {
                             Box(
