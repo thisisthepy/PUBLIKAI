@@ -194,13 +194,6 @@ fun ChatScreen(screenWidth: Dp) {
                     shape = MaterialTheme.shapes.extraLarge,
                     elevation = ButtonDefaults.buttonElevation(0.dp)
                 )
-                val placeholder = stringResource(Res.string.chat_message_placeholder)
-                val modelName = ChatViewModel.modelName
-                val placeholderWithModelName = if (modelName.isNotEmpty()) {
-                    placeholder.replace("me", modelName)
-                } else {
-                    placeholder
-                }
                 BasicTextField(
                     value = ChatViewModel.messageInput,
                     onValueChange = { ChatViewModel.messageInput = it },
@@ -212,7 +205,8 @@ fun ChatScreen(screenWidth: Dp) {
                     decorationBox = { innerTextField ->
                         if (ChatViewModel.messageInput.isEmpty()) {
                             Text(
-                                text = placeholderWithModelName,
+                                text = stringResource(Res.string.chat_message_placeholder)
+                                    .replace("me", ChatViewModel.modelName),
                                 style = TextStyle(color = Color.Gray)
                             )
                         }

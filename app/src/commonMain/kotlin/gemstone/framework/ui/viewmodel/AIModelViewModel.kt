@@ -12,6 +12,7 @@ object AIModelViewModel {
         Pair("Qwen3", "Qwen3 14B 4bitQ IT"),
         Pair("Llama3", "Llama3.1 8B 4bitQ Instruct"),
     ))
+    var defaultAIModel by mutableStateOf("Qwen3")
     var defaultAIModelDescription by mutableStateOf("Qwen3 14B 4bitQ IT")
 
     fun addAIModel(model: String, description: String) {
@@ -49,7 +50,7 @@ object AIModelViewModel {
         selectedAIModel = ""
         selectedAIModelDescription = defaultAIModelDescription
         if (ChatViewModel.chatId == -1) {
-            ChatViewModel.modelName = selectedAIModel
+            ChatViewModel.modelName = defaultAIModel
             ChatViewModel.modelDescription = selectedAIModelDescription
         }
     }

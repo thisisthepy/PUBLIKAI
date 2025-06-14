@@ -30,7 +30,7 @@ object ChatViewModel {
     var chatId by mutableStateOf(-1)
     var title by mutableStateOf("")
     var starred by mutableStateOf(false)
-    var modelName = AIModelViewModel.selectedAIModel
+    var modelName = AIModelViewModel.defaultAIModel
     var modelDescription = AIModelViewModel.defaultAIModelDescription
 
     var messageInput by mutableStateOf("")
