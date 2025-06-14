@@ -25,6 +25,16 @@ object ChatViewModel {
     var modelName = AIModelViewModel.selectedAIModel
     var modelDescription = AIModelViewModel.defaultAIModelDescription
 
+    var messageInput by mutableStateOf("")
+
+    fun clear(newTitle: String = "") {
+        chatId = -1
+        title = newTitle
+        starred = false
+        messageInput = ""
+        messageHistory = listOf()
+    }
+
     @Composable
     fun getTitleOrPlaceholder(): String {
         return title.ifEmpty { stringResource(Res.string.chat_title_placeholder) }
@@ -33,8 +43,6 @@ object ChatViewModel {
     fun toggleStarred() {
         starred = !starred
     }
-
-    var messageInput by mutableStateOf("")
 
     fun sendMessage() {
         messageInput = ""

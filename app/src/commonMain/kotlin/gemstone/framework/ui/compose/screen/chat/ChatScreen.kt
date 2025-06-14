@@ -64,9 +64,7 @@ fun ChatScreen(screenWidth: Dp) {
                 val newChatTitle = stringResource(Res.string.chat_title_placeholder)
                 PrimaryFluxIconButton(
                     onClick = {
-                        ChatViewModel.chatId = -1
-                        ChatViewModel.title = newChatTitle
-                        ChatViewModel.starred = false
+                        ChatViewModel.clear(newChatTitle)
                         AIModelViewModel.createChatRoom(-1, ChatViewModel)
                     },
                     iconResource = IconResource.Vector(Icons.Default.Add),
@@ -90,7 +88,7 @@ fun ChatScreen(screenWidth: Dp) {
             },
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            if (messageHistory.size == 0) {
+            if (messageHistory.isEmpty()) {
                 item {
                     Column(
                         modifier = Modifier.widthIn(max = 500.dp),
@@ -142,9 +140,16 @@ fun ChatScreen(screenWidth: Dp) {
                                 iconModifier = Modifier.size(34.dp),
                                 iconResource = IconResource.Drawable(data.value.first),
                                 iconDescription = data.key,
+                                hoverAnimation = HoverAnimation(0f, -20f),
                                 shape = MaterialTheme.shapes.large.copy(Dimen.BIG_BUTTON_CORNER_RADIUS),
                                 contentPadding = PaddingValues(Dimen.BIG_BUTTON_PADDING),
-                                elevation = ButtonDefaults.buttonElevation(0.4.dp),
+                                elevation = ButtonDefaults.buttonElevation(1.dp),
+                                colors = ButtonColors(
+                                    containerColor = Color(0xFFFBFBFB),
+                                    contentColor = MaterialTheme.colorScheme.onSurface,
+                                    disabledContainerColor = Color(0xFFF9F9F9),
+                                    disabledContentColor = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.5f)
+                                )
                             ) {
                                 Spacer(modifier = Modifier.height(14.dp))
                                 BodyText(data.key, fontSize = 14.sp)
