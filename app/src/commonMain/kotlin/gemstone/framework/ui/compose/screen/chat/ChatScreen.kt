@@ -9,10 +9,12 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.MoreHoriz
 import androidx.compose.material3.*
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.*
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.drawBehind
+import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.text.TextStyle
@@ -29,6 +31,7 @@ import gemstone.app.generated.resources.chat_option_icon_desc
 import gemstone.app.generated.resources.chat_title_placeholder
 import gemstone.framework.ui.compose.theme.*
 import gemstone.framework.ui.viewmodel.AIModelViewModel
+import gemstone.framework.ui.viewmodel.ChatRole
 import gemstone.framework.ui.viewmodel.ChatViewModel
 import gemstone.framework.ui.viewmodel.ChatViewModel.messageHistory
 import gemstone.framework.ui.viewmodel.SettingsViewModel
@@ -162,10 +165,7 @@ fun ChatScreen(screenWidth: Dp) {
             } else {
                 for (message in messageHistory) {
                     item {
-                        MessageBubble(
-                            message = message,
-                            modifier = Modifier.fillMaxWidth().padding(Dimen.LIST_ELEMENT_SPACING)
-                        )
+                        ConversationBox(message.key, message.value.first, message.value.second, message.value.third)
                     }
                 }
             }
@@ -233,6 +233,112 @@ fun ChatScreen(screenWidth: Dp) {
 }
 
 
-fun MessageBubble(message: String, modifier: Any) {
+@Composable
+fun ConversationBox(
+    userContent: String = "",
+    assistantContent: String = "",
+    thoughts: Triple<String, Int, Boolean> = Triple("", 0, false),
+    tools: List<String> = emptyList(),
+) {
+    MessageBubble(ChatRole.USER, userContent)
+    MessageBubble(ChatRole.ASSISTANT, assistantContent, thoughts, tools)
+}
 
+
+@Composable
+fun MessageBubble(
+    role: ChatRole,
+    content: String = "",
+    thoughts: Triple<String, Int, Boolean> = Triple("", 0, false),
+    tools: List<String> = emptyList(),
+) {
+    if (role == ChatRole.USER) {
+        Column(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalAlignment = Alignment.End,
+            verticalArrangement = Arrangement.Top
+        ) {
+            PrimaryFluxButton(
+                onClick = {},
+                modifier = Modifier,
+                shape = MaterialTheme.shapes.large
+            ) {
+                BodyText(SettingsViewModel.userInitial, fontWeight = FontWeight.ExtraLight, maxLines = 1)
+            }
+            Spacer(modifier = Modifier.width(Dimen.LIST_ELEMENT_SPACING))
+            SecondaryFluxButton(
+                onClick = {},
+                modifier = Modifier,
+                elevation = ButtonDefaults.buttonElevation(6.dp),
+                clickAnimation = Dimen.SURFACE_CLICK_ANIMATION,
+                hoverAnimation = null,
+                interactionSource = remember { NoRippleInteractionSource() },
+                enabled = false,
+                shape = MaterialTheme.shapes.extraLarge,
+                contentPadding = PaddingValues(0.dp)
+            ) {
+                BodyText(content, fontWeight = FontWeight.Light)
+            }
+        }
+    } else {
+        Column(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalAlignment = Alignment.Start,
+            verticalArrangement = Arrangement.Top
+        ) {
+            var showThoughts by rememberSaveable { mutableStateOf(false) }
+
+            Row {
+                PrimaryFluxButton(
+                    onClick = {},
+                    modifier = Modifier,
+                    shape = MaterialTheme.shapes.large
+                ) {
+                    BodyText(role.value, fontWeight = FontWeight.ExtraLight, maxLines = 1)
+                }
+                Spacer(modifier = Modifier.width(Dimen.LIST_ELEMENT_SPACING))
+                val status = "${thoughts.second}초 동안 " + when (thoughts.third) {
+                    true -> "생각 중..."
+                    false -> "생각함"
+                } + if (showThoughts) " <" else " >"
+                BodyText(
+                    status, fontWeight = FontWeight.Light, color = MaterialTheme.colorScheme.primary,
+                    modifier = Modifier.pressClickEffect(
+                        onClick = { },
+                        animation = Dimen.BUTTON_CLICK_ANIMATION
+                    )
+                )
+                if (showThoughts) {
+                    val color = MaterialTheme.colorScheme.primary
+                    CaptionText(
+                        thoughts.first,
+                        color = color,
+                        modifier = Modifier.padding(horizontal = 4.dp)
+                            .drawBehind {
+                                drawLine(
+                                    color = color,
+                                    start = Offset(0f, 0f),
+                                    end = Offset(0f, size.height),
+                                    strokeWidth = 2.dp.toPx()
+                                )
+                            }
+                    )
+                }
+            }
+            Spacer(modifier = Modifier.width(Dimen.LIST_ELEMENT_SPACING))
+            BlurredFluxButton(
+                onClick = {},
+                modifier = Modifier,
+                elevation = ButtonDefaults.buttonElevation(6.dp),
+                clickAnimation = Dimen.SURFACE_CLICK_ANIMATION,
+                hoverAnimation = null,
+                interactionSource = remember { NoRippleInteractionSource() },
+                enabled = false,
+                shape = MaterialTheme.shapes.extraLarge,
+                contentPadding = PaddingValues(0.dp)
+            ) {
+                BodyText(content, fontWeight = FontWeight.Light)
+            }
+        }
+    }
 }

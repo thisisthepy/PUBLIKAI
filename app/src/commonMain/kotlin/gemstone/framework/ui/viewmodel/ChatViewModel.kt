@@ -10,11 +10,19 @@ import kotlinx.serialization.Serializable
 import org.jetbrains.compose.resources.stringResource
 
 
+enum class ChatRole(val value: String) {
+    USER("user"),
+    ASSISTANT("assistant"),
+    SYSTEM("tool")
+}
+
+
 @Serializable
 data class ChatHistory(
-    val role: Int,
+    val role: ChatRole,
     val content: String = "",
-    val tool_call_id: String
+    val tool_call_id: String? = null,
+    val tool_calls: String? = null
 )
 
 
@@ -32,7 +40,7 @@ object ChatViewModel {
         title = newTitle
         starred = false
         messageInput = ""
-        messageHistory = listOf()
+        messageHistory = emptyMap()
     }
 
     @Composable
@@ -48,6 +56,5 @@ object ChatViewModel {
         messageInput = ""
     }
 
-    var messageHistory by mutableStateOf(listOf<String>())
-        private set
+    var messageHistory by mutableStateOf(mapOf<String, Triple<String, Triple<String, Int, Boolean>, List<String>>>())
 }

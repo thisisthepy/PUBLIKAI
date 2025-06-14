@@ -98,11 +98,18 @@ fun SideScreen(
             horizontalArrangement = Arrangement.spacedBy(Dimen.LIST_ELEMENT_SPACING),
             verticalAlignment = Alignment.CenterVertically
         ) {
+            val select = { modelInfo: Pair<String, String> ->
+                if (modelInfo.first == "All") {
+                    AIModelViewModel.deselectAIModel()
+                } else {
+                    AIModelViewModel.selectAIModel(modelInfo.first, modelInfo.second)
+                }
+            }
             for (modelInfo in listOf(Pair("All", "Using Default Model")) + AIModelViewModel.availableAIModels) {
                 item(modelInfo) {
-                    if (modelInfo.first == AIModelViewModel.selectedAIModel || modelInfo.first == "All") {
+                    if (modelInfo.first == AIModelViewModel.selectedAIModel || (AIModelViewModel.selectedAIModel.isEmpty() && modelInfo.first == "All")) {
                         PrimaryFluxButton(
-                            onClick = { AIModelViewModel.selectAIModel(modelInfo.first, modelInfo.second) },
+                            onClick = { select(modelInfo) },
                             shape = MaterialTheme.shapes.large.copy(Dimen.BIG_BUTTON_CORNER_RADIUS),
                             contentPadding = PaddingValues(Dimen.BIG_BUTTON_PADDING)
                         ) {
@@ -110,7 +117,7 @@ fun SideScreen(
                         }
                     } else {
                         BlurredFluxButton(
-                            onClick = { AIModelViewModel.selectAIModel(modelInfo.first, modelInfo.second) },
+                            onClick = { select(modelInfo) },
                             shape = MaterialTheme.shapes.large.copy(Dimen.BIG_BUTTON_CORNER_RADIUS),
                             contentPadding = PaddingValues(Dimen.BIG_BUTTON_PADDING)
                         ) {

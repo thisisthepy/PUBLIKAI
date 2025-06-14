@@ -8,7 +8,10 @@ import androidx.compose.runtime.setValue
 object AIModelViewModel {
     var selectedAIModel by mutableStateOf("")
     var selectedAIModelDescription by mutableStateOf("")
-    var availableAIModels by mutableStateOf(listOf<Pair<String, String>>())
+    var availableAIModels by mutableStateOf(listOf<Pair<String, String>>(
+        Pair("Qwen3", "Qwen3 14B 4bitQ IT"),
+        Pair("Llama3", "Llama3.1 8B 4bitQ Instruct"),
+    ))
     var defaultAIModelDescription by mutableStateOf("Qwen3 14B 4bitQ IT")
 
     fun addAIModel(model: String, description: String) {
@@ -26,7 +29,7 @@ object AIModelViewModel {
                 availableAIModels -= pair
                 if (selectedAIModel == model) {
                     selectedAIModel = ""
-                    selectedAIModelDescription = ""
+                    selectedAIModelDescription = defaultAIModelDescription
                 }
                 break
             }
@@ -36,11 +39,19 @@ object AIModelViewModel {
         if (Pair(model, description) in availableAIModels) {
             selectedAIModel = model
             selectedAIModelDescription = description
+            if (ChatViewModel.chatId == -1) {
+                ChatViewModel.modelName = model
+                ChatViewModel.modelDescription = description
+            }
         }
     }
     fun deselectAIModel() {
         selectedAIModel = ""
         selectedAIModelDescription = defaultAIModelDescription
+        if (ChatViewModel.chatId == -1) {
+            ChatViewModel.modelName = selectedAIModel
+            ChatViewModel.modelDescription = selectedAIModelDescription
+        }
     }
 
     var chatRoomList by mutableStateOf(mapOf<Int, Pair<Boolean, String>>())
