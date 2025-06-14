@@ -106,7 +106,7 @@ fun ChatScreen(screenWidth: Dp) {
         ) {
             SecondaryFluxButton(
                 onClick = {},
-                modifier = if (screenWidth >= 750.dp) Modifier.width(700.dp) else Modifier.weight(1f),
+                modifier = if (screenWidth >= 800.dp) Modifier.width(700.dp) else Modifier.weight(1f),
                 elevation = ButtonDefaults.buttonElevation(0.4.dp),
                 clickAnimation = Dimen.SURFACE_CLICK_ANIMATION,
                 hoverAnimation = null,
