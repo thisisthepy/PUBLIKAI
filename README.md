@@ -70,6 +70,42 @@
 - **Qwen 3 14b 4bitQ** (llama.cpp)
 - **To be done...**
 
+## 📖 API Reference
+
+```json
+chat_history = [
+    {
+        "role": "user",
+        "content": "오늘 대전 날씨가 어때?"
+    },
+    {
+        "role": "assistant",
+        "content": "",
+        "tool_calls": [
+            {
+                "id": "call_20250614125444",
+                "function": {
+                    "name": "get_weather",
+                    "arguments": {
+                        "location": "Daejeon, South Korea",
+                        "unit": "celsius"
+                    }
+                }
+            }
+        ]
+    },
+    {
+        "role": "tool",
+        "tool_call_id": "call_20250614125444",
+        "content": "<cached_result:call_20250614125444>"
+    },
+    {
+        "role": "assistant",
+        "content": "오늘 대전의 날씨는 다음과 같습니다:\n\n- 🌡️ 온도: 26.3°C (체감 온도: 30.6°C)\n- ☁️ 날씨: 주로 맑음\n- 💧 습도: 81%\n- 💨 바람: 13.8 m/s (북동)\n- 📊 기압: 994 hPa\n\n이 정보는 Open-Meteo에서 제공합니다."
+    }
+]
+```
+
 ## 🏗️ APP Architecture
 
 Gemstone AI follows Clean Architecture principles with clear separation of concerns:
