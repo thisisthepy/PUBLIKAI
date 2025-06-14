@@ -223,7 +223,7 @@ app/
     ├── database/
     │   └── ChatDatabase.kt
     ├── network/
-    │   ├── ktor/
+    │   ├── http/
     │   │   ├── HttpClientFactory.kt
     │   │   └── api/
     │   │       ├── ChatApiService.kt
