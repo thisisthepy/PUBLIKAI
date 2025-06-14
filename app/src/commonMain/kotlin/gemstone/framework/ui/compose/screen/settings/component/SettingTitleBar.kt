@@ -5,10 +5,11 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import org.jetbrains.compose.resources.DrawableResource
 import gemstone.framework.ui.compose.theme.ClickAnimation
 import gemstone.framework.ui.compose.theme.FluxIconButton
+import gemstone.framework.ui.compose.theme.IconResource
 import gemstone.framework.ui.compose.theme.SubtitleText
-import org.jetbrains.compose.resources.DrawableResource
 
 
 @Composable
@@ -28,7 +29,7 @@ fun SettingTitleBar(
         SubtitleText(title)
         FluxIconButton(
             onClick = onClick,
-            iconResource = iconResource,
+            iconResource = IconResource.Drawable(iconResource),
             iconDescription = iconDescription,
             clickAnimation = iconAnimation
         )

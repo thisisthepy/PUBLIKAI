@@ -1,6 +1,7 @@
 package gemstone.framework.ui.compose.theme
 
 import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.border
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.RowScope
@@ -9,6 +10,7 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.unit.dp
@@ -51,20 +53,24 @@ fun FluxButton(
 }
 
 @Composable
-fun FluxIconButton(
+fun PrimaryFluxButton(
     onClick: () -> Unit,
-    iconResource: DrawableResource,
-    iconDescription: String,
     modifier: Modifier = Modifier,
     clickAnimation: ClickAnimation = Dimen.BUTTON_CLICK_ANIMATION,
     hoverAnimation: HoverAnimation? = Dimen.BUTTON_HOVER_ANIMATION,
     enabled: Boolean = true,
     interactionSource: MutableInteractionSource = remember { MutableInteractionSource() },
-    elevation: ButtonElevation? = ButtonDefaults.buttonElevation(),
-    shape: Shape = MaterialTheme.shapes.extraLarge,
+    elevation: ButtonElevation? = Dimen.BUTTON_ELEVATIONS_BLACK,
+    shape: Shape = MaterialTheme.shapes.large,
     border: BorderStroke? = null,
-    colors: ButtonColors = ButtonDefaults.buttonColors(),
-    contentPadding: PaddingValues = PaddingValues(Dimen.BUTTON_PADDING)
+    colors: ButtonColors = ButtonColors(
+        containerColor = MaterialTheme.colorScheme.primary,
+        contentColor = MaterialTheme.colorScheme.onPrimary,
+        disabledContainerColor = MaterialTheme.colorScheme.primary.copy(alpha = 0.5f),
+        disabledContentColor = MaterialTheme.colorScheme.onPrimary.copy(alpha = 0.5f)
+    ),
+    contentPadding: PaddingValues = PaddingValues(Dimen.BUTTON_PADDING),
+    content: @Composable RowScope.() -> Unit
 ) {
     FluxButton(
         onClick = onClick,
@@ -77,16 +83,92 @@ fun FluxIconButton(
         shape = shape,
         border = border,
         colors = colors,
-        contentPadding = contentPadding
-    ) {
-        Icon(painterResource(iconResource), iconDescription, tint = colors.contentColor)
-    }
+        contentPadding = contentPadding,
+        content = content
+    )
+}
+
+@Composable
+fun SecondaryFluxButton(
+    onClick: () -> Unit,
+    modifier: Modifier = Modifier,
+    clickAnimation: ClickAnimation = Dimen.BUTTON_CLICK_ANIMATION,
+    hoverAnimation: HoverAnimation? = Dimen.BUTTON_HOVER_ANIMATION,
+    enabled: Boolean = true,
+    interactionSource: MutableInteractionSource = remember { MutableInteractionSource() },
+    elevation: ButtonElevation? = Dimen.BUTTON_ELEVATIONS_WHITE,
+    shape: Shape = MaterialTheme.shapes.large,
+    border: BorderStroke? = BorderStroke(1.4.dp, Color.White.copy(alpha = 0.9f)),
+    colors: ButtonColors = ButtonColors(
+        containerColor = MaterialTheme.colorScheme.secondary,
+        contentColor = MaterialTheme.colorScheme.onSecondary,
+        disabledContainerColor = MaterialTheme.colorScheme.secondary.copy(alpha = 0.5f),
+        disabledContentColor = MaterialTheme.colorScheme.onSecondary.copy(alpha = 0.5f)
+    ),
+    contentPadding: PaddingValues = PaddingValues(Dimen.BUTTON_PADDING),
+    content: @Composable RowScope.() -> Unit
+) {
+    FluxButton(
+        onClick = onClick,
+        modifier = modifier,
+        clickAnimation = clickAnimation,
+        hoverAnimation = hoverAnimation,
+        enabled = enabled,
+        interactionSource = interactionSource,
+        elevation = elevation,
+        shape = shape,
+        border = border,
+        colors = colors,
+        contentPadding = contentPadding,
+        content = content
+    )
+}
+
+@Composable
+fun TertiaryFluxButton(
+    onClick: () -> Unit,
+    modifier: Modifier = Modifier,
+    clickAnimation: ClickAnimation = Dimen.BUTTON_CLICK_ANIMATION,
+    hoverAnimation: HoverAnimation? = Dimen.BUTTON_HOVER_ANIMATION,
+    enabled: Boolean = true,
+    interactionSource: MutableInteractionSource = remember { MutableInteractionSource() },
+    elevation: ButtonElevation? = Dimen.BUTTON_ELEVATIONS_BLACK,
+    shape: Shape = MaterialTheme.shapes.large,
+    border: BorderStroke? = null,
+    colors: ButtonColors = ButtonColors(
+        containerColor = MaterialTheme.colorScheme.tertiary,
+        contentColor = MaterialTheme.colorScheme.onTertiary,
+        disabledContainerColor = MaterialTheme.colorScheme.tertiary.copy(alpha = 0.5f),
+        disabledContentColor = MaterialTheme.colorScheme.onTertiary.copy(alpha = 0.5f)
+    ),
+    contentPadding: PaddingValues = PaddingValues(Dimen.BUTTON_PADDING),
+    content: @Composable RowScope.() -> Unit
+) {
+    FluxButton(
+        onClick = onClick,
+        modifier = modifier,
+        clickAnimation = clickAnimation,
+        hoverAnimation = hoverAnimation,
+        enabled = enabled,
+        interactionSource = interactionSource,
+        elevation = elevation,
+        shape = shape,
+        border = border,
+        colors = colors,
+        contentPadding = contentPadding,
+        content = content
+    )
+}
+
+sealed class IconResource {
+    data class Drawable(val resource: DrawableResource) : IconResource()
+    data class Vector(val resource: ImageVector) : IconResource()
 }
 
 @Composable
 fun FluxIconButton(
     onClick: () -> Unit,
-    iconResource: ImageVector,
+    iconResource: IconResource,
     iconDescription: String,
     modifier: Modifier = Modifier,
     clickAnimation: ClickAnimation = Dimen.BUTTON_CLICK_ANIMATION,
@@ -112,8 +194,125 @@ fun FluxIconButton(
         colors = colors,
         contentPadding = contentPadding
     ) {
-        Icon(iconResource, iconDescription, tint = colors.contentColor)
+        when (iconResource) {
+            is IconResource.Drawable -> Icon(painterResource(iconResource.resource), iconDescription, tint = colors.contentColor)
+            is IconResource.Vector -> Icon(iconResource.resource, iconDescription, tint = colors.contentColor)
+        }
     }
+}
+
+@Composable
+fun PrimaryFluxIconButton(
+    onClick: () -> Unit,
+    iconResource: IconResource,
+    iconDescription: String,
+    modifier: Modifier = Modifier,
+    clickAnimation: ClickAnimation = Dimen.BUTTON_CLICK_ANIMATION,
+    hoverAnimation: HoverAnimation? = Dimen.BUTTON_HOVER_ANIMATION,
+    enabled: Boolean = true,
+    interactionSource: MutableInteractionSource = remember { MutableInteractionSource() },
+    elevation: ButtonElevation? = Dimen.BUTTON_ELEVATIONS_BLACK,
+    shape: Shape = MaterialTheme.shapes.large,
+    border: BorderStroke? = null,
+    colors: ButtonColors = ButtonColors(
+        containerColor = MaterialTheme.colorScheme.primary,
+        contentColor = MaterialTheme.colorScheme.onPrimary,
+        disabledContainerColor = MaterialTheme.colorScheme.primary.copy(alpha = 0.5f),
+        disabledContentColor = MaterialTheme.colorScheme.onPrimary.copy(alpha = 0.5f)
+    ),
+    contentPadding: PaddingValues = PaddingValues(Dimen.BUTTON_PADDING)
+) {
+    FluxIconButton(
+        onClick = onClick,
+        iconResource = iconResource,
+        iconDescription = iconDescription,
+        modifier = modifier,
+        clickAnimation = clickAnimation,
+        hoverAnimation = hoverAnimation,
+        enabled = enabled,
+        interactionSource = interactionSource,
+        elevation = elevation,
+        shape = shape,
+        border = border,
+        colors = colors,
+        contentPadding = contentPadding
+    )
+}
+
+@Composable
+fun SecondaryFluxIconButton(
+    onClick: () -> Unit,
+    iconResource: IconResource,
+    iconDescription: String,
+    modifier: Modifier = Modifier,
+    clickAnimation: ClickAnimation = Dimen.BUTTON_CLICK_ANIMATION,
+    hoverAnimation: HoverAnimation? = Dimen.BUTTON_HOVER_ANIMATION,
+    enabled: Boolean = true,
+    interactionSource: MutableInteractionSource = remember { MutableInteractionSource() },
+    elevation: ButtonElevation? = Dimen.BUTTON_ELEVATIONS_WHITE,
+    shape: Shape = MaterialTheme.shapes.large,
+    border: BorderStroke? = BorderStroke(1.4.dp, Color.White.copy(alpha = 0.9f)),
+    colors: ButtonColors = ButtonColors(
+        containerColor = MaterialTheme.colorScheme.secondary,
+        contentColor = MaterialTheme.colorScheme.onSecondary,
+        disabledContainerColor = MaterialTheme.colorScheme.secondary.copy(alpha = 0.5f),
+        disabledContentColor = MaterialTheme.colorScheme.onSecondary.copy(alpha = 0.5f)
+    ),
+    contentPadding: PaddingValues = PaddingValues(Dimen.BUTTON_PADDING)
+) {
+    FluxIconButton(
+        onClick = onClick,
+        iconResource = iconResource,
+        iconDescription = iconDescription,
+        modifier = modifier,
+        clickAnimation = clickAnimation,
+        hoverAnimation = hoverAnimation,
+        enabled = enabled,
+        interactionSource = interactionSource,
+        elevation = elevation,
+        shape = shape,
+        border = border,
+        colors = colors,
+        contentPadding = contentPadding
+    )
+}
+
+@Composable
+fun TertiaryFluxIconButton(
+    onClick: () -> Unit,
+    iconResource: IconResource,
+    iconDescription: String,
+    modifier: Modifier = Modifier,
+    clickAnimation: ClickAnimation = Dimen.BUTTON_CLICK_ANIMATION,
+    hoverAnimation: HoverAnimation? = Dimen.BUTTON_HOVER_ANIMATION,
+    enabled: Boolean = true,
+    interactionSource: MutableInteractionSource = remember { MutableInteractionSource() },
+    elevation: ButtonElevation? = Dimen.BUTTON_ELEVATIONS_BLACK,
+    shape: Shape = MaterialTheme.shapes.large,
+    border: BorderStroke? = null,
+    colors: ButtonColors = ButtonColors(
+        containerColor = MaterialTheme.colorScheme.tertiary,
+        contentColor = MaterialTheme.colorScheme.onTertiary,
+        disabledContainerColor = MaterialTheme.colorScheme.tertiary.copy(alpha = 0.5f),
+        disabledContentColor = MaterialTheme.colorScheme.onTertiary.copy(alpha = 0.5f)
+    ),
+    contentPadding: PaddingValues = PaddingValues(Dimen.BUTTON_PADDING)
+) {
+    FluxIconButton(
+        onClick = onClick,
+        iconResource = iconResource,
+        iconDescription = iconDescription,
+        modifier = modifier,
+        clickAnimation = clickAnimation,
+        hoverAnimation = hoverAnimation,
+        enabled = enabled,
+        interactionSource = interactionSource,
+        elevation = elevation,
+        shape = shape,
+        border = border,
+        colors = colors,
+        contentPadding = contentPadding
+    )
 }
 
 @Composable

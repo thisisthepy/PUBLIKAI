@@ -9,6 +9,7 @@ plugins {
     alias(libs.plugins.compose.multiplatform)
     alias(libs.plugins.compose.compiler)
     alias(libs.plugins.compose.hotreload)
+    kotlin("plugin.serialization").version(libs.versions.kotlin.get())
 }
 
 
@@ -70,6 +71,8 @@ kotlin {
             api(compose.components.uiToolingPreview)
             api(libs.androidx.lifecycle.viewmodel)
             api(libs.androidx.lifecycle.runtimeCompose)
+            api(libs.navigation.compose)
+            implementation(libs.kotlinx.serialization.json)
 
             // For Compose WebView support
             //api(libs.compose.webview.multiplatform)
