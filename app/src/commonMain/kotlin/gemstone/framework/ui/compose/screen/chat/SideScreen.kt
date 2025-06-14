@@ -48,7 +48,7 @@ fun SideScreen(
             Spacer(modifier = Modifier.width(Dimen.LIST_ELEMENT_SPACING))
             Row(
                 modifier = Modifier,
-                horizontalArrangement = Arrangement.spacedBy(Dimen.LIST_ELEMENT_SPACING),
+                horizontalArrangement = Arrangement.End,
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 BlurredFluxIconButton(
@@ -59,6 +59,7 @@ fun SideScreen(
                     shape = MaterialTheme.shapes.large.copy(Dimen.BIG_BUTTON_CORNER_RADIUS),
                     contentPadding = PaddingValues(Dimen.BIG_BUTTON_PADDING)
                 )
+                Spacer(modifier = Modifier.width(Dimen.LIST_ELEMENT_SPACING))
                 PrimaryFluxButton(
                     onClick = { /* TODO: Handle new chat */ },
                     modifier = Modifier.size(Dimen.BIG_BUTTON_SIZE),

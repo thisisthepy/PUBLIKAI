@@ -14,4 +14,5 @@
     <string name="chat_title_placeholder">New Chat</string>
     <string name="chat_new_chat_icon_desc">Start new chat</string>
     <string name="chat_option_icon_desc">Chatting options</string>
+    <string name="chat_message_placeholder">Ask me anything...</string>
 </resources>

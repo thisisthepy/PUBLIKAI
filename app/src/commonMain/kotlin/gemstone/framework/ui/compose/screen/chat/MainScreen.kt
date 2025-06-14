@@ -19,6 +19,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import gemstone.framework.ui.compose.navigation.SwipeBackNavHost
+import gemstone.framework.ui.compose.theme.Dimen
 import gemstone.framework.ui.compose.theme.appColorSet
 import gemstone.framework.ui.viewmodel.AIModelViewModel
 import kotlinx.serialization.Serializable
@@ -35,6 +36,7 @@ object Chat
 fun MainScreen() {
     BoxWithConstraints {
         val isLandscape = maxWidth > maxHeight
+        val screenWidth = maxWidth
         val widthPx = with(LocalDensity.current) { maxWidth.toPx() }
         val heightPx = with(LocalDensity.current) { maxHeight.toPx() }
 
@@ -52,7 +54,7 @@ fun MainScreen() {
             ) {
                 SideScreen(sideBarMode = true)
                 VerticalDivider(modifier = Modifier.fillMaxHeight(), thickness = 0.2.dp)
-                ChatScreen()
+                ChatScreen(screenWidth - Dimen.SIDEBAR_WIDTH)
             }
         } else {  // Portrait mode
             val navController = rememberNavController()
@@ -133,7 +135,7 @@ fun MainScreen() {
                     Column(
                         modifier = backgroundModifier.fillMaxSize().systemBarsPadding().padding(2.dp)
                     ) {
-                        ChatScreen()
+                        ChatScreen(screenWidth)
                     }
                 }
             }

@@ -391,8 +391,46 @@ fun BlurredFluxIconButton(
 
 @Composable
 fun FluxCard(
-
+    onClick: () -> Unit,
+    iconResource: IconResource,
+    iconDescription: String,
+    modifier: Modifier = Modifier,
+    clickAnimation: ClickAnimation = Dimen.BUTTON_CLICK_ANIMATION,
+    hoverAnimation: HoverAnimation? = Dimen.BUTTON_HOVER_ANIMATION,
+    enabled: Boolean = true,
+    interactionSource: MutableInteractionSource = remember { MutableInteractionSource() },
+    elevation: ButtonElevation? = ButtonDefaults.buttonElevation(),
+    shape: Shape = MaterialTheme.shapes.medium,
+    iconShape: Shape = MaterialTheme.shapes.extraSmall,
+    border: BorderStroke? = null,
+    colors: ButtonColors = ButtonDefaults.buttonColors(),
+    contentPadding: PaddingValues = PaddingValues(Dimen.BUTTON_PADDING)
 ) {
+    FluxButton(
+        onClick = onClick,
+        modifier = modifier,
+        clickAnimation = clickAnimation,
+        hoverAnimation = hoverAnimation,
+        enabled = enabled,
+        interactionSource = interactionSource,
+        elevation = elevation,
+        shape = shape,
+        border = border,
+        colors = colors,
+        contentPadding = contentPadding
+    ) {
 
+        PrimaryFluxIconButton(
+            onClick = onClick,
+            iconResource = iconResource,
+            iconDescription = iconDescription,
+            modifier = modifier,
+            hoverAnimation = null,
+            enabled = enabled,
+            interactionSource = remember { NoRippleInteractionSource() },
+            elevation = null,
+            shape = iconShape,
+            contentPadding = PaddingValues(8.dp)
+        )
+    }
 }
-
