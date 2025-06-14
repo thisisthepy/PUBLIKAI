@@ -4,17 +4,14 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.shape.CornerSize
-import androidx.compose.material3.ButtonColors
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import gemstone.framework.ui.compose.screen.settings.component.SettingTitleBar
 import gemstone.framework.ui.compose.theme.*
 import gemstone.app.generated.resources.*
 import gemstone.app.generated.resources.Res
@@ -65,7 +62,7 @@ fun SideScreen(
                     modifier = Modifier.size(Dimen.BIG_BUTTON_SIZE),
                     shape = MaterialTheme.shapes.large.copy(Dimen.BIG_BUTTON_CORNER_RADIUS)
                 ) {
-                    SubtitleText(SettingsViewModel.userName, fontWeight = FontWeight.ExtraLight, maxLines = 1)
+                    SubtitleText(SettingsViewModel.userInitial, fontWeight = FontWeight.ExtraLight, maxLines = 1)
                 }
             }
         }

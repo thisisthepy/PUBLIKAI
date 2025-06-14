@@ -6,5 +6,6 @@ import androidx.compose.runtime.setValue
 
 
 object SettingsViewModel {
-    var userName by mutableStateOf("CU")
+    var userInitial by mutableStateOf("CU")
+    var userFirstName by mutableStateOf("Chaeun")
 }

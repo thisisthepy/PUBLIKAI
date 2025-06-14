@@ -1,7 +1,9 @@
 package gemstone.framework.ui.compose.screen.chat
 
+import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
@@ -14,9 +16,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import gemstone.app.generated.resources.*
 import gemstone.app.generated.resources.Res
 import gemstone.app.generated.resources.chat_new_chat_icon_desc
@@ -26,6 +31,7 @@ import gemstone.framework.ui.compose.theme.*
 import gemstone.framework.ui.viewmodel.AIModelViewModel
 import gemstone.framework.ui.viewmodel.ChatViewModel
 import gemstone.framework.ui.viewmodel.ChatViewModel.messageHistory
+import gemstone.framework.ui.viewmodel.SettingsViewModel
 import org.jetbrains.compose.resources.stringResource
 
 
@@ -79,13 +85,74 @@ fun ChatScreen(screenWidth: Dp) {
         LazyColumn(
             modifier = Modifier.fillMaxWidth().weight(1f),
             verticalArrangement = when (messageHistory.size) {
-                0 -> Arrangement.spacedBy(Dimen.LIST_ELEMENT_SPACING)
+                0 -> Arrangement.Center
                 else -> Arrangement.spacedBy(Dimen.LIST_ELEMENT_SPACING, Alignment.Top)
-            }
+            },
+            horizontalAlignment = Alignment.CenterHorizontally
         ) {
             if (messageHistory.size == 0) {
                 item {
+                    Column(
+                        modifier = Modifier.widthIn(max = 500.dp),
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        verticalArrangement = Arrangement.Center
+                    ) {
+                        TitleText(
+                            "Hi there, ${SettingsViewModel.userFirstName}!",
+                            fontWeight = FontWeight.ExtraBold,
+                            fontSize = 38.sp,
+                            textAlign = TextAlign.Center,
+                            lineHeight = 38.sp
+                        )
+                        Spacer(modifier = Modifier.height(8.dp))
+                        TitleText(
+                            "What would you like to know?",
+                            fontSize = 30.sp,
+                            textAlign = TextAlign.Center,
+                            lineHeight = 30.sp
+                        )
+                        Spacer(modifier = Modifier.height(8.dp))
+                        CaptionText(
+                            "Start collaborate with the chat bot AI through examples with buttons below or write something in your mind.",
+                            color = Color.Gray,
+                            textAlign = TextAlign.Center
+                        )
+                    }
+                    Spacer(modifier = Modifier.height(32.dp))
 
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .horizontalScroll(rememberScrollState()),
+                        horizontalArrangement = Arrangement.Center,
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        val presets = mapOf(
+                            "학사 일정" to Pair(Res.drawable.book_fill, "수강신청 언제야?"),
+                            "공지 사항" to Pair(Res.drawable.pencil_fill, "최신 공지사항 알려줘!"),
+                            "식단 안내" to Pair(Res.drawable.fork_knife, "오늘 학식은?"),
+                            "셔틀 버스" to Pair(Res.drawable.bus_front_fill, "셔틀 버스 언제와?"),
+                        )
+                        for (data in presets) {
+                            BlurredFluxCard(
+                                onClick = {
+                                    ChatViewModel.messageInput = data.value.second
+                                },
+                                modifier = Modifier.padding(Dimen.LAYOUT_PADDING / 2).size(120.dp),
+                                iconModifier = Modifier.size(34.dp),
+                                iconResource = IconResource.Drawable(data.value.first),
+                                iconDescription = data.key,
+                                shape = MaterialTheme.shapes.large.copy(Dimen.BIG_BUTTON_CORNER_RADIUS),
+                                contentPadding = PaddingValues(Dimen.BIG_BUTTON_PADDING),
+                                elevation = ButtonDefaults.buttonElevation(0.4.dp),
+                            ) {
+                                Spacer(modifier = Modifier.height(14.dp))
+                                BodyText(data.key, fontSize = 14.sp)
+                                Spacer(modifier = Modifier.height(2.dp))
+                                CaptionText(data.value.second, letterSpacing = (-1).sp, fontSize = 12.sp)
+                            }
+                        }
+                    }
                 }
             } else {
                 for (message in messageHistory) {

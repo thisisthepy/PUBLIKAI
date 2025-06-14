@@ -3,9 +3,7 @@ package gemstone.framework.ui.compose.theme
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.border
 import androidx.compose.foundation.interaction.MutableInteractionSource
-import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.RowScope
-import androidx.compose.foundation.layout.defaultMinSize
+import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
@@ -390,23 +388,30 @@ fun BlurredFluxIconButton(
 }
 
 @Composable
-fun FluxCard(
+fun BlurredFluxCard(
     onClick: () -> Unit,
     iconResource: IconResource,
     iconDescription: String,
     modifier: Modifier = Modifier,
+    iconModifier: Modifier = Modifier,
     clickAnimation: ClickAnimation = Dimen.BUTTON_CLICK_ANIMATION,
     hoverAnimation: HoverAnimation? = Dimen.BUTTON_HOVER_ANIMATION,
     enabled: Boolean = true,
-    interactionSource: MutableInteractionSource = remember { MutableInteractionSource() },
-    elevation: ButtonElevation? = ButtonDefaults.buttonElevation(),
+    interactionSource: MutableInteractionSource = remember { NoRippleInteractionSource() },
+    elevation: ButtonElevation? = Dimen.BUTTON_ELEVATIONS_WHITE,
     shape: Shape = MaterialTheme.shapes.medium,
-    iconShape: Shape = MaterialTheme.shapes.extraSmall,
-    border: BorderStroke? = null,
-    colors: ButtonColors = ButtonDefaults.buttonColors(),
-    contentPadding: PaddingValues = PaddingValues(Dimen.BUTTON_PADDING)
+    iconShape: Shape = MaterialTheme.shapes.small,
+    border: BorderStroke? = BorderStroke(1.4.dp, Color.White.copy(alpha = 0.9f)),
+    colors: ButtonColors = ButtonColors(
+        containerColor = MaterialTheme.colorScheme.surface,
+        contentColor = MaterialTheme.colorScheme.onSurface,
+        disabledContainerColor = MaterialTheme.colorScheme.surface.copy(alpha = 0.5f),
+        disabledContentColor = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.5f)
+    ),
+    contentPadding: PaddingValues = PaddingValues(Dimen.BUTTON_PADDING),
+    content: @Composable ColumnScope.() -> Unit
 ) {
-    FluxButton(
+    BlurredFluxButton(
         onClick = onClick,
         modifier = modifier,
         clickAnimation = clickAnimation,
@@ -419,18 +424,28 @@ fun FluxCard(
         colors = colors,
         contentPadding = contentPadding
     ) {
-
-        PrimaryFluxIconButton(
-            onClick = onClick,
-            iconResource = iconResource,
-            iconDescription = iconDescription,
-            modifier = modifier,
-            hoverAnimation = null,
-            enabled = enabled,
-            interactionSource = remember { NoRippleInteractionSource() },
-            elevation = null,
-            shape = iconShape,
-            contentPadding = PaddingValues(8.dp)
-        )
+        Column(
+            modifier = Modifier.fillMaxSize()
+        ) {
+            PrimaryFluxIconButton(
+                onClick = onClick,
+                iconResource = iconResource,
+                iconDescription = iconDescription,
+                modifier = iconModifier,
+                hoverAnimation = null,
+                enabled = enabled,
+                interactionSource = remember { NoRippleInteractionSource() },
+                elevation = null,
+                shape = iconShape,
+                contentPadding = PaddingValues(8.dp),
+                colors = ButtonColors(
+                    containerColor = MaterialTheme.colorScheme.primary,
+                    contentColor = Color.White,
+                    disabledContainerColor = MaterialTheme.colorScheme.primary.copy(alpha = 0.5f),
+                    disabledContentColor = Color.White.copy(alpha = 0.5f)
+                )
+            )
+            content()
+        }
     }
 }
