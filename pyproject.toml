@@ -1,5 +1,5 @@
 [project]
-name = "fluxchatui"
+name = "gemstone"
 version = "1.0.0"
 description = "This is a open-source multi-platform AI Chat UI written with Compose Multiplatform."
 readme = "README.md"
