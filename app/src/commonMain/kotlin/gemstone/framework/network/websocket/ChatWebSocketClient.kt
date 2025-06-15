@@ -58,6 +58,10 @@ class ChatWebSocketClient(
 ) {
     private val httpClient = HttpClientFactory.create()
 
+    init {
+        println("INFO: ChatWebSocketClient initialized using server URL - $serverUrl")
+    }
+
     private val json = Json {
         ignoreUnknownKeys = true
         isLenient = true
@@ -111,15 +115,17 @@ class ChatWebSocketClient(
         message: String,
         chatHistory: ChatHistory
     ): Result<Unit> {
-        val session = webSocketSession ?: return Result.failure(Exception("Not connected"))
-        val currentSessionId = sessionId ?: return Result.failure(Exception("No session ID"))
-
         return try {
             // Connect to WebSocket
             val connectResult = connect()
             if (connectResult.isFailure) {
+                println("ERROR: Failed to connect WebSocket: ${connectResult.exceptionOrNull()?.message}")
                 return connectResult
             }
+            println("INFO: WebSocket connected successfully")
+
+            val session = webSocketSession ?: return Result.failure(Exception("Not connected"))
+            val currentSessionId = sessionId ?: return Result.failure(Exception("No session ID"))
 
             // Send session ID
             session.send(json.encodeToString(mapOf("session_id" to currentSessionId)))
@@ -138,6 +144,7 @@ class ChatWebSocketClient(
 
             // Disconnect after sending the message
             disconnect()
+            println("INFO: Message sent and WebSocket disconnected successfully")
 
             Result.success(Unit)
         } catch (e: Exception) {
@@ -170,6 +177,7 @@ class ChatWebSocketClient(
     }
 
     private suspend fun handleMessage(message: String) {
+        println("INFO: Received message: $message")
         when {
             message == "<EOS>" -> {
                 disconnect()

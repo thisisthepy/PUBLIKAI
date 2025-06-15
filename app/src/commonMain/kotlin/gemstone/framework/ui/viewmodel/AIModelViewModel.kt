@@ -70,12 +70,13 @@ object AIModelViewModel {
         model: String = defaultAIModel,
         failureCallback: () -> Unit = {}
     ) {
-        suspend {
+        ChatViewModel.runBlocking {
+            client.deleteSession()
             val result = client.createSession(model.lowercase())
             if (result.isSuccess) {
-                println("WebSocket session created successfully: ${result.getOrNull()}")
+                println("INFO: WebSocket session created: ${result.getOrNull()}")
             } else {
-                println("Failed to create WebSocket session: ${result.exceptionOrNull()?.message}")
+                println("ERROR: Failed to create WebSocket session: ${result.exceptionOrNull()?.message}")
                 failureCallback()
             }
         }

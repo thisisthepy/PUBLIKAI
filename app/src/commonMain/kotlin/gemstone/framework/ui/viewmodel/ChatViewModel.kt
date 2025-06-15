@@ -112,6 +112,10 @@ object ChatViewModel {
 
     private val coroutineScope = CoroutineScope(Dispatchers.Default + SupervisorJob())
 
+    fun runBlocking(block: suspend CoroutineScope.() -> Unit) {
+        coroutineScope.launch { block() }
+    }
+
     fun initialize() {
         observeClientEvents()
         observeClientState()
@@ -287,6 +291,7 @@ object ChatViewModel {
     fun sendMessage() {
         val messageInput = _uiState.value.messageInput.trim()
         if (messageInput.isBlank()) return
+        println("INFO: Sending message: $messageInput")
 
         coroutineScope.launch {
             _uiState.value = _uiState.value.copy(isResponding = true)
