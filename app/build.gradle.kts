@@ -68,7 +68,7 @@ kotlin {
             }
             dependsOn(commonMain)
         }
-        jsMain.dependencies {
+        wasmJsMain.dependencies {
             api(libs.ktor.client.js)
         }
         
