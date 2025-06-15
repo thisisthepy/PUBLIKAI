@@ -44,7 +44,7 @@ fun ChatScreen(screenWidth: Dp) {
         val uiState by ChatViewModel.uiState.collectAsState()
 
         Row(
-            modifier = Modifier.fillMaxWidth(),
+            modifier = Modifier.fillMaxWidth().padding(bottom = Dimen.LIST_ELEMENT_SPACING),
             horizontalArrangement = Arrangement.End,
             verticalAlignment = Alignment.Top
         ) {
@@ -105,7 +105,7 @@ fun ChatScreen(screenWidth: Dp) {
 
         LazyColumn(
             modifier = Modifier.fillMaxWidth().weight(1f),
-            contentPadding = PaddingValues(vertical = Dimen.LIST_ELEMENT_SPACING * 3),
+            contentPadding = PaddingValues(vertical = Dimen.LIST_ELEMENT_SPACING * 2),
             verticalArrangement = when (messageHistory.isEmpty()) {
                 true -> Arrangement.Center
                 false -> Arrangement.spacedBy(Dimen.LIST_ELEMENT_SPACING, Alignment.Top)
@@ -345,7 +345,7 @@ fun MessageBubble(
                     status,
                     fontWeight = FontWeight.Light,
                     color = MaterialTheme.colorScheme.primary,
-                    letterSpacing = (-1).sp,
+                    letterSpacing = (-0.4).sp,
                     modifier = Modifier.pressClickEffect(
                         onClick = { showThoughts = !showThoughts },
                         animation = Dimen.BUTTON_CLICK_ANIMATION
@@ -405,8 +405,13 @@ fun MessageBubble(
                         disabledContentColor = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.5f)
                     )
                 ) {
-                    //ChatGPTStyleStreaming(content, isStreaming = isStreaming)
-                    StreamingMarkdownText(content, isStreaming = isStreaming)
+                    val useRandomRenderer by remember { mutableStateOf(kotlin.random.Random.nextBoolean()) }
+
+                    if (useRandomRenderer) {
+                        ChatGPTStyleStreaming(content, isStreaming = isStreaming)
+                    } else {
+                        StreamingMarkdownText(content, isStreaming = isStreaming)
+                    }
                 }
             }
         }
@@ -508,7 +513,7 @@ fun StreamingMarkdownText(
                     fontSize = 15.sp,
                     color = textColor
                 ))
-                append("▋")
+                append("●")
                 pop()
             } else if (isStreaming) {
                 append(" ")
@@ -566,7 +571,7 @@ fun parseAdvancedMarkdownInto(builder: AnnotatedString.Builder, text: String) {
 
     var lastIndex = 0
     matches.forEach { (range, content, style) ->
-        if (range.first >= lastIndex) { // 겹치지 않는 경우만
+        if (range.first >= lastIndex) {
             builder.append(text.substring(lastIndex, range.first))
             builder.pushStyle(style)
             builder.append(content)
