@@ -191,7 +191,9 @@ fun ChatScreen(screenWidth: Dp) {
                             userContent = message.user,
                             assistantContent = message.assistant,
                             thoughts = Triple(message.thoughts, message.thoughtElapsed.toInt(), message.isThinking),
-                            tools = message.tools.map { (if (it.value) "📥" else "⚒️") + " $it.key" },
+                            tools = message.tools.map {
+                                Triple(it.key.split("():")[0].trim(), it.value, it.key.split("():")[1].trim())
+                            },
                             isStreaming = (index == messageHistory.size-1) && (uiState.currentMessage != null)
                         )
                     }
@@ -261,7 +263,7 @@ fun ConversationBox(
     userContent: String = "",
     assistantContent: String = "",
     thoughts: Triple<String, Int, Boolean> = Triple("", 0, false),
-    tools: List<String> = emptyList(),
+    tools: List<Triple<String, Boolean, String>> = emptyList(),
     isStreaming: Boolean = false
 ) {
     MessageBubble(ChatRole.USER, userContent)
@@ -274,7 +276,7 @@ fun MessageBubble(
     role: ChatRole,
     content: String = "",
     thoughts: Triple<String, Int, Boolean> = Triple("", 0, false),
-    tools: List<String> = emptyList(),
+    tools: List<Triple<String, Boolean, String>> = emptyList(),
     isStreaming: Boolean = false
 ) {
     if (role == ChatRole.USER) {
@@ -299,11 +301,10 @@ fun MessageBubble(
             SecondaryFluxButton(
                 onClick = {},
                 modifier = Modifier,
-                elevation = ButtonDefaults.buttonElevation(4.dp),
+                elevation = ButtonDefaults.buttonElevation(0.2.dp),
                 clickAnimation = Dimen.SURFACE_CLICK_ANIMATION,
                 hoverAnimation = null,
-                //interactionSource = remember { NoRippleInteractionSource() },
-                enabled = false,
+                interactionSource = remember { NoRippleInteractionSource() },
                 shape = MaterialTheme.shapes.extraLarge,
                 contentPadding = PaddingValues(vertical = 10.dp, horizontal = 14.dp)
             ) {
@@ -377,25 +378,45 @@ fun MessageBubble(
             for (tool in tools) {
                 TertiaryFluxButton(
                     onClick = {},
-                    modifier = Modifier.fillMaxWidth(),
-                    elevation = ButtonDefaults.buttonElevation(0.dp),
-                    clickAnimation = Dimen.SURFACE_CLICK_ANIMATION,
-                    enabled = false,
-                    shape = MaterialTheme.shapes.extraSmall,
-                    contentPadding = PaddingValues(vertical = 10.dp, horizontal = 14.dp)
+                    modifier = Modifier.fillMaxWidth().padding(bottom = Dimen.LIST_ELEMENT_SPACING),
+                    elevation = ButtonDefaults.buttonElevation(1.dp),
+                    clickAnimation = ClickAnimation(1f, 0.999f),
+                    interactionSource = remember { NoRippleInteractionSource() },
+                    hoverAnimation = null,
+                    shape = MaterialTheme.shapes.small,
+                    contentPadding = PaddingValues(vertical = 6.dp, horizontal = 8.dp)
                 ) {
-                    BodyText(tool, fontWeight = FontWeight.Light, color = MaterialTheme.colorScheme.primary)
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.Start,
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        SubtitleText(
+                            (if (tool.second) "✒️" else "⚒️") + "  Function Call:  " + tool.first.split("_")
+                                .joinToString(" ") { it.replaceFirstChar { c -> c.uppercase() } },
+                            color = MaterialTheme.colorScheme.primary,
+                            fontSize = 14.4.sp,
+                            maxLines = 1
+                        )
+                        Spacer(modifier = Modifier.width(8.dp))
+                        Spacer(modifier = Modifier.weight(1f))
+                        CaptionText(
+                            tool.third.replace("call_", "timestamp: "),
+                            fontWeight = FontWeight.Light,
+                            color = Color.DarkGray,
+                            maxLines = 1
+                        )
+                    }
                 }
             }
             if (content.isNotBlank()) {
                 BlurredFluxButton(
                     onClick = {},
                     modifier = Modifier,
-                    elevation = ButtonDefaults.buttonElevation(16.dp),  // TODO: Fix elevation issue
+                    elevation = ButtonDefaults.buttonElevation(0.4.dp),
                     clickAnimation = Dimen.SURFACE_CLICK_ANIMATION,
                     hoverAnimation = null,
-                    //interactionSource = remember { NoRippleInteractionSource() },
-                    enabled = false,
+                    interactionSource = remember { NoRippleInteractionSource() },
                     shape = MaterialTheme.shapes.medium,
                     contentPadding = PaddingValues(vertical = 10.dp, horizontal = 14.dp),
                     colors = ButtonColors(

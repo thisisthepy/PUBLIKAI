@@ -173,24 +173,27 @@ object ChatViewModel {
                     }
 
                     is ChatEvent.ToolCallReceived -> {
-                        val arguments = event.toolCall.arguments
-                        when (event.toolCall.type) {
+                        val keys = event.toolCall.jsonObject.keys
+                        when (val type = keys.firstOrNull()) {
                             "call", "result" -> {
-                                val data = arguments.jsonObject
-                                val id = data["id"]?.jsonPrimitive?.content ?: ""
-                                val functionName = data["function"]?.jsonObject?.get("name")?.jsonPrimitive?.content ?: ""
-                                _uiState.value = _uiState.value.copy(
-                                    currentMessage = _uiState.value.currentMessage?.tools?.toMutableMap()?.apply {
-                                        put("$functionName: $id", false)
-                                    }?.let {
-                                        _uiState.value.currentMessage?.copy(
-                                            tools = it
+                                val data = event.toolCall.jsonObject[type]?.jsonObject
+                                if (data != null) {
+                                    val id = data["id"]?.jsonPrimitive?.content ?: ""
+                                    val functionName = data["function"]?.jsonObject?.get("name")?.jsonPrimitive?.content ?: ""
+                                    val toolKey = "$functionName(): $id"
+
+                                    val currentMsg = _uiState.value.currentMessage
+                                    if (currentMsg != null && !currentMsg.tools.containsKey(toolKey)) {
+                                        val newTools = currentMsg.tools + (toolKey to false)
+
+                                        _uiState.value = _uiState.value.copy(
+                                            currentMessage = currentMsg.copy(tools = newTools)
                                         )
                                     }
-                                )
+                                }
                             }
                             "history" -> {
-                                arguments.jsonArray.forEach { item ->
+                                event.toolCall.jsonObject[type]?.jsonArray?.forEach { item ->
                                     val data = item.jsonObject
 
                                     val role = data["role"]?.jsonPrimitive?.content ?: "error"
@@ -209,7 +212,9 @@ object ChatViewModel {
                                     chatHistory.add(role, content, toolCalls, toolCallId)
                                 }
                             }
-                            else -> {}
+                            else -> {
+                                println("WARNING: Unknown event type: $type")
+                            }
                         }
                     }
 

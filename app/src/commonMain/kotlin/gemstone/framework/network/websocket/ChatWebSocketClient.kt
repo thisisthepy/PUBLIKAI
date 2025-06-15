@@ -4,18 +4,16 @@ import gemstone.framework.network.http.HttpClientFactory
 import gemstone.framework.network.http.defaultServerHost
 import gemstone.framework.ui.viewmodel.ChatHistory
 import gemstone.framework.ui.viewmodel.ChatRole
-import gemstone.framework.ui.viewmodel.ToolCall
-import io.ktor.client.*
 import io.ktor.client.plugins.websocket.*
 import io.ktor.client.request.*
 import io.ktor.client.statement.*
 import io.ktor.http.*
 import io.ktor.websocket.*
-import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.*
 import kotlinx.datetime.Clock
 import kotlinx.serialization.Serializable
-import kotlinx.serialization.json.*
+import kotlinx.serialization.json.Json
+import kotlinx.serialization.json.JsonElement
 
 
 sealed class ChatState {
@@ -32,7 +30,7 @@ sealed class ChatEvent {
     data class MessageReceived(val content: String, val isThinking: Boolean = false) : ChatEvent()
     data object ThinkingStarted : ChatEvent()
     data object ThinkingEnded : ChatEvent()
-    data class ToolCallReceived(val toolCall: ToolCallResponse) : ChatEvent()
+    data class ToolCallReceived(val toolCall: JsonElement) : ChatEvent()
     data object MessageComplete : ChatEvent()
     data class ErrorOccurred(val error: String) : ChatEvent()
 }
@@ -43,13 +41,6 @@ data class SessionResponse(
     val model_id: String,
     val session_id: String,
     val message: String
-)
-
-
-@Serializable
-data class ToolCallResponse(
-    val type: String,
-    val arguments: JsonElement
 )
 
 
@@ -207,7 +198,12 @@ class ChatWebSocketClient(
             }
 
             message.contains("<tool_call>") -> {
-                handleToolCall(message)
+                val regex = """<tool_call>([\s\S]*?)</tool_call>""".toRegex()
+                regex.findAll(message).forEach { match ->
+                    println(match.groupValues[1])
+                    handleToolCall(match.groupValues[1])
+                    println("---")
+                }
             }
 
             else -> {
@@ -227,8 +223,7 @@ class ChatWebSocketClient(
 
     private suspend fun handleToolCall(message: String) {
         try {
-            val toolCallJson = message.replace("<tool_call>", "").replace("</tool_call>", "").trim()
-            val toolCall = json.decodeFromString<ToolCallResponse>(toolCallJson)
+            val toolCall = json.decodeFromString<JsonElement>(message.trim())
             _events.emit(ChatEvent.ToolCallReceived(toolCall))
         } catch (e: Exception) {
             _events.emit(ChatEvent.ErrorOccurred("Failed to parse tool call: ${e.message}"))
