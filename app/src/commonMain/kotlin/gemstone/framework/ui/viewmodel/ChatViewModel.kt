@@ -303,6 +303,16 @@ object ChatViewModel {
                 messageInput = ""
             )
 
+            if (webSocketClient.sessionId == null) {
+                run {
+                    AIModelViewModel.initializeModel(webSocketClient) {
+                        AIModelViewModel.selectedAIModel = "Server Error"
+                        AIModelViewModel.selectedAIModelDescription = "Server Not Available"
+                    }
+                }
+                initialize()
+            }
+
             val result = webSocketClient.sendMessage(messageInput, chatHistory)
             if (result.isFailure) {
                 _uiState.value = _uiState.value.copy(

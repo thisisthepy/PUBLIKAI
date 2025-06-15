@@ -6,15 +6,7 @@ import androidx.compose.runtime.setValue
 import gemstone.framework.network.websocket.ChatWebSocketClient
 
 
-val webSocketClient by lazy {
-    val client = ChatWebSocketClient()
-    AIModelViewModel.initializeModel(client) {
-        AIModelViewModel.selectedAIModel = "Server Error"
-        AIModelViewModel.selectedAIModelDescription = "Server Not Available"
-    }
-    ChatViewModel.initialize()
-    client
-}
+val webSocketClient = ChatWebSocketClient()
 
 
 object AIModelViewModel {
@@ -56,29 +48,29 @@ object AIModelViewModel {
         if (Pair(model, description) in availableAIModels) {
             selectedAIModel = model
             selectedAIModelDescription = description
-            initializeModel(webSocketClient, model.lowercase())
+            ChatViewModel.runBlocking {
+                initializeModel(webSocketClient, model.lowercase())
+            }
         }
     }
     fun deselectAIModel() {
         if (selectedAIModel.isEmpty()) return
         selectedAIModel = ""
         selectedAIModelDescription = defaultAIModelDescription
-        initializeModel(webSocketClient)
+        ChatViewModel.runBlocking {
+            initializeModel(webSocketClient)
+        }
     }
-    fun initializeModel(
+    suspend fun initializeModel(
         client: ChatWebSocketClient,
         model: String = defaultAIModel,
         failureCallback: () -> Unit = {}
     ) {
-        ChatViewModel.runBlocking {
-            client.deleteSession()
-            val result = client.createSession(model.lowercase())
-            if (result.isSuccess) {
-                println("INFO: WebSocket session created: ${result.getOrNull()}")
-            } else {
-                println("ERROR: Failed to create WebSocket session: ${result.exceptionOrNull()?.message}")
-                failureCallback()
-            }
+        client.deleteSession()
+        val result = client.createSession(model.lowercase())
+        if (!result.isSuccess) {
+            println("ERROR: Failed to create WebSocket session: ${result.exceptionOrNull()?.message}")
+            failureCallback()
         }
     }
 

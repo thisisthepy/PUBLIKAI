@@ -3,6 +3,7 @@ package gemstone.framework.ui.compose.screen.chat
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.material.icons.Icons
@@ -17,11 +18,18 @@ import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.text.buildAnnotatedString
+import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.font.FontFamily
+import androidx.compose.ui.text.font.FontStyle
+import androidx.compose.animation.core.*
+import kotlinx.coroutines.delay
 import gemstone.app.generated.resources.*
 import gemstone.framework.ui.compose.theme.*
 import gemstone.framework.ui.viewmodel.*
@@ -73,18 +81,37 @@ fun ChatScreen(screenWidth: Dp) {
             }
         }
 
+        val listState = rememberLazyListState()
         val messageHistory: List<Conversation> = when (val currentMessage = uiState.currentMessage) {
             null -> uiState.messages
             else -> uiState.messages + listOf(currentMessage)
         }
+
+        uiState.currentMessage?.tools?.let {
+            LaunchedEffect(
+                messageHistory.size,
+                uiState.currentMessage?.assistant,
+                uiState.currentMessage?.thoughts,
+                it.size
+            ) {
+                if (messageHistory.isNotEmpty()) {
+                    val totalItems = messageHistory.size + if (uiState.currentMessage != null) 1 else 0
+                    if (totalItems > 0) {
+                        listState.animateScrollToItem(totalItems - 1)
+                    }
+                }
+            }
+        }
+
         LazyColumn(
             modifier = Modifier.fillMaxWidth().weight(1f),
-            contentPadding = PaddingValues(top = Dimen.LIST_ELEMENT_SPACING * 3),
+            contentPadding = PaddingValues(vertical = Dimen.LIST_ELEMENT_SPACING * 3),
             verticalArrangement = when (messageHistory.isEmpty()) {
                 true -> Arrangement.Center
                 false -> Arrangement.spacedBy(Dimen.LIST_ELEMENT_SPACING, Alignment.Top)
             },
-            horizontalAlignment = Alignment.CenterHorizontally
+            horizontalAlignment = Alignment.CenterHorizontally,
+            state = listState
         ) {
             if (messageHistory.isEmpty()) {
                 item {
@@ -158,13 +185,14 @@ fun ChatScreen(screenWidth: Dp) {
                     }
                 }
             } else {
-                for (message in messageHistory) {
+                for ((index, message) in messageHistory.withIndex()) {
                     item {
                         ConversationBox(
                             userContent = message.user,
                             assistantContent = message.assistant,
                             thoughts = Triple(message.thoughts, message.thoughtElapsed.toInt(), message.isThinking),
-                            tools = message.tools.map { (if (it.value) "📥" else "⚒️") + " $it.key" }
+                            tools = message.tools.map { (if (it.value) "📥" else "⚒️") + " $it.key" },
+                            isStreaming = (index == messageHistory.size-1) && (uiState.currentMessage != null)
                         )
                     }
                 }
@@ -207,7 +235,8 @@ fun ChatScreen(screenWidth: Dp) {
                             Text(
                                 text = stringResource(Res.string.chat_message_placeholder)
                                     .replace("me", AIModelViewModel.selectedAIModelOrDefault),
-                                style = TextStyle(color = Color.Gray)
+                                style = TextStyle(color = Color.Gray),
+                                fontFamily = SuiteFontFamily
                             )
                         }
                         innerTextField()
@@ -233,9 +262,10 @@ fun ConversationBox(
     assistantContent: String = "",
     thoughts: Triple<String, Int, Boolean> = Triple("", 0, false),
     tools: List<String> = emptyList(),
+    isStreaming: Boolean = false
 ) {
     MessageBubble(ChatRole.USER, userContent)
-    MessageBubble(ChatRole.ASSISTANT, assistantContent, thoughts, tools)
+    MessageBubble(ChatRole.ASSISTANT, assistantContent, thoughts, tools, isStreaming)
 }
 
 
@@ -245,6 +275,7 @@ fun MessageBubble(
     content: String = "",
     thoughts: Triple<String, Int, Boolean> = Triple("", 0, false),
     tools: List<String> = emptyList(),
+    isStreaming: Boolean = false
 ) {
     if (role == ChatRole.USER) {
         Column(
@@ -323,37 +354,225 @@ fun MessageBubble(
             }
             if (showThoughts && thoughts.first.isNotBlank()) {
                 val color = MaterialTheme.colorScheme.primary
-                Spacer(modifier = Modifier.width(Dimen.LIST_ELEMENT_SPACING))
+                val lineOffset = 8.dp
+                val horizontalPadding = 8.dp
+                //Spacer(modifier = Modifier.height(Dimen.LIST_ELEMENT_SPACING))
                 CaptionText(
                     thoughts.first,
                     color = color,
-                    modifier = Modifier.padding(horizontal = 8.dp)
+                    letterSpacing = (-0.2).sp,
+                    lineHeight = 16.sp,
+                    modifier = Modifier.padding(start = lineOffset + horizontalPadding, end = horizontalPadding)
                         .drawBehind {
                             drawLine(
                                 color = color,
-                                start = Offset(0f, 0f),
-                                end = Offset(0f, size.height),
-                                strokeWidth = 2.dp.toPx()
+                                start = Offset((-lineOffset).toPx(), 0f),
+                                end = Offset((-lineOffset).toPx(), size.height),
+                                strokeWidth = 1.2.dp.toPx()
                             )
                         }
                 )
+                Spacer(modifier = Modifier.height(Dimen.LIST_ELEMENT_SPACING))
+            }
+            for (tool in tools) {
+                TertiaryFluxButton(
+                    onClick = {},
+                    modifier = Modifier.fillMaxWidth(),
+                    elevation = ButtonDefaults.buttonElevation(0.dp),
+                    clickAnimation = Dimen.SURFACE_CLICK_ANIMATION,
+                    enabled = false,
+                    shape = MaterialTheme.shapes.extraSmall,
+                    contentPadding = PaddingValues(vertical = 10.dp, horizontal = 14.dp)
+                ) {
+                    BodyText(tool, fontWeight = FontWeight.Light, color = MaterialTheme.colorScheme.primary)
+                }
             }
             if (content.isNotBlank()) {
-                Spacer(modifier = Modifier.width(Dimen.LIST_ELEMENT_SPACING))
                 BlurredFluxButton(
                     onClick = {},
                     modifier = Modifier,
                     elevation = ButtonDefaults.buttonElevation(16.dp),  // TODO: Fix elevation issue
                     clickAnimation = Dimen.SURFACE_CLICK_ANIMATION,
                     hoverAnimation = null,
-                    interactionSource = remember { NoRippleInteractionSource() },
+                    //interactionSource = remember { NoRippleInteractionSource() },
                     enabled = false,
-                    shape = MaterialTheme.shapes.extraLarge,
-                    contentPadding = PaddingValues(0.dp)
+                    shape = MaterialTheme.shapes.medium,
+                    contentPadding = PaddingValues(vertical = 10.dp, horizontal = 14.dp),
+                    colors = ButtonColors(
+                        containerColor = Color(0xFFFBFBFB),
+                        contentColor = MaterialTheme.colorScheme.onSurface,
+                        disabledContainerColor = Color(0xFFF9F9F9),
+                        disabledContentColor = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.5f)
+                    )
                 ) {
-                    BodyText(content, fontWeight = FontWeight.Light)
+                    //ChatGPTStyleStreaming(content, isStreaming = isStreaming)
+                    StreamingMarkdownText(content, isStreaming = isStreaming)
                 }
             }
         }
     }
+}
+
+
+@Composable
+fun ChatGPTStyleStreaming(
+    message: String,
+    isStreaming: Boolean = false
+) {
+    var cursorAlpha by remember { mutableStateOf(1f) }
+
+    val animatedAlpha by animateFloatAsState(
+        targetValue = if (isStreaming && cursorAlpha > 0.5f) 1f else 0.3f,
+        animationSpec = infiniteRepeatable(
+            animation = tween(800),
+            repeatMode = RepeatMode.Reverse
+        ),
+        label = "cursor_fade"
+    )
+
+    LaunchedEffect(isStreaming) {
+        while (isStreaming) {
+            delay(100)
+            cursorAlpha = if (cursorAlpha > 0.5f) 0.3f else 1f
+        }
+    }
+
+    val styledText = buildAnnotatedString {
+        parseAdvancedMarkdown(this, message)
+
+        if (isStreaming) {
+            pushStyle(SpanStyle(
+                color = MaterialTheme.colorScheme.primary.copy(alpha = animatedAlpha),
+                fontSize = 16.sp
+            ))
+            append("█")
+            pop()
+        }
+    }
+
+    Text(
+        text = styledText,
+        fontFamily = SuiteFontFamily,
+        fontWeight = FontWeight.Light,
+        fontSize = 15.sp,
+        color = MaterialTheme.colorScheme.primary
+    )
+}
+
+fun parseAdvancedMarkdown(builder: AnnotatedString.Builder, text: String) {
+    val boldRegex = """\*\*(.*?)\*\*""".toRegex()
+    var lastIndex = 0
+
+    boldRegex.findAll(text).forEach { match ->
+        builder.append(text.substring(lastIndex, match.range.first))
+        builder.pushStyle(SpanStyle(fontWeight = FontWeight.Bold))
+        builder.append(match.groupValues[1])
+        builder.pop()
+        lastIndex = match.range.last + 1
+    }
+    builder.append(text.substring(lastIndex))
+}
+
+@Composable
+fun StreamingMarkdownText(
+    text: String,
+    isStreaming: Boolean = false
+) {
+    var cursorVisible by remember { mutableStateOf(true) }
+    val fontFamily = SuiteFontFamily
+    val textColor = MaterialTheme.colorScheme.primary
+
+    LaunchedEffect(isStreaming) {
+        if (isStreaming) {
+            while (true) {
+                delay(600)
+                cursorVisible = !cursorVisible
+            }
+        } else {
+            cursorVisible = false
+        }
+    }
+
+    val annotatedString = remember(text, isStreaming, cursorVisible) {
+        buildAnnotatedString {
+            if (isStreaming) {
+                parseSimpleMarkdownInto(this, text)
+            } else {
+                parseAdvancedMarkdownInto(this, text)
+            }
+
+            if (isStreaming && cursorVisible) {
+                pushStyle(SpanStyle(
+                    fontFamily = fontFamily,
+                    fontWeight = FontWeight.Light,
+                    fontSize = 15.sp,
+                    color = textColor
+                ))
+                append("▋")
+                pop()
+            } else if (isStreaming) {
+                append(" ")
+            }
+        }
+    }
+
+    Text(
+        text = annotatedString,
+        fontFamily = fontFamily,
+        fontWeight = FontWeight.Light,
+        fontSize = 15.sp,
+        color = textColor,
+        lineHeight = 22.sp
+    )
+}
+
+fun parseSimpleMarkdownInto(builder: AnnotatedString.Builder, text: String) {
+    val boldRegex = """\*\*(.*?)\*\*""".toRegex()
+    var lastIndex = 0
+
+    boldRegex.findAll(text).forEach { match ->
+        builder.append(text.substring(lastIndex, match.range.first))
+        builder.pushStyle(SpanStyle(fontWeight = FontWeight.Bold))
+        builder.append(match.groupValues[1])
+        builder.pop()
+        lastIndex = match.range.last + 1
+    }
+    builder.append(text.substring(lastIndex))
+}
+
+fun parseAdvancedMarkdownInto(builder: AnnotatedString.Builder, text: String) {
+    val boldRegex = """\*\*(.*?)\*\*""".toRegex()
+    val italicRegex = """\*(.*?)\*""".toRegex()
+    val codeRegex = """`(.*?)`""".toRegex()
+
+    val patterns = listOf(
+        boldRegex to SpanStyle(fontWeight = FontWeight.Bold),
+        italicRegex to SpanStyle(fontStyle = FontStyle.Italic),
+        codeRegex to SpanStyle(
+            fontFamily = FontFamily.Monospace,
+            background = Color.Gray.copy(alpha = 0.2f)
+        )
+    )
+
+    val matches = mutableListOf<Triple<IntRange, String, SpanStyle>>()
+
+    patterns.forEach { (regex, style) ->
+        regex.findAll(text).forEach { match ->
+            matches.add(Triple(match.range, match.groupValues[1], style))
+        }
+    }
+
+    matches.sortBy { it.first.first }
+
+    var lastIndex = 0
+    matches.forEach { (range, content, style) ->
+        if (range.first >= lastIndex) { // 겹치지 않는 경우만
+            builder.append(text.substring(lastIndex, range.first))
+            builder.pushStyle(style)
+            builder.append(content)
+            builder.pop()
+            lastIndex = range.last + 1
+        }
+    }
+    builder.append(text.substring(lastIndex))
 }

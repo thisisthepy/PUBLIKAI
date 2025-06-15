@@ -68,7 +68,15 @@ class ChatWebSocketClient(
     }
 
     private var webSocketSession: DefaultClientWebSocketSession? = null
-    private var sessionId: String? = null
+    var sessionId: String? = null
+        set(value) {
+            field = value
+            if (value != null) {
+                println("INFO: Session ID set to $value")
+            } else {
+                println("INFO: Session ID cleared")
+            }
+        }
 
     private val _events = MutableSharedFlow<ChatEvent>()
     val events: SharedFlow<ChatEvent> = _events.asSharedFlow()
@@ -181,6 +189,7 @@ class ChatWebSocketClient(
         when {
             message == "<EOS>" -> {
                 disconnect()
+                _events.emit(ChatEvent.MessageComplete)
                 return
             }
 
@@ -203,11 +212,11 @@ class ChatWebSocketClient(
 
             else -> {
                 if (isThinking) {
+                    _events.emit(ChatEvent.MessageReceived(message, isThinking = true))
                     val currentTime = Clock.System.now().toEpochMilliseconds()
                     val elapsedSeconds = (currentTime - thinkingStartTime) / 1000f
                     thinkingStartTime = currentTime
                     _state.value = ChatState.Thinking(elapsedSeconds)
-                    _events.emit(ChatEvent.MessageReceived(message, isThinking = true))
                 } else {
                     _state.value = ChatState.Responding
                     _events.emit(ChatEvent.MessageReceived(message, isThinking = false))
