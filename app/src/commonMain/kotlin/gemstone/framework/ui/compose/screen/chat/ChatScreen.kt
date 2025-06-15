@@ -16,25 +16,15 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import gemstone.app.generated.resources.*
-import gemstone.app.generated.resources.Res
-import gemstone.app.generated.resources.chat_new_chat_icon_desc
-import gemstone.app.generated.resources.chat_option_icon_desc
-import gemstone.app.generated.resources.chat_title_placeholder
 import gemstone.framework.ui.compose.theme.*
-import gemstone.framework.ui.viewmodel.AIModelViewModel
-import gemstone.framework.ui.viewmodel.ChatRole
-import gemstone.framework.ui.viewmodel.ChatViewModel
-import gemstone.framework.ui.viewmodel.ChatViewModel.messageHistory
-import gemstone.framework.ui.viewmodel.SettingsViewModel
+import gemstone.framework.ui.viewmodel.*
 import org.jetbrains.compose.resources.stringResource
 
 
@@ -43,6 +33,8 @@ fun ChatScreen(screenWidth: Dp) {
     Column(
         modifier = Modifier.fillMaxSize().imePadding().padding(Dimen.LAYOUT_PADDING)
     ) {
+        val uiState by ChatViewModel.uiState.collectAsState()
+
         Row(
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.End,
@@ -53,8 +45,8 @@ fun ChatScreen(screenWidth: Dp) {
                 verticalArrangement = Arrangement.Center,
                 horizontalAlignment = Alignment.Start
             ) {
-                TitleText(ChatViewModel.getTitleOrPlaceholder(), maxLines = 1)
-                CaptionText(ChatViewModel.modelDescription)
+                TitleText(uiState.titleOrPlaceholder, maxLines = 1)
+                CaptionText(AIModelViewModel.selectedAIModelDescription, maxLines = 1)
             }
 
             Spacer(modifier = Modifier.width(Dimen.LIST_ELEMENT_SPACING))
@@ -64,11 +56,9 @@ fun ChatScreen(screenWidth: Dp) {
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.End
             ) {
-                val newChatTitle = stringResource(Res.string.chat_title_placeholder)
                 PrimaryFluxIconButton(
                     onClick = {
-                        ChatViewModel.clear(newChatTitle)
-                        AIModelViewModel.createChatRoom(-1, ChatViewModel)
+                        ChatViewModel.reset()
                     },
                     iconResource = IconResource.Vector(Icons.Default.Add),
                     iconDescription = stringResource(Res.string.chat_new_chat_icon_desc),
@@ -83,11 +73,15 @@ fun ChatScreen(screenWidth: Dp) {
             }
         }
 
+        val messageHistory: List<Conversation> = when (val currentMessage = uiState.currentMessage) {
+            null -> uiState.messages
+            else -> uiState.messages + listOf(currentMessage)
+        }
         LazyColumn(
             modifier = Modifier.fillMaxWidth().weight(1f),
-            verticalArrangement = when (messageHistory.size) {
-                0 -> Arrangement.Center
-                else -> Arrangement.spacedBy(Dimen.LIST_ELEMENT_SPACING, Alignment.Top)
+            verticalArrangement = when (messageHistory.isEmpty()) {
+                true -> Arrangement.Center
+                false -> Arrangement.spacedBy(Dimen.LIST_ELEMENT_SPACING, Alignment.Top)
             },
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
@@ -137,7 +131,7 @@ fun ChatScreen(screenWidth: Dp) {
                         for (data in presets) {
                             BlurredFluxCard(
                                 onClick = {
-                                    ChatViewModel.messageInput = data.value.second
+                                    ChatViewModel.setMessageInput(data.value.second)
                                 },
                                 modifier = Modifier.padding(Dimen.LAYOUT_PADDING / 2).size(120.dp),
                                 iconModifier = Modifier.size(34.dp),
@@ -165,7 +159,12 @@ fun ChatScreen(screenWidth: Dp) {
             } else {
                 for (message in messageHistory) {
                     item {
-                        ConversationBox(message.key, message.value.first, message.value.second, message.value.third)
+                        ConversationBox(
+                            userContent = message.user,
+                            assistantContent = message.assistant,
+                            thoughts = Triple(message.thoughts, message.thoughtElapsed.toInt(), message.isThinking),
+                            tools = message.tools.map { (if (it.value) "📥" else "⚒️") + " $it.key" }
+                        )
                     }
                 }
             }
@@ -195,18 +194,18 @@ fun ChatScreen(screenWidth: Dp) {
                     elevation = ButtonDefaults.buttonElevation(0.dp)
                 )
                 BasicTextField(
-                    value = ChatViewModel.messageInput,
-                    onValueChange = { ChatViewModel.messageInput = it },
+                    value = uiState.messageInput,
+                    onValueChange = { ChatViewModel.setMessageInput(it) },
                     modifier = Modifier.weight(1f).padding(vertical = 6.dp),
                     textStyle = TextStyle(
                         color = MaterialTheme.colorScheme.onSecondary,
                         fontFamily = SuiteFontFamily
                     ),
                     decorationBox = { innerTextField ->
-                        if (ChatViewModel.messageInput.isEmpty()) {
+                        if (uiState.messageInput.isEmpty()) {
                             Text(
                                 text = stringResource(Res.string.chat_message_placeholder)
-                                    .replace("me", ChatViewModel.modelName),
+                                    .replace("me", AIModelViewModel.selectedAIModelOrDefault),
                                 style = TextStyle(color = Color.Gray)
                             )
                         }
@@ -319,19 +318,21 @@ fun MessageBubble(
                     )
                 }
             }
-            Spacer(modifier = Modifier.width(Dimen.LIST_ELEMENT_SPACING))
-            BlurredFluxButton(
-                onClick = {},
-                modifier = Modifier,
-                elevation = ButtonDefaults.buttonElevation(6.dp),
-                clickAnimation = Dimen.SURFACE_CLICK_ANIMATION,
-                hoverAnimation = null,
-                interactionSource = remember { NoRippleInteractionSource() },
-                enabled = false,
-                shape = MaterialTheme.shapes.extraLarge,
-                contentPadding = PaddingValues(0.dp)
-            ) {
-                BodyText(content, fontWeight = FontWeight.Light)
+            if (content.isNotBlank()) {
+                Spacer(modifier = Modifier.width(Dimen.LIST_ELEMENT_SPACING))
+                BlurredFluxButton(
+                    onClick = {},
+                    modifier = Modifier,
+                    elevation = ButtonDefaults.buttonElevation(6.dp),
+                    clickAnimation = Dimen.SURFACE_CLICK_ANIMATION,
+                    hoverAnimation = null,
+                    interactionSource = remember { NoRippleInteractionSource() },
+                    enabled = false,
+                    shape = MaterialTheme.shapes.extraLarge,
+                    contentPadding = PaddingValues(0.dp)
+                ) {
+                    BodyText(content, fontWeight = FontWeight.Light)
+                }
             }
         }
     }

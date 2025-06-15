@@ -169,7 +169,7 @@ class FunctionCallResult(list):
 
             # Client side
             self.__message_queue.append(tag[0] + "\n" + dumps(dict(result=dict(id=job_id, function=dict(
-                content=f"<cached_result:{job_id}>"
+                name=name, content=f"<cached_result:{job_id}>"
             ))), ensure_ascii=False) + "\n" + tag[1])  # for immediate response
 
             # Increment the completed job count

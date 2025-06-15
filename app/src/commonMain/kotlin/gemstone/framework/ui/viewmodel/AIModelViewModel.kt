@@ -3,17 +3,32 @@ package gemstone.framework.ui.viewmodel
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
+import gemstone.framework.network.websocket.ChatWebSocketClient
+
+
+val webSocketClient by lazy {
+    val client = ChatWebSocketClient()
+    AIModelViewModel.initializeModel(client) {
+        AIModelViewModel.selectedAIModel = "Server Error"
+        AIModelViewModel.selectedAIModelDescription = "Server Not Available"
+    }
+    ChatViewModel.initialize()
+    client
+}
 
 
 object AIModelViewModel {
+    var defaultAIModel by mutableStateOf("Qwen3")
+    var defaultAIModelDescription by mutableStateOf("Qwen3 14B 4bitQ IT")
+
     var selectedAIModel by mutableStateOf("")
-    var selectedAIModelDescription by mutableStateOf("")
+    var selectedAIModelDescription by mutableStateOf(defaultAIModelDescription)
     var availableAIModels by mutableStateOf(listOf<Pair<String, String>>(
         Pair("Qwen3", "Qwen3 14B 4bitQ IT"),
         Pair("Llama3", "Llama3.1 8B 4bitQ Instruct"),
     ))
-    var defaultAIModel by mutableStateOf("Qwen3")
-    var defaultAIModelDescription by mutableStateOf("Qwen3 14B 4bitQ IT")
+    val selectedAIModelOrDefault
+        get() = selectedAIModel.ifEmpty { defaultAIModel }
 
     fun addAIModel(model: String, description: String) {
         val new = Pair(model, description)
@@ -37,44 +52,35 @@ object AIModelViewModel {
         }
     }
     fun selectAIModel(model: String, description: String) {
+        if (selectedAIModel == model) return
         if (Pair(model, description) in availableAIModels) {
             selectedAIModel = model
             selectedAIModelDescription = description
-            if (ChatViewModel.chatId == -1) {
-                ChatViewModel.modelName = model
-                ChatViewModel.modelDescription = description
-            }
+            initializeModel(webSocketClient, model.lowercase())
         }
     }
     fun deselectAIModel() {
+        if (selectedAIModel.isEmpty()) return
         selectedAIModel = ""
         selectedAIModelDescription = defaultAIModelDescription
-        if (ChatViewModel.chatId == -1) {
-            ChatViewModel.modelName = defaultAIModel
-            ChatViewModel.modelDescription = selectedAIModelDescription
+        initializeModel(webSocketClient)
+    }
+    fun initializeModel(
+        client: ChatWebSocketClient,
+        model: String = defaultAIModel,
+        failureCallback: () -> Unit = {}
+    ) {
+        suspend {
+            val result = client.createSession(model.lowercase())
+            if (result.isSuccess) {
+                println("WebSocket session created successfully: ${result.getOrNull()}")
+            } else {
+                println("Failed to create WebSocket session: ${result.exceptionOrNull()?.message}")
+                failureCallback()
+            }
         }
     }
 
     var chatRoomList by mutableStateOf(mapOf<Int, Pair<Boolean, String>>())
     var selectedChatRoom by mutableStateOf(-1)
-    fun createChatRoom(chatId: Int, model: ChatViewModel) {
-        chatRoomList += mapOf(chatId to Pair(model.starred, model.title))
-        if (selectedChatRoom == -1) {
-            selectedChatRoom = chatId
-            selectedAIModelDescription = defaultAIModelDescription
-        }
-    }
-    fun removeChatRoom(chatId: Int) {
-        chatRoomList = chatRoomList.filterNot { it.key == chatId }
-        if (selectedChatRoom == chatId) {
-            selectedChatRoom = -1
-            selectedAIModelDescription = defaultAIModelDescription
-        }
-    }
-    fun selectChatRoom(chatId: Int) {
-        if (chatId !in chatRoomList) return
-        selectedChatRoom = chatId
-        ChatViewModel.chatId = chatId
-        ChatViewModel.title = chatRoomList[chatId]?.second ?: ""
-    }
 }
