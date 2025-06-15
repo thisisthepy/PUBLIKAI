@@ -10,12 +10,13 @@ val webSocketClient = ChatWebSocketClient()
 
 
 object AIModelViewModel {
-    var defaultAIModel by mutableStateOf("Qwen3")
+    var defaultAIModel by mutableStateOf("Cnuma3")
     var defaultAIModelDescription by mutableStateOf("Qwen3 14B 4bitQ IT")
 
     var selectedAIModel by mutableStateOf("")
     var selectedAIModelDescription by mutableStateOf(defaultAIModelDescription)
     var availableAIModels by mutableStateOf(listOf<Pair<String, String>>(
+        Pair("Cnuma3", "Cnuma3 14B 4bitQ IT"),
         Pair("Qwen3", "Qwen3 14B 4bitQ IT"),
         Pair("Llama3", "Llama3.1 8B 4bitQ Instruct"),
     ))
