@@ -19,7 +19,11 @@ import org.jetbrains.jewel.intui.standalone.theme.IntUiTheme
 import org.jetbrains.jewel.intui.window.DecoratedWindowIconKeys
 
 
-fun main() = application {
+fun main(args: Array<String>) = application {
+    parseCommandLineArgs(args) {
+        exitApplication()
+    }
+
     IntUiTheme(
         isDark = isSystemInDarkTheme()
     ) {
@@ -42,4 +46,77 @@ fun main() = application {
         }
         DecoratedWindowIconKeys
     }
+}
+
+
+private fun parseCommandLineArgs(args: Array<String>, exitApplication: () -> Unit) {
+    var i = 0
+    while (i < args.size) {
+        when (args[i]) {
+            "--server", "-s" -> {
+                if (i + 1 < args.size) {
+                    val serverAddress = args[i + 1]
+                    if (serverAddress.contains(":")) {
+                        val parts = serverAddress.split(":", limit = 2)
+                        System.setProperty("GEMSTONE_SERVER_HOST", parts[0])
+                        System.setProperty("GEMSTONE_SERVER_PORT", ":${parts[1]}")
+                    } else {
+                        System.setProperty("GEMSTONE_SERVER_HOST", serverAddress)
+                    }
+                    i += 2
+                } else {
+                    println("Error: --server option requires a value")
+                    i++
+                }
+            }
+            "--host", "-h" -> {
+                if (i + 1 < args.size) {
+                    System.setProperty("GEMSTONE_SERVER_HOST", args[i + 1])
+                    i += 2
+                } else {
+                    println("Error: --host option requires a value")
+                    i++
+                }
+            }
+            "--port", "-p" -> {
+                if (i + 1 < args.size) {
+                    System.setProperty("GEMSTONE_SERVER_PORT", ":${args[i + 1]}")
+                    i += 2
+                } else {
+                    println("Error: --port option requires a value")
+                    i++
+                }
+            }
+            "--help" -> {
+                printHelp()
+                exitApplication()
+            }
+            else -> {
+                if (args[i].startsWith("-")) {
+                    println("Unknown option: ${args[i]}")
+                }
+                i++
+            }
+        }
+    }
+}
+
+
+private fun printHelp() {
+    println("""
+        Gemstone Desktop Application
+        
+        Usage: gemstone [options]
+        
+        Options:
+            --server, -s <address>    Server address (host:port format)
+            --host, -h <host>         Server host (default: localhost)
+            --port, -p <port>         Server port (default: 23100)
+            --help                    Show this help message
+
+        Examples:
+            gemstone --server localhost:8080
+            gemstone --host 192.168.1.100 --port 9000
+            gemstone -s example.com:3000
+    """.trimIndent())
 }

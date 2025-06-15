@@ -8,9 +8,9 @@ import io.ktor.serialization.kotlinx.json.*
 
 
 actual val defaultServerHost: String = (
-    System.getenv("GEMSTONE_SERVER_HOST") ?: "localhost"
+    System.getProperty("GEMSTONE_SERVER_HOST") ?: System.getenv("GEMSTONE_SERVER_HOST") ?: "127.0.0.1"
 ) + (
-    System.getenv("GEMSTONE_SERVER_PORT") ?: ":23100"
+    System.getProperty("GEMSTONE_SERVER_PORT") ?: System.getenv("GEMSTONE_SERVER_PORT") ?: ":23100"
 )
 
 
