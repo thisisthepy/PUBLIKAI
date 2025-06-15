@@ -20,10 +20,6 @@ MODEL_LIST = dict(
         model_name="Qwen 3",
         model_description="Qwen 3 14B 4bitQ IT"
     ),
-    cnuma3=ModelSettings(
-        model_name="CNUMA 3",
-        model_description="Qwen 3 14B 4bitQ IT"
-    ),
 )
 MODEL_LIST['default'] = MODEL_LIST['qwen3']
 
