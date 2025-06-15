@@ -107,7 +107,6 @@ fun MainScreen() {
                             modifier = backgroundModifier.fillMaxSize().systemBarsPadding().padding(2.dp)
                         ) {
                             SideScreen(sideBarMode = false) { chatId ->
-                                AIModelViewModel.selectChatRoom(chatId)
                                 navController.navigate(Chat) {
                                     launchSingleTop = true
                                     restoreState = true

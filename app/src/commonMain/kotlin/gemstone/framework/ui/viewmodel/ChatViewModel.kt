@@ -9,13 +9,10 @@ import gemstone.app.generated.resources.chat_title_placeholder
 import gemstone.framework.network.websocket.ChatEvent
 import gemstone.framework.network.websocket.ChatState
 import kotlinx.serialization.Serializable
-import kotlinx.serialization.json.JsonElement
 import org.jetbrains.compose.resources.stringResource
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.*
-import kotlinx.serialization.json.jsonArray
-import kotlinx.serialization.json.jsonObject
-import kotlinx.serialization.json.jsonPrimitive
+import kotlinx.serialization.json.*
 
 
 @Serializable
@@ -102,8 +99,8 @@ data class ChatUiState(
     val isConnected: Boolean = false,
     val error: String? = null
 ) {
-    @get:Composable
-    val titleOrPlaceholder: String = title.ifEmpty { stringResource(Res.string.chat_title_placeholder) }
+    val titleOrPlaceholder: String
+        @Composable get() = title.ifEmpty { stringResource(Res.string.chat_title_placeholder) }
 }
 
 
@@ -200,7 +197,7 @@ object ChatViewModel {
                                             id = toolCallObj["id"]?.jsonPrimitive?.content ?: "",
                                             function = ToolFunction(
                                                 name = toolCallObj["function"]?.jsonObject?.get("name")?.jsonPrimitive?.content ?: "",
-                                                arguments = toolCallObj["function"]?.jsonObject?.get("arguments") ?: JsonElement.Null
+                                                arguments = toolCallObj["function"]?.jsonObject?.get("arguments") ?: JsonNull
                                             )
                                         )
                                     }
