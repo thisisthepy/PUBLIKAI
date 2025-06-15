@@ -38,8 +38,10 @@ class ChatHistory(list):
                 self.append(**item)
             except TypeError:
                 if (
-                    isinstance(item, dict) and 'role' in item and 'content' in item
-                    and isinstance(item['role'], str) and (isinstance(item['content'], str) or item['content'] is None)
+                    (isinstance(item, dict) and 'role' in item and 'content' in item
+                    and isinstance(item['role'], str) and isinstance(item['content'], str))
+                    or (isinstance(item, dict) and 'role' in item and 'tool_calls' in item
+                        and isinstance(item['role'], str) and isinstance(item['tool_calls'], list))
                 ):
                     super().append({k: clean_text(v) for k, v in item.items()})
                 else:
