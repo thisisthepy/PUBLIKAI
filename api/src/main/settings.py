@@ -28,6 +28,7 @@ MODEL_LIST = dict(
 MODEL_LIST['default'] = MODEL_LIST['qwen3']
 
 STATIC_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), "../test/static")
+WEBPACK_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), "../test/webpack")
 
 
 class Session:

@@ -9,6 +9,7 @@ plugins {
     alias(libs.plugins.compose.multiplatform)
     alias(libs.plugins.compose.compiler)
     alias(libs.plugins.compose.hotreload)
+    kotlin("plugin.serialization").version(libs.versions.kotlin.get())
 }
 
 
@@ -53,7 +54,23 @@ kotlin {
     }
     
     sourceSets {
+        val commonMain by getting
+        val androidMain by getting
         val desktopMain by getting
+        val cioMain by creating {
+            dependencies {
+                api(libs.ktor.client.cio)
+            }
+            androidMain.dependsOn(this)
+            desktopMain.dependsOn(this)
+            iosMain {
+                dependsOn(this)
+            }
+            dependsOn(commonMain)
+        }
+        wasmJsMain.dependencies {
+            api(libs.ktor.client.js)
+        }
         
         androidMain.dependencies {
             api(compose.material3)
@@ -70,6 +87,16 @@ kotlin {
             api(compose.components.uiToolingPreview)
             api(libs.androidx.lifecycle.viewmodel)
             api(libs.androidx.lifecycle.runtimeCompose)
+            api(libs.navigation.compose)
+
+            // For API calls and JSON serialization
+            implementation(libs.ktor.client.core)
+            implementation(libs.ktor.client.websockets)
+            implementation(libs.ktor.client.content.negotiation)
+            implementation(libs.ktor.serialization.kotlinx.json)
+            implementation(libs.kotlinx.coroutines.core)
+            implementation(libs.kotlinx.serialization.json)
+            implementation(libs.kotlinx.datetime)
 
             // For Compose WebView support
             //api(libs.compose.webview.multiplatform)
@@ -81,7 +108,7 @@ kotlin {
             api(compose.desktop.currentOs) {
                 exclude(group = "org.jetbrains.compose.material3")
             }
-            api(libs.kotlinx.coroutinesSwing)
+            api(libs.kotlinx.coroutines.swing)
 
             implementation(libs.jewel.standalone)
             implementation(libs.jewel.decorated.window)

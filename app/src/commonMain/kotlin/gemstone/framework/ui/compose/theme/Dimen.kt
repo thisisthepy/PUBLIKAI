@@ -1,11 +1,14 @@
 package gemstone.framework.ui.compose.theme
 
+import androidx.compose.foundation.shape.CornerSize
+import androidx.compose.material3.ButtonDefaults
+import androidx.compose.runtime.Composable
 import androidx.compose.ui.unit.dp
 
 
 object Dimen {
     // App settings
-    val SIDEBAR_WIDTH = 270.dp
+    val SIDEBAR_WIDTH = 300.dp
 
     // Layout settings
     val LAYOUT_PADDING = 16.dp
@@ -13,6 +16,41 @@ object Dimen {
 
     // Button settings
     val BUTTON_PADDING = 8.dp
+    val BUTTON_ELEVATION_WHITE = 18.dp
+    val BUTTON_ELEVATION_BLACK = 22.dp
+    val BUTTON_ELEVATIONS_WHITE
+        @Composable get() = ButtonDefaults.buttonElevation(
+            defaultElevation = BUTTON_ELEVATION_WHITE,
+            pressedElevation = BUTTON_ELEVATION_WHITE * 0.8f,
+            hoveredElevation = BUTTON_ELEVATION_WHITE * 0.9f,
+            focusedElevation = BUTTON_ELEVATION_WHITE * 0.9f,
+            disabledElevation = BUTTON_ELEVATION_WHITE * 0.5f
+        )
+    val BUTTON_ELEVATIONS_BLACK
+        @Composable get() = ButtonDefaults.buttonElevation(
+        defaultElevation = BUTTON_ELEVATION_BLACK,
+        pressedElevation = BUTTON_ELEVATION_BLACK * 0.8f,
+        hoveredElevation = BUTTON_ELEVATION_BLACK * 0.9f,
+        focusedElevation = BUTTON_ELEVATION_BLACK * 0.9f,
+        disabledElevation = BUTTON_ELEVATION_BLACK * 0.5f
+    )
     val BUTTON_CLICK_ANIMATION = ClickAnimation(1f, 0.95f)
     val BUTTON_HOVER_ANIMATION = HoverAnimation(0f, -2f)
+    val BIG_BUTTON_PADDING = 14.dp
+    val BIG_BUTTON_SIZE = 48.dp
+    val BIG_BUTTON_CORNER_RADIUS = CornerSize(20.dp)
+
+    // Surface settings
+    val SURFACE_CORNER_RADIUS = CornerSize(26.dp)
+    val SURFACE_ELEVATION = 30.dp
+    val SURFACE_ELEVATIONS
+        @Composable get() = ButtonDefaults.elevatedButtonElevation(
+            defaultElevation = SURFACE_ELEVATION,
+            pressedElevation = SURFACE_ELEVATION * 0.8f,
+            hoveredElevation = SURFACE_ELEVATION * 0.9f,
+            focusedElevation = SURFACE_ELEVATION * 0.9f,
+            disabledElevation = SURFACE_ELEVATION * 0.5f
+        )
+    val SURFACE_CLICK_ANIMATION = ClickAnimation(1f, 0.97f)
+    val SURFACE_HOVER_ANIMATION = HoverAnimation(0f, 0f)
 }

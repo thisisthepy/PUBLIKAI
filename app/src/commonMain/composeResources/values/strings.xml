@@ -1,3 +1,18 @@
 <resources>
+    <!-- General strings -->
     <string name="app_name">Gemstone AI</string>
+    <string name="app_title">Gemstone</string>
+
+    <!-- Sidebar -->
+    <string name="sidebar_notification_section">Notifications</string>
+    <string name="sidebar_models_section">Models</string>
+    <string name="sidebar_models_section_desc">Model Settings</string>
+    <string name="sidebar_recent_chats_section">Recent Chats</string>
+    <string name="sidebar_recent_chats_section_desc">Search Recent Chats</string>
+
+    <!-- Chatting -->
+    <string name="chat_title_placeholder">New Chat</string>
+    <string name="chat_new_chat_icon_desc">Start new chat</string>
+    <string name="chat_option_icon_desc">Chatting options</string>
+    <string name="chat_message_placeholder">Ask me anything...</string>
 </resources>

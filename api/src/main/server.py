@@ -10,7 +10,7 @@ import asyncio
 import json
 import os
 
-from .settings import STATIC_DIR, MODEL_LIST, Session
+from .settings import STATIC_DIR, WEBPACK_DIR, MODEL_LIST, Session
 from .models.config import ChatHistory
 import requests
 import re
@@ -168,12 +168,23 @@ class Message(BaseModel):
 
 app = FastAPI()
 app.mount("/static", StaticFiles(directory=STATIC_DIR, html=True), name="static")
+app.mount("/webpack", StaticFiles(directory=WEBPACK_DIR, html=True), name="webpack")
 
 
 @app.get("/")
 def root():
     """ Redirect to the chat page """
-    return RedirectResponse(url="/chat")
+    #return RedirectResponse(url="/chat")
+    return FileResponse(os.path.join(WEBPACK_DIR, "index.html"))
+
+
+@app.get("/composeResources/{path:path}")
+def resource(path: str):
+    """ Redirect to the chat page """
+    return RedirectResponse(
+        url=f"/webpack/composeResources/{path}",
+        status_code=301
+    )
 
 
 @app.get("/chat")
@@ -308,5 +319,5 @@ async def chat_with_streaming(websocket: WebSocket):
 if __name__ == '__main__':
     uvicorn.run(
         app, host="127.0.0.1", port=23100,
-        ws_ping_interval=60, ws_ping_timeout=30, ws_per_message_deflate=False, timeout_keep_alive=300
+        ws_ping_interval=120, ws_ping_timeout=60, ws_per_message_deflate=False, timeout_keep_alive=600
     )
