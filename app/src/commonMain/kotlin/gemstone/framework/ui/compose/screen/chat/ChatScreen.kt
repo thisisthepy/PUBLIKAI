@@ -79,6 +79,7 @@ fun ChatScreen(screenWidth: Dp) {
         }
         LazyColumn(
             modifier = Modifier.fillMaxWidth().weight(1f),
+            contentPadding = PaddingValues(top = Dimen.LIST_ELEMENT_SPACING * 3),
             verticalArrangement = when (messageHistory.isEmpty()) {
                 true -> Arrangement.Center
                 false -> Arrangement.spacedBy(Dimen.LIST_ELEMENT_SPACING, Alignment.Top)
@@ -256,21 +257,26 @@ fun MessageBubble(
                 modifier = Modifier,
                 shape = MaterialTheme.shapes.large
             ) {
-                BodyText(SettingsViewModel.userInitial, fontWeight = FontWeight.ExtraLight, maxLines = 1)
+                BodyText(
+                    SettingsViewModel.userInitial,
+                    fontSize = 14.sp,
+                    fontWeight = FontWeight.ExtraLight,
+                    maxLines = 1
+                )
             }
-            Spacer(modifier = Modifier.width(Dimen.LIST_ELEMENT_SPACING))
+            //Spacer(modifier = Modifier.width(Dimen.LIST_ELEMENT_SPACING))
             SecondaryFluxButton(
                 onClick = {},
                 modifier = Modifier,
-                elevation = ButtonDefaults.buttonElevation(6.dp),
+                elevation = ButtonDefaults.buttonElevation(4.dp),
                 clickAnimation = Dimen.SURFACE_CLICK_ANIMATION,
                 hoverAnimation = null,
-                interactionSource = remember { NoRippleInteractionSource() },
+                //interactionSource = remember { NoRippleInteractionSource() },
                 enabled = false,
                 shape = MaterialTheme.shapes.extraLarge,
-                contentPadding = PaddingValues(0.dp)
+                contentPadding = PaddingValues(vertical = 10.dp, horizontal = 14.dp)
             ) {
-                BodyText(content, fontWeight = FontWeight.Light)
+                BodyText(content, fontWeight = FontWeight.Light, color = MaterialTheme.colorScheme.primary)
             }
         }
     } else {
@@ -281,49 +287,63 @@ fun MessageBubble(
         ) {
             var showThoughts by rememberSaveable { mutableStateOf(false) }
 
-            Row {
+            Row(
+                modifier = Modifier,
+                horizontalArrangement = Arrangement.Start,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
                 PrimaryFluxButton(
                     onClick = {},
                     modifier = Modifier,
-                    shape = MaterialTheme.shapes.large
+                    shape = MaterialTheme.shapes.medium,
+                    contentPadding = PaddingValues(vertical = 4.dp, horizontal = 10.dp),
                 ) {
-                    BodyText(role.value, fontWeight = FontWeight.ExtraLight, maxLines = 1)
+                    BodyText(
+                        role.value.replaceFirstChar { it.uppercase() },
+                        fontSize = 14.sp,
+                        fontWeight = FontWeight.ExtraLight,
+                        maxLines = 1
+                    )
                 }
-                Spacer(modifier = Modifier.width(Dimen.LIST_ELEMENT_SPACING))
+                Spacer(modifier = Modifier.width(Dimen.LIST_ELEMENT_SPACING * 2))
                 val status = "${thoughts.second}초 동안 " + when (thoughts.third) {
                     true -> "생각 중..."
                     false -> "생각함"
-                } + if (showThoughts) " <" else " >"
+                } + if (showThoughts) "  <" else "  >"
                 BodyText(
-                    status, fontWeight = FontWeight.Light, color = MaterialTheme.colorScheme.primary,
+                    status,
+                    fontWeight = FontWeight.Light,
+                    color = MaterialTheme.colorScheme.primary,
+                    letterSpacing = (-1).sp,
                     modifier = Modifier.pressClickEffect(
-                        onClick = { },
+                        onClick = { showThoughts = !showThoughts },
                         animation = Dimen.BUTTON_CLICK_ANIMATION
                     )
                 )
-                if (showThoughts) {
-                    val color = MaterialTheme.colorScheme.primary
-                    CaptionText(
-                        thoughts.first,
-                        color = color,
-                        modifier = Modifier.padding(horizontal = 4.dp)
-                            .drawBehind {
-                                drawLine(
-                                    color = color,
-                                    start = Offset(0f, 0f),
-                                    end = Offset(0f, size.height),
-                                    strokeWidth = 2.dp.toPx()
-                                )
-                            }
-                    )
-                }
+            }
+            if (showThoughts && thoughts.first.isNotBlank()) {
+                val color = MaterialTheme.colorScheme.primary
+                Spacer(modifier = Modifier.width(Dimen.LIST_ELEMENT_SPACING))
+                CaptionText(
+                    thoughts.first,
+                    color = color,
+                    modifier = Modifier.padding(horizontal = 8.dp)
+                        .drawBehind {
+                            drawLine(
+                                color = color,
+                                start = Offset(0f, 0f),
+                                end = Offset(0f, size.height),
+                                strokeWidth = 2.dp.toPx()
+                            )
+                        }
+                )
             }
             if (content.isNotBlank()) {
                 Spacer(modifier = Modifier.width(Dimen.LIST_ELEMENT_SPACING))
                 BlurredFluxButton(
                     onClick = {},
                     modifier = Modifier,
-                    elevation = ButtonDefaults.buttonElevation(6.dp),
+                    elevation = ButtonDefaults.buttonElevation(16.dp),  // TODO: Fix elevation issue
                     clickAnimation = Dimen.SURFACE_CLICK_ANIMATION,
                     hoverAnimation = null,
                     interactionSource = remember { NoRippleInteractionSource() },
