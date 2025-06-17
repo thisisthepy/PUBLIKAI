@@ -9,6 +9,6 @@ if sys.argv[1] == "run" and sys.argv[2] == "server":
     host = sys.argv[3] if len(sys.argv) > 3 else "0.0.0.0"
     port = int(sys.argv[4]) if len(sys.argv) > 4 else 23100
     uvicorn.run(
-        app, host=host, port=port,
-        ws_ping_interval=120, ws_ping_timeout=60, ws_per_message_deflate=False, timeout_keep_alive=600
+        app, host=host, port=port, reload=True,
+        ws_ping_interval=300, ws_ping_timeout=300, ws_per_message_deflate=False
     )
