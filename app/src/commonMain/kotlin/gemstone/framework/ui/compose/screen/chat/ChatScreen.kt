@@ -338,10 +338,14 @@ fun MessageBubble(
                     )
                 }
                 Spacer(modifier = Modifier.width(Dimen.LIST_ELEMENT_SPACING * 2))
-                val status = "${thoughts.second}초 동안 " + when (thoughts.third) {
+                var status = "${thoughts.second}초 동안 " + when (thoughts.third) {
                     true -> "생각 중..."
                     false -> "생각함"
-                } + if (showThoughts) "  <" else "  >"
+                }
+                if (thoughts.second < 1) {
+                    status = "답변 생성 대기 중..."
+                }
+                status += if (showThoughts) "  <" else "  >"
                 BodyText(
                     status,
                     fontWeight = FontWeight.Light,
