@@ -14,7 +14,7 @@ try:
             model_id: str,
             context_length: int = 12000,
             cache_dir: Optional[Union[str, os.PathLike[str]]] = None,
-            gpu_layer_attempts: Tuple[int] = (-1, 30, 25, 20, 15, 10, 5, 0),
+            gpu_layer_attempts: Tuple[int] = (-1, 50, 45, 40, 35, 30, 25, 20, 15, 10, 5, 0),
             **kwargs
         ):
             self.model_id = model_id
@@ -42,32 +42,22 @@ try:
                     kwargs_copy = kwargs.copy()
                     kwargs_copy['n_gpu_layers'] = n_layers
 
-                    self.model = Llama.from_pretrained(**kwargs)
+                    self.model = Llama.from_pretrained(**kwargs_copy)
 
                     print(f"INFO:     Model {model_id} loaded with {n_layers} GPU layers.")
 
                     # Display GPU memory usage (if available)
                     if torch.cuda.is_available() and n_layers > 0:
-                        memory_allocated = torch.cuda.memory_allocated() / 1024**3
-                        memory_reserved = torch.cuda.memory_reserved() / 1024**3
-                        print(f"INFO:     GPU memory usage: {memory_allocated:.2f}GB (reserved: {memory_reserved:.2f}GB)")
-
+                        from pynvml import *
+                        handle = nvmlDeviceGetHandleByIndex(0)
+                        meminfo = nvmlDeviceGetMemoryInfo(handle)
+                        memory_allocated = meminfo.used / 1024**3
+                        total_memory = meminfo.total / 1024**3
+                        nvmlShutdown()
+                        print(f"INFO:     GPU memory usage: {memory_allocated:.2f}GB / {total_memory:.2f}GB")
                     return
-
                 except Exception as e:
-                    error_msg = str(e).lower()
-                    last_error = e
-
-                    # Check if it's a CUDA memory error
-                    if "cuda" in error_msg and ("memory" in error_msg or "out of memory" in error_msg):
-                        print(f"ERROR:    Failed due to insufficient VRAM ({n_layers} layers of {model_id})")
-                        continue
-                    elif "failed to allocate" in error_msg or "allocation" in error_msg:
-                        print(f"ERROR:    Memory allocation failed ({n_layers} layers of {model_id})")
-                        continue
-                    else:  # If it's a different type of error, don't retry and raise immediately
-                        print(f"ERROR:    Unexpected error occurred while loading {model_id} model with {n_layers} layers: {e}")
-                        raise e
+                    print(f"ERROR:    Memory allocation error occurred while loading {model_id} model with {n_layers} layers: {e}")
 
             # If all attempts failed
             raise RuntimeError(f"ERROR:    Failed to load {model_id} model with all GPU layer configurations. Last error: {last_error}")
