@@ -6,7 +6,7 @@ from ...backend import BackendType, CoreRuntime
 
 # Set model id
 model_id = "lmstudio-community/Meta-Llama-3.1-8B-Instruct-GGUF"
-context_length = 128000  # Set context length to 128000 tokens
+context_length = 131072  # Set context length to 131072 tokens (max)
 
 
 # Prompt setting

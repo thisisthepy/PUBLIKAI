@@ -67,9 +67,6 @@ class BaseModel:
         stream: bool = True
     ) -> Union[Generator[str, None, None], str]:
         """ Parse tool calling from the model's output """
-        if len(tools) == 0:
-            return outputs
-
         result_obj = FunctionCallResult()
         result_obj.register_tools(tools, self.supported_tools.implementations)
 
@@ -126,7 +123,8 @@ class BaseModel:
             if final_result is False:
                 stat += 1
                 continue
-            print("\r[✔] Tool calls are finalized successfully.", flush=True)
+            if stat > 0:
+                print("\r[✔] Tool calls are finalized successfully.", flush=True)
 
             if stream:
                 yield final_result
@@ -197,7 +195,7 @@ class BaseModel:
 
             generation_kwargs = dict(
                 messages=prompt,
-                tools=tools,
+                tools=tools if tools else None,
                 temperature=temperature,
                 top_p=top_p,
                 top_k=top_k,
