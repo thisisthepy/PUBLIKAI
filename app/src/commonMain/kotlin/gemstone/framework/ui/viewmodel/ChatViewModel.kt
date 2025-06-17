@@ -27,7 +27,7 @@ enum class ChatRole(val value: String) {
 @Serializable
 data class ChatMessage(
     val role: String,
-    val content: String = "",
+    val content: String,
     val tool_calls: List<ToolCall>? = null,
     val tool_call_id: String? = null
 )
@@ -221,10 +221,15 @@ object ChatViewModel {
                     is ChatEvent.MessageComplete -> {
                         // Add assistant message to history and UI
                         val data = _uiState.value.currentMessage?.assistant?.trim()
-                        chatHistory.add(ChatRole.ASSISTANT.value, data ?: "")
+                        val assistantMessage = if (data.isNullOrEmpty()) {
+                            "[ERROR] The connection was closed unexpectedly, please try again.}"
+                        } else {
+                            data
+                        }
+                        chatHistory.add(ChatRole.ASSISTANT.value, assistantMessage)
                         val currentMessage = Conversation(
                             user = _uiState.value.currentMessage?.user ?: "",
-                            assistant = data ?: "",
+                            assistant = assistantMessage,
                             thoughts = _uiState.value.currentMessage?.thoughts ?: "",
                             thoughtElapsed = _uiState.value.currentMessage?.thoughtElapsed ?: 0f,
                             isThinking = false,

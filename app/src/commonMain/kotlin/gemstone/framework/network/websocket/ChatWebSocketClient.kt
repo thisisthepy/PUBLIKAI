@@ -200,9 +200,7 @@ class ChatWebSocketClient(
             message.contains("<tool_call>") -> {
                 val regex = """<tool_call>([\s\S]*?)</tool_call>""".toRegex()
                 regex.findAll(message).forEach { match ->
-                    println(match.groupValues[1])
                     handleToolCall(match.groupValues[1])
-                    println("---")
                 }
             }
 
