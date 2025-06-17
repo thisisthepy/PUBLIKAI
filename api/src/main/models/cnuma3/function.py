@@ -92,8 +92,8 @@ Cnuma3Functions = FunctionCalling(
             }
         ),
         FunctionSchema(
-            name="get_shuttle_bus_info",
-            description="충남대학교 셔틀버스 정보를 조회합니다",
+            name="get_shuttle_general_time_table",
+            description="충남대학교 셔틀버스의 일반적인 타임 테이블 정보를 조회합니다",
             parameters={
                 "type": "object",
                 "properties": {
@@ -147,7 +147,7 @@ Cnuma3Functions = FunctionCalling(
         get_cnu_notices=cnu.get_cnu_notices,
         get_academic_schedule=cnu.get_academic_schedule,
         get_cafeteria_menu=cnu.get_cafeteria_menu,
-        get_shuttle_bus_info=cnu.get_shuttle_bus_info,
+        get_shuttle_general_time_table=cnu.get_shuttle_general_time_table,
         search_cnu_site=cnu.search_cnu_site
     )
 )

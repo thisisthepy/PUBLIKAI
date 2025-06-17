@@ -405,7 +405,7 @@ def get_cafeteria_menu(date: str = "today", cafeteria: str = "학생회관") -> 
         return f"식단 조회 중 오류 발생: {str(e)}"
 
 
-def get_shuttle_bus_info(route: str = "all", time_type: str = "current") -> str:
+def get_shuttle_general_time_table(route: str = "all", time_type: str = "current") -> str:
     """
     충남대학교 셔틀버스 정보를 조회합니다.
     
@@ -565,7 +565,7 @@ if __name__ == '__main__':
         ("공지사항 조회", lambda: get_cnu_notices("대학", 5)),
         ("학사일정 조회", lambda: get_academic_schedule("학부")),
         ("식단 조회", lambda: get_cafeteria_menu("today", "학생회관")),
-        ("셔틀버스 조회", lambda: get_shuttle_bus_info("대전역")),
+        ("셔틀버스 조회", lambda: get_shuttle_general_time_table("대전역")),
         ("사이트 검색", lambda: search_cnu_site("인공지능학과 교과과정", "plus", 3))
     ]
     
