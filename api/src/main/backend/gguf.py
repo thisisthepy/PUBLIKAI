@@ -52,19 +52,20 @@ try:
                         memory_reserved = torch.cuda.memory_reserved() / 1024**3
                         print(f"INFO:     GPU memory usage: {memory_allocated:.2f}GB (reserved: {memory_reserved:.2f}GB)")
 
+                    break
+
                 except Exception as e:
                     error_msg = str(e).lower()
                     last_error = e
 
                     # Check if it's a CUDA memory error
-                    if 'cuda' in error_msg and ('memory' in error_msg or 'out of memory' in error_msg):
+                    if "cuda" in error_msg and ("memory" in error_msg or "out of memory" in error_msg):
                         print(f"ERROR:    Failed due to insufficient VRAM ({n_layers} layers of {model_id})")
                         continue
-                    elif 'failed to allocate' in error_msg or 'allocation' in error_msg:
+                    elif "failed to allocate" in error_msg or "allocation" in error_msg:
                         print(f"ERROR:    Memory allocation failed ({n_layers} layers of {model_id})")
                         continue
-                    else:
-                        # If it's a different type of error, don't retry and raise immediately
+                    else:  # If it's a different type of error, don't retry and raise immediately
                         print(f"ERROR:    Unexpected error occurred while loading {model_id} model with {n_layers} layers: {e}")
                         raise e
 
