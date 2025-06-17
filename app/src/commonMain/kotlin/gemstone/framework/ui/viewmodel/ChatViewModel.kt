@@ -222,7 +222,7 @@ object ChatViewModel {
                         // Add assistant message to history and UI
                         val data = _uiState.value.currentMessage?.assistant?.trim()
                         val assistantMessage = if (data.isNullOrEmpty()) {
-                            "[ERROR] The connection was closed unexpectedly, please try again.}"
+                            "[ERROR] The connection was closed unexpectedly, please try again."
                         } else {
                             data
                         }
