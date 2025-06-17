@@ -14,7 +14,7 @@ try:
             model_id: str,
             context_length: int = 12000,
             cache_dir: Optional[Union[str, os.PathLike[str]]] = None,
-            gpu_layer_attempts: Tuple[int] = (-1, 30, 25, 20, 15, 10, 5, 0),
+            gpu_layer_attempts: Tuple[int] = (40, 35, 30, 25, 20, 15, 10, -1, 5, 0),
             **kwargs
         ):
             self.model_id = model_id
