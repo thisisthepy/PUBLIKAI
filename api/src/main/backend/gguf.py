@@ -52,7 +52,7 @@ try:
                         memory_reserved = torch.cuda.memory_reserved() / 1024**3
                         print(f"INFO:     GPU memory usage: {memory_allocated:.2f}GB (reserved: {memory_reserved:.2f}GB)")
 
-                    break
+                    return
 
                 except Exception as e:
                     error_msg = str(e).lower()
