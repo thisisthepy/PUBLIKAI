@@ -9,6 +9,8 @@ class CoreRuntime:
     __backends = {}
     __default_backend = None
 
+    DUMMY_BACKEND = None
+
     @classmethod
     def register_backend(cls, backend_name: str, backend_class: type, default: bool = False):
         """
@@ -64,3 +66,10 @@ class CoreRuntime:
         **kwargs
     ) -> Union[Generator[str, None, None], str]:
         raise NotImplementedError("The generate method must be implemented by subclasses.")
+
+
+class DummyBackend(CoreRuntime):
+    pass
+
+
+CoreRuntime.DUMMY_BACKEND = DummyBackend
