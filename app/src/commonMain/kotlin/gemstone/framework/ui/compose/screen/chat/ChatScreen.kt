@@ -383,7 +383,7 @@ fun MessageBubble(
                 TertiaryFluxButton(
                     onClick = {},
                     modifier = Modifier.fillMaxWidth().padding(bottom = Dimen.LIST_ELEMENT_SPACING),
-                    elevation = ButtonDefaults.buttonElevation(1.dp),
+                    elevation = ButtonDefaults.buttonElevation(0.4.dp),
                     clickAnimation = ClickAnimation(1f, 0.999f),
                     interactionSource = remember { NoRippleInteractionSource() },
                     hoverAnimation = null,
