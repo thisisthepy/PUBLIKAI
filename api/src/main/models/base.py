@@ -64,7 +64,8 @@ class BaseModel:
         outputs,
         chat_history: ChatHistory,
         tools: List[Dict[str, str]],
-        stream: bool = True
+        stream: bool = True,
+        print_output: bool = False
     ) -> Union[Generator[str, None, None], str]:
         """ Parse tool calling from the model's output """
         result_obj = FunctionCallResult()
@@ -110,20 +111,22 @@ class BaseModel:
                 )
 
         # Finalize the tool calls
-        print("")
+        print("\n")
         spinner = ['⠋','⠙','⠹','⠸','⠼','⠴','⠦','⠧','⠇','⠏']
         stat = 0
         while True:
+            queued = len(result_obj.job_list)
             final_result = result_obj.finalize(
                 chat_history,
-                (self.special_tags.TOOLCALL, self.special_tags.TOOLCALL_END)
+                (self.special_tags.TOOLCALL, self.special_tags.TOOLCALL_END),
+                print_output=print_output
             )
-            if stat % 2 == 0:
+            if queued > 0 and stat % 2 == 0:
                 print(f"\r{spinner[(stat//2) % len(spinner)]} Waiting for tool calls to finish...", end="", flush=True)
             if final_result is False:
                 stat += 1
                 continue
-            if stat > 0:
+            if queued > 0:
                 print("\r[✔] Tool calls are finalized successfully.", flush=True)
 
             if stream:
@@ -210,7 +213,8 @@ class BaseModel:
                 self.runtime(**generation_kwargs),
                 chat_history=chat_history,
                 tools=tools,
-                stream=stream
+                stream=stream,
+                print_output=print_output
             )
 
             if stream:
@@ -219,7 +223,7 @@ class BaseModel:
                         if word:
                             if self.special_tags.TOOLCALL in word and self.special_tags.TOOLCALL_END in word:
                                 function_called = True  # flag on
-                            if print_output: print(word, end="")
+                            if print_output: print(word, end="", flush=True)
                             yield word
                 except ValueError as e:  # Over token limit error
                     traceback.print_exc()
@@ -227,11 +231,11 @@ class BaseModel:
                         message = "\n\nERROR: Chat is unexpectedly terminated due to token limit. Please shorten your prompt or chat history."
                     else:
                         message = f"\n\nERROR: {type(e)} - Something went wrong while processing the chat. Please try again later.\n{e}"
-                    if print_output: print(message, end="")
+                    if print_output: print(message, end="", flush=True)
                     yield message
                 finally:
                     print()
             else:
                 if self.special_tags.TOOLCALL in outputs and self.special_tags.TOOLCALL_END in outputs:
                     function_called = True  # flag on
-                print(outputs)
+                print(outputs, flush=True)

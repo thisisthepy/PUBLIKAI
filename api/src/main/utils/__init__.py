@@ -99,7 +99,8 @@ class FunctionCallResult(list):
     def finalize(
         self,
         history_list: list,
-        tag: tuple[str, str] = ("<tool_call>", "</tool_call>")
+        tag: tuple[str, str] = ("<tool_call>", "</tool_call>"),
+        print_output: bool = False
     ) -> Union[str, False]:
         # Check if there are any pending tool calls
         with self.__queue_mutex:
@@ -110,6 +111,8 @@ class FunctionCallResult(list):
                     return ""
 
                 # Update the history with the current state
+                if print_output:
+                    print("\r"+repr(self), end="\n\n", flush=True)
                 history_list.extend(deepcopy(list(self)))
 
                 # Dump client-side tool call history
