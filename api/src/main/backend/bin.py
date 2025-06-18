@@ -99,4 +99,5 @@ try:
 
     CoreRuntime.register_backend("BinRuntime", BinRuntime)
 except ImportError:
-    print("WARNING: transformers module is not installed. Please install it to use GGUFRuntime.")
+    print("WARNING: transformers module is not installed. Please install it to use BinRuntime.")
+    BinRuntime = CoreRuntime.DUMMY_BACKEND

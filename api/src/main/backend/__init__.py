@@ -1,13 +1,8 @@
 from enum import Enum
+
 from .core import CoreRuntime
-try:
-    from .bin import BinRuntime
-except Exception as _ignored:
-    pass
-try:
-    from .gguf import GGUFRuntime
-except Exception as _ignored:
-    pass
+from .bin import BinRuntime
+from .gguf import GGUFRuntime
 
 
 class BackendType(Enum):
