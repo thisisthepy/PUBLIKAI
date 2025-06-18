@@ -28,7 +28,7 @@ app.mount("/webpack", StaticFiles(directory=WEBPACK_DIR, html=True), name="webpa
 def root():
     """ Redirect to the chat page """
     #return RedirectResponse(url="/chat")
-    return FileResponse(os.path.join(WEBPACK_DIR, "index.html"))
+    return FileResponse(os.path.join(WEBPACK_DIR, "gemstone.html"))
 
 
 @app.get("/composeResources/{path:path}")
