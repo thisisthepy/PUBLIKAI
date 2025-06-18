@@ -2,7 +2,7 @@ try:
     from llama_cpp import Llama, CreateChatCompletionStreamResponse
 
     from typing import List, Tuple, Dict, Optional, Union, Generator
-    import torch
+    import sys
     import os
     import gc
 
@@ -31,12 +31,19 @@ try:
                 # start from the n_gpu_layers specified
                 gpu_layer_attempts = [l for l in gpu_layer_attempts if l <= start_layers]
 
+            if sys.platform == "win32":  # settings against Windows CUDA error
+                gpu_layer_attempts = (0, )
+
             last_error = None
 
             for n_layers in gpu_layer_attempts:
                 try:
-                    if torch.cuda.is_available():
-                        torch.cuda.empty_cache()
+                    try:
+                        import torch
+                        if torch.cuda.is_available():
+                            torch.cuda.empty_cache()
+                    except:
+                        pass
                     gc.collect()
 
                     kwargs_copy = kwargs.copy()
@@ -47,14 +54,17 @@ try:
                     print(f"INFO:     Model {model_id} loaded with {n_layers} GPU layers.")
 
                     # Display GPU memory usage (if available)
-                    if torch.cuda.is_available() and n_layers > 0:
-                        from pynvml import *
-                        handle = nvmlDeviceGetHandleByIndex(0)
-                        meminfo = nvmlDeviceGetMemoryInfo(handle)
-                        memory_allocated = meminfo.used / 1024**3
-                        total_memory = meminfo.total / 1024**3
-                        nvmlShutdown()
-                        print(f"INFO:     GPU memory usage: {memory_allocated:.2f}GB / {total_memory:.2f}GB")
+                    try:
+                        from pynvml import nvmlDeviceGetHandleByIndex, nvmlDeviceGetMemoryInfo, nvmlShutdown
+                        if n_layers > 0:
+                            handle = nvmlDeviceGetHandleByIndex(0)
+                            meminfo = nvmlDeviceGetMemoryInfo(handle)
+                            memory_allocated = meminfo.used / 1024**3
+                            total_memory = meminfo.total / 1024**3
+                            nvmlShutdown()
+                            print(f"INFO:     GPU memory usage: {memory_allocated:.2f}GB / {total_memory:.2f}GB")
+                    except:
+                        pass
                     return
                 except Exception as e:
                     print(f"ERROR:    Memory allocation error occurred while loading {model_id} model with {n_layers} layers: {e}")
@@ -103,3 +113,4 @@ try:
     CoreRuntime.register_backend("GGUFRuntime", GGUFRuntime, default=True)
 except ImportError:
     print("WARNING: llama_cpp module is not installed. Please install it to use GGUFRuntime.")
+    GGUFRuntime = CoreRuntime.DUMMY_BACKEND
