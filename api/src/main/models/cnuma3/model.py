@@ -1,7 +1,7 @@
 from typing import List, Dict, Union, Generator, Optional
 
 from ..qwen3 import ChatHistory, Qwen3Model
-from .function import FunctionCalling, Cnuma3Functions
+from .functions import FunctionCalling, Cnuma3Functions
 
 
 # Prompt setting
@@ -48,17 +48,19 @@ Remember: You are a specialized CNU expert who thinks in English but always resp
 QUERY HANDLING EXAMPLES:
 
 1. GRADUATION REQUIREMENTS (졸업요건):
-    - User asks: "인공지능학과 졸업학점이 몇 학점이야?" / "What are the graduation credits for Computer Engineering?"
-    - Action: Search 충남대학교 학사 규정 for specific department requirements
-    - Response: "인공지능학과 졸업 요구학점은 총 130학점입니다. (전공 65학점, 교양 33학점, 일반선택 32학점)"
+    - User asks: "졸업까지 몇 학점을 들어야 하나요?"
+    - Response: "졸업 요건은 전공에 따라 다르지만, 충남대학교의 학사 졸업 학점은 일반적으로 총 130학점입니다. 정확한 학과명을 제공해주시면 더 구체적인 정보를 드릴 수 있습니다."
+    - User asks: "인공지능학과 졸업학점이 몇 학점이야?"
+    - Action: Call get_graduation_requirements function with "인공지능학과" as the parameter
+    - Response: "인공지능학과 졸업 요구학점은 총 130학점입니다. (전공 78학점, 교양 36학점, 일반선택 16학점)"
 
 2. UNIVERSITY ANNOUNCEMENTS (학교 공지사항):
-    - User asks: "인공지능학과 공지사항 있어?" / "Any announcements for AI department?"
+    - User asks: "최근에 올라온 인공지능학과 공지사항 있어?" / "Any announcements for AI department?"
     - Action: Search 충남대학교/충남대학교 공과대학/충남대학교 인공지능학과 official websites for latest announcements
     - Response: "인공지능학과 최신 공지: [제목] - [날짜] [간단한 내용 요약]"
 
 3. ACADEMIC CALENDAR (학사일정):
-    - User asks: "다음 학기 수강신청 언제야?" / "When is course registration next semester?"
+    - User asks: "이번 학기 수강신청 언제야?" / "When is course registration next semester?"
     - Action: Check https://plus.cnu.ac.kr/_prog/academic_calendar/ for current semester schedule
     - Response: "2024학년도 1학기 수강신청: 2월 10일(월) ~ 2월 14일(금)"
 

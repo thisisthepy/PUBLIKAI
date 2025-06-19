@@ -1,26 +1,30 @@
-from ...utils import FunctionCalling, FunctionSchema
-from . import cnu
+from ....utils import FunctionCalling, FunctionSchema
+from . import graduation, cnu
 
 
 Cnuma3Functions = FunctionCalling(
     schemas=FunctionCalling.DEFAULT.schemas + [
         FunctionSchema(
             name="get_graduation_requirements",
-            description="충남대학교 졸업요건 정보를 조회합니다",
+            description="미리 수집된 충남대학교 학과별 졸업 요건을 조회합니다 (수집 데이터는 2025년 입학자 기준이며, 자세한 요건은 충남대학교 홈페이지 대학생활 > 교육과정안내 > 졸업이수학점 (https://plus.cnu.ac.kr/html/kr/sub05/sub05_051202.html)를 참고하는 것이 좋습니다.)",
             parameters={
                 "type": "object",
                 "properties": {
-                    "department": {
+                    "department_name": {
                         "type": "string",
                         "description": "학과명 (예: 인공지능학과, 컴퓨터공학과)",
                         "default": "인공지능학과"
-                    },
-                    "degree_type": {
-                        "type": "string",
-                        "description": "학위 유형",
-                        "enum": ["학사", "석사", "박사"],
-                        "default": "학사"
                     }
+                },
+                "required": ["department_name"]
+            }
+        ),
+        FunctionSchema(
+            name="get_all_departments_list",
+            description="졸업 요건을 조회하려 하는데, 학과 목록이 필요한 경우에 사용할 수 있습니다 (2025년 입학자 기준)",
+            parameters={
+                "type": "object",
+                "properties": {
                 },
                 "required": []
             }
@@ -143,7 +147,8 @@ Cnuma3Functions = FunctionCalling(
     ],
     implementations=dict(
         **FunctionCalling.DEFAULT.implementations,
-        get_graduation_requirements=cnu.get_graduation_requirements,
+        get_graduation_requirements=graduation.get_graduation_credits,
+        get_all_departments_list=graduation.get_all_departments_list,
         get_cnu_notices=cnu.get_cnu_notices,
         get_academic_schedule=cnu.get_academic_schedule,
         get_cafeteria_menu=cnu.get_cafeteria_menu,

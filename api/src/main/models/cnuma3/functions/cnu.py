@@ -88,71 +88,6 @@ class CNUWebAPI:
 cnu_api = CNUWebAPI()
 
 
-def get_graduation_requirements(department: str = "인공지능학과", degree_type: str = "학사") -> str:
-    """
-    졸업요건 정보를 조회합니다.
-    
-    Args:
-        department: 학과명 (기본값: 인공지능학과)
-        degree_type: 학위 유형 (학사, 석사, 박사)
-    
-    Returns:
-        졸업요건 정보 문자열
-    """
-    try:
-        # plus.cnu.ac.kr에서 졸업요건 페이지 조회
-        url = cnu_api.plus_url + cnu_api.page_urls["graduation_requirements"]
-        result = cnu_api.fetch_page_content(url)
-        
-        if "error" in result:
-            return f"졸업요건 조회 중 오류 발생: {result['error']}"
-        
-        content = result["content"]
-        
-        # 졸업요건 관련 정보 추출
-        graduation_info = []
-        graduation_info.append(f"📚 {department} {degree_type} 졸업요건 정보")
-        graduation_info.append("=" * 50)
-        
-        # 일반적인 졸업요건 패턴 검색
-        patterns = [
-            r"졸업학점.*?(\d+).*?학점",
-            r"전공.*?(\d+).*?학점", 
-            r"교양.*?(\d+).*?학점",
-            r"필수.*?(\d+).*?학점",
-            r"선택.*?(\d+).*?학점"
-        ]
-        
-        found_info = False
-        for pattern in patterns:
-            matches = re.findall(pattern, content, re.IGNORECASE)
-            if matches:
-                found_info = True
-                graduation_info.append(f"• {pattern.replace('.*?', ' ').replace('(\\d+)', matches[0])}")
-        
-        if not found_info:
-            # 기본 졸업요건 정보 (인공지능학과 예시)
-            graduation_info.extend([
-                "🎓 일반적인 졸업요건 (인공지능학과 기준):",
-                "• 총 졸업학점: 130학점 이상",
-                "• 전공학점: 60학점 이상 (전공필수 18학점 포함)",
-                "• 교양학점: 37학점 이상",
-                "• 자유선택: 33학점",
-                "",
-                "📋 주요 전공필수 과목:",
-                "• 프로그래밍 기초, 자료구조, 알고리즘",
-                "• 머신러닝, 딥러닝, 자연어처리",
-                "• 컴퓨터비전, AI 수학 등",
-                "",
-                "⚠️  정확한 최신 정보는 학과 사무실이나 plus.cnu.ac.kr에서 확인하세요."
-            ])
-        
-        return "\n".join(graduation_info)
-        
-    except Exception as e:
-        return f"졸업요건 조회 중 오류 발생: {str(e)}"
-
-
 def get_cnu_notices(source: str = "대학", max_results: int = 10) -> str:
     """
     충남대학교 공지사항을 조회합니다.
@@ -561,7 +496,6 @@ if __name__ == '__main__':
     
     # 각 함수 테스트
     functions_to_test = [
-        ("졸업요건 조회", lambda: get_graduation_requirements("인공지능학과")),
         ("공지사항 조회", lambda: get_cnu_notices("대학", 5)),
         ("학사일정 조회", lambda: get_academic_schedule("학부")),
         ("식단 조회", lambda: get_cafeteria_menu("today", "학생회관")),
