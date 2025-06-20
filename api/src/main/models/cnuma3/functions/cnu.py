@@ -13,7 +13,7 @@ import re
 try:
     from ...utils import web_search
 except ImportError:
-    parent = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+    parent = os.path.dirname(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
     sys.path.insert(0, parent)
     from utils import web_search
 
@@ -165,93 +165,6 @@ def get_cnu_notices(source: str = "대학", max_results: int = 10) -> str:
         return f"공지사항 조회 중 오류 발생: {str(e)}"
 
 
-def get_academic_schedule(degree_type: str = "학부", semester: str = "current") -> str:
-    """
-    학사일정을 조회합니다.
-    
-    Args:
-        degree_type: 학위 유형 (학부, 대학원)
-        semester: 학기 (current, next)
-    
-    Returns:
-        학사일정 정보 문자열
-    """
-    try:
-        # 학사일정 페이지 선택
-        if degree_type == "대학원":
-            page_path = cnu_api.page_urls["academic_calendar_grad"]
-        else:
-            page_path = cnu_api.page_urls["academic_calendar_undergrad"]
-        
-        url = cnu_api.plus_url + page_path
-        result = cnu_api.fetch_page_content(url)
-        
-        if "error" in result:
-            return f"학사일정 조회 중 오류 발생: {result['error']}"
-        
-        schedule_info = []
-        schedule_info.append(f"📅 충남대학교 {degree_type} 학사일정")
-        schedule_info.append("=" * 50)
-        
-        content = result["content"]
-        
-        # 현재 날짜 기준으로 관련 일정 추출
-        current_date = datetime.now()
-        current_year = current_date.year
-        current_month = current_date.month
-        
-        # 학사일정 패턴 검색
-        schedule_patterns = [
-            r"(\d{1,2}[./]\d{1,2}).*?(수강.*?신청|정정|개강|종강|시험|휴업|방학)",
-            r"(수강.*?신청|정정|개강|종강|시험|휴업|방학).*?(\d{1,2}[./]\d{1,2})",
-            r"(\d{4}[./]\d{1,2}[./]\d{1,2}).*?(수강.*?신청|정정|개강|종강|시험|휴업|방학)",
-        ]
-        
-        found_schedules = []
-        for pattern in schedule_patterns:
-            matches = re.findall(pattern, content, re.IGNORECASE)
-            if matches:
-                found_schedules.extend(matches)
-        
-        if found_schedules:
-            schedule_info.append(f"🗓️  {current_year}년 주요 학사일정:")
-            schedule_info.append("")
-            
-            for i, (date_or_event, event_or_date) in enumerate(found_schedules[:10], 1):
-                # 날짜와 이벤트 구분
-                if re.match(r"\d", date_or_event):
-                    date, event = date_or_event, event_or_date
-                else:
-                    event, date = date_or_event, event_or_date
-                
-                schedule_info.append(f"{i}. {event.strip()}: {date.strip()}")
-        else:
-            # 기본 학사일정 정보
-            schedule_info.extend([
-                f"🗓️  {current_year}년 일반적인 학사일정:",
-                "",
-                "📚 1학기:",
-                "• 수강신청: 2월 중순",
-                "• 개강: 3월 초",
-                "• 중간고사: 4월 중순", 
-                "• 기말고사: 6월 중순",
-                "• 종강: 6월 하순",
-                "",
-                "📚 2학기:",
-                "• 수강신청: 8월 중순",
-                "• 개강: 9월 초",
-                "• 중간고사: 10월 중순",
-                "• 기말고사: 12월 중순", 
-                "• 종강: 12월 하순",
-                "",
-                f"🌐 정확한 일정: {url}"
-            ])
-        
-        return "\n".join(schedule_info)
-        
-    except Exception as e:
-        return f"학사일정 조회 중 오류 발생: {str(e)}"
-
 
 def get_cafeteria_menu(date: str = "today", cafeteria: str = "학생회관") -> str:
     """
@@ -340,116 +253,6 @@ def get_cafeteria_menu(date: str = "today", cafeteria: str = "학생회관") -> 
         return f"식단 조회 중 오류 발생: {str(e)}"
 
 
-def get_shuttle_general_time_table(route: str = "all", time_type: str = "current") -> str:
-    """
-    충남대학교 셔틀버스 정보를 조회합니다.
-    
-    Args:
-        route: 노선 (all, 대전역, 유성온천역, 정부청사)
-        time_type: 시간 유형 (current, weekend, holiday)
-    
-    Returns:
-        셔틀버스 정보 문자열
-    """
-    try:
-        # 셔틀버스 페이지 조회
-        url = cnu_api.plus_url + cnu_api.page_urls["shuttle_bus"]
-        result = cnu_api.fetch_page_content(url)
-        
-        if "error" in result:
-            return f"셔틀버스 정보 조회 중 오류 발생: {result['error']}"
-        
-        # 현재 날짜와 시간 확인
-        now = datetime.now()
-        is_weekend = now.weekday() >= 5
-        
-        # 공휴일 체크 (기본적인 체크, 실제로는 공휴일 API 연동 필요)
-        is_holiday = False  # 실제 구현시 공휴일 API 연동
-        
-        bus_info = []
-        bus_info.append("🚌 충남대학교 셔틀버스 정보")
-        bus_info.append("=" * 50)
-        
-        # 운행 상태 확인
-        if is_holiday:
-            bus_info.append("⚠️  오늘은 공휴일로 셔틀버스가 운행하지 않습니다.")
-            return "\n".join(bus_info)
-        
-        if is_weekend:
-            bus_info.append("📅 주말 운행 스케줄")
-        else:
-            bus_info.append("📅 평일 운행 스케줄")
-        
-        bus_info.append("")
-        
-        if route == "all" or route == "대전역":
-            bus_info.extend([
-                "🚉 대전역 ↔ 충남대학교:",
-                "",
-                "📍 탑승위치:",
-                "• 대전역: 동광장 시외버스 승차장 앞",
-                "• 충남대: 정문 앞 정류장",
-                "",
-                "⏰ 운행시간 (평일):",
-                "• 대전역 출발: 07:30, 08:30, 09:30, 16:30, 17:30, 18:30",
-                "• 충남대 출발: 08:00, 09:00, 10:00, 17:00, 18:00, 19:00",
-                "",
-                "⏰ 운행시간 (주말):",
-                "• 대전역 출발: 09:00, 15:00",
-                "• 충남대 출발: 10:00, 16:00",
-                ""
-            ])
-        
-        if route == "all" or route == "유성온천역":
-            bus_info.extend([
-                "🚊 유성온천역 ↔ 충남대학교:",
-                "",
-                "📍 탑승위치:",
-                "• 유성온천역: 2번 출구 앞", 
-                "• 충남대: 정문 앞 정류장",
-                "",
-                "⏰ 운행시간 (평일):",
-                "• 30분 간격 운행 (07:00 ~ 22:00)",
-                "",
-                "⏰ 운행시간 (주말):",
-                "• 1시간 간격 운행 (09:00 ~ 20:00)",
-                ""
-            ])
-        
-        if route == "all" or route == "정부청사":
-            bus_info.extend([
-                "🏛️ 정부청사 ↔ 충남대학교:",
-                "",
-                "📍 탑승위치:",
-                "• 정부청사: 정부대전청사 정류장",
-                "• 충남대: 후문 정류장",
-                "",
-                "⏰ 운행시간:",
-                "• 출퇴근 시간대만 운행",
-                "• 오전: 07:30 ~ 09:00 (30분 간격)",
-                "• 오후: 17:30 ~ 19:00 (30분 간격)",
-                ""
-            ])
-        
-        bus_info.extend([
-            "💰 요금: 무료",
-            "",
-            "📱 실시간 위치 확인:",
-            "• 충남대학교 앱",
-            "• 교내 전광판",
-            "",
-            f"🌐 상세정보: {url}",
-            "",
-            "⚠️  기상악화나 특별한 사정으로 운행이 중단될 수 있습니다.",
-            "⚠️  정확한 시간표는 학교 홈페이지에서 확인하세요."
-        ])
-        
-        return "\n".join(bus_info)
-        
-    except Exception as e:
-        return f"셔틀버스 정보 조회 중 오류 발생: {str(e)}"
-
-
 def search_cnu_site(query: str, site: str = "plus", max_results: int = 5) -> str:
     """
     충남대학교 사이트에서 검색합니다.
@@ -497,9 +300,7 @@ if __name__ == '__main__':
     # 각 함수 테스트
     functions_to_test = [
         ("공지사항 조회", lambda: get_cnu_notices("대학", 5)),
-        ("학사일정 조회", lambda: get_academic_schedule("학부")),
         ("식단 조회", lambda: get_cafeteria_menu("today", "학생회관")),
-        ("셔틀버스 조회", lambda: get_shuttle_general_time_table("대전역")),
         ("사이트 검색", lambda: search_cnu_site("인공지능학과 교과과정", "plus", 3))
     ]
     

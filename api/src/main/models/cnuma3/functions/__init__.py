@@ -1,5 +1,5 @@
 from ....utils import FunctionCalling, FunctionSchema
-from . import graduation, cnu
+from . import graduation, shuttle, cnu
 
 
 Cnuma3Functions = FunctionCalling(
@@ -53,6 +53,33 @@ Cnuma3Functions = FunctionCalling(
             }
         ),
         FunctionSchema(
+            name="search_cnu_site",
+            description="충남대학교 사이트에서 검색합니다",
+            parameters={
+                "type": "object",
+                "properties": {
+                    "query": {
+                        "type": "string",
+                        "description": "검색 쿼리"
+                    },
+                    "site": {
+                        "type": "string",
+                        "description": "검색할 사이트",
+                        "enum": ["plus", "ai"],
+                        "default": "plus"
+                    },
+                    "max_results": {
+                        "type": "integer",
+                        "description": "최대 결과 수",
+                        "default": 5,
+                        "minimum": 1,
+                        "maximum": 10
+                    }
+                },
+                "required": ["query"]
+            }
+        ),
+        FunctionSchema(
             name="get_academic_schedule",
             description="충남대학교 학사일정을 조회합니다",
             parameters={
@@ -97,51 +124,32 @@ Cnuma3Functions = FunctionCalling(
         ),
         FunctionSchema(
             name="get_shuttle_general_time_table",
-            description="충남대학교 셔틀버스의 일반적인 타임 테이블 정보를 조회합니다",
+            description="충남대학교 셔틀버스의 일반적인 타임 테이블 정보를 조회합니다 (2025년 5월 기준)",
             parameters={
                 "type": "object",
                 "properties": {
-                    "route": {
-                        "type": "string",
-                        "description": "노선",
-                        "enum": ["all", "대전역", "유성온천역", "정부청사"],
-                        "default": "all"
-                    },
-                    "time_type": {
-                        "type": "string",
-                        "description": "시간 유형",
-                        "enum": ["current", "weekend", "holiday"],
-                        "default": "current"
-                    }
                 },
                 "required": []
             }
         ),
         FunctionSchema(
-            name="search_cnu_site",
-            description="충남대학교 사이트에서 검색합니다",
+            name="fetch_shuttle_bus_time_table_from_web",
+            description="충남대학교 셔틀버스의 최신 운영 시간표를 조회합니다 (2025년 5월 이후 변경 사항이 있는지 확인하기 위함)",
             parameters={
                 "type": "object",
                 "properties": {
-                    "query": {
-                        "type": "string",
-                        "description": "검색 쿼리"
+                    "url": {
+                        "url": "string",
+                        "description": "시간표 조회에 사용할 홈페이지 URL",
+                        "default": "https://plus.cnu.ac.kr/html/kr/sub05/sub05_050403.html"
                     },
-                    "site": {
-                        "type": "string",
-                        "description": "검색할 사이트",
-                        "enum": ["plus", "ai"],
-                        "default": "plus"
-                    },
-                    "max_results": {
+                    "retry": {
                         "type": "integer",
-                        "description": "최대 결과 수",
-                        "default": 5,
-                        "minimum": 1,
-                        "maximum": 10
+                        "description": "홈페이지 조회 실패시 재시도 횟수",
+                        "default": 3
                     }
                 },
-                "required": ["query"]
+                "required": []
             }
         )
     ],
@@ -150,9 +158,10 @@ Cnuma3Functions = FunctionCalling(
         get_graduation_requirements=graduation.get_graduation_credits,
         get_all_departments_list=graduation.get_all_departments_list,
         get_cnu_notices=cnu.get_cnu_notices,
+        search_cnu_site=cnu.search_cnu_site,
         get_academic_schedule=cnu.get_academic_schedule,
         get_cafeteria_menu=cnu.get_cafeteria_menu,
-        get_shuttle_general_time_table=cnu.get_shuttle_general_time_table,
-        search_cnu_site=cnu.search_cnu_site
+        get_shuttle_general_time_table=shuttle.get_shuttle_general_time_table,
+        fetch_shuttle_bus_time_table_from_web=shuttle.fetch_shuttle_bus_time_table_from_web
     )
 )

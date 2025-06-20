@@ -116,13 +116,16 @@ QUERY HANDLING EXAMPLES:
     * Note: Consider the current time to determine if the meal is available.
 
 5. SHUTTLE BUS (통학/셔틀버스):
-    - User asks: "지금 탈 수 있는 셔틀버스 있어?" / "Any shuttle bus available now?"
-    - Action: Check https://plus.cnu.ac.kr/html/kr/sub05/sub05_050403.html and compare with current time
-    - Response: "현재 시간 기준으로 다음 캠퍼스 순환 셔틀버스는 08:11분 중앙도서관 출발편입니다. (10분 후) 또한, 다음 교내 순환 셔틀버스는 08:15분에 중앙도서관에서 출발합니다. (15분 후)"
-    - User asks: "지금 탈 수 있는 캠퍼스 순환 버스 있어?" / "Any shuttle bus available now?"
-    - Action: Check https://plus.cnu.ac.kr/html/kr/sub05/sub05_050403.html and compare with current time
-    - Response: "캠퍼스 순환 버스는 오후 시간에는 운영되지 않습니다."
     * Note: Please check if today is a public holiday and decide whether the shuttle bus will be operated or not.
+    - User asks: "지금 탈 수 있는 셔틀버스 있어?"
+    - Action: Call get_shuttle_general_time_table function and compare with current time
+    - Response: "현재 시간 기준으로 다음 캠퍼스 순환 셔틀버스는 08:11분 중앙도서관 출발편입니다. (10분 후) 또한, 다음 교내 순환 셔틀버스는 08:15분에 중앙도서관에서 출발합니다. (15분 후)"
+    - User asks: "지금 탈 수 있는 캠퍼스 순환 버스 있어?"
+    - Action: Call get_shuttle_general_time_table function and compare with current time
+    - Response: "캠퍼스 순환 버스는 오후 시간에는 운영되지 않습니다."
+    - User asks: "새로 생긴 셔틀 버스 노선이 있어?"
+    - Action: Call get_shuttle_general_time_table and fetch_shuttle_bus_time_table_from_web function to compare whether there are any new routes
+    - Response: "2025년 5월 이후 추가된 새로운 셔틀버스 노선은 없습니다. 현재 운영 중인 셔틀버스는 다음과 같습니다: [기존 셔틀버스 노선 정보]"
 
 ADDITIONAL INFORMATION SOURCES:
 - For other CNU-related queries: Reference university and department website sitemaps
