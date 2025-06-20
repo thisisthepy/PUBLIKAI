@@ -38,6 +38,7 @@ Cnuma3Functions = FunctionCalling(
                     "query": {
                         "type": "string",
                         "description": "검색 쿼리 (검색 쿼리가 없으면 최신 공지사항을 조회합니다)",
+                        "default": ""
                     },
                     "retry": {
                         "type": "integer",
@@ -56,7 +57,8 @@ Cnuma3Functions = FunctionCalling(
                 "properties": {
                     "query": {
                         "type": "string",
-                        "description": "검색 쿼리 (검색 쿼리가 없으면 최신 공지사항을 조회합니다)"
+                        "description": "검색 쿼리 (검색 쿼리가 없으면 최신 공지사항을 조회합니다)",
+                        "default": ""
                     },
                     "retry": {
                         "type": "integer",
@@ -64,7 +66,7 @@ Cnuma3Functions = FunctionCalling(
                         "default": 3
                     }
                 },
-                "required": ["query"]
+                "required": []
             }
         ),
         FunctionSchema(
