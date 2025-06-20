@@ -373,7 +373,7 @@ def search_website(query: str, site_url: Optional[str] = None, max_results: int 
         return search_web(query, max_results)
 
 
-def fetch_webpage(url: str, extract_text: bool = True) -> Dict[str, Any]:
+def fetch_webpage(url: str, extract_text: bool = True, length_limit: int = 5000) -> Dict[str, Any]:
     """
     Fetch and parse a webpage.
     
@@ -430,7 +430,7 @@ def fetch_webpage(url: str, extract_text: bool = True) -> Dict[str, Any]:
                 # Clean up text
                 lines = (line.strip() for line in text.splitlines())
                 chunks = (phrase.strip() for line in lines for phrase in line.split("  "))
-                result["text_content"] = ' '.join(chunk for chunk in chunks if chunk)[:5000]  # Limit length
+                result["text_content"] = ' '.join(chunk for chunk in chunks if chunk)[:length_limit]  # Limit length
         
         except ImportError:
             # If BeautifulSoup not available, return raw content info

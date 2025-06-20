@@ -1,5 +1,5 @@
 from ....utils import FunctionCalling, FunctionSchema
-from . import graduation, shuttle, cnu
+from . import graduation, calendar, shuttle, cnu
 
 
 Cnuma3Functions = FunctionCalling(
@@ -81,24 +81,43 @@ Cnuma3Functions = FunctionCalling(
         ),
         FunctionSchema(
             name="get_academic_schedule",
-            description="충남대학교 학사일정을 조회합니다",
+            description="미리 수집된 충남대학교 2025년 학사일정을 조회합니다 (2025년 2월 1일 기준)",
             parameters={
                 "type": "object",
                 "properties": {
                     "degree_type": {
                         "type": "string",
                         "description": "학위 유형",
-                        "enum": ["학부", "대학원"],
+                        "enum": ["학부", "일반대학원"],
                         "default": "학부"
-                    },
-                    "semester": {
-                        "type": "string",
-                        "description": "학기",
-                        "enum": ["current", "next"],
-                        "default": "current"
                     }
                 },
                 "required": []
+            }
+        ),
+        FunctionSchema(
+            name="fetch_academic_schedule_from_web",
+            description="충남대학교의 최신 학사일정을 홈페이지로부터 가져옵니다 (2025년 이외 학사 일정이나, 최신화된 학사 일정이 있는지 확인하기 위함)",
+            parameters={
+                "type": "object",
+                "properties": {
+                    "year": {
+                        "type": "integer",
+                        "description": "조회할 연도 (예: 2025)"
+                    },
+                    "degree_type": {
+                        "type": "string",
+                        "description": "학위 유형",
+                        "enum": ["학부", "일반대학원"],
+                        "default": "학부"
+                    },
+                    "retry": {
+                        "type": "integer",
+                        "description": "홈페이지 조회 실패시 재시도 횟수",
+                        "default": 3
+                    }
+                },
+                "required": ["year"]
             }
         ),
         FunctionSchema(
@@ -124,7 +143,7 @@ Cnuma3Functions = FunctionCalling(
         ),
         FunctionSchema(
             name="get_shuttle_general_time_table",
-            description="충남대학교 셔틀버스의 일반적인 타임 테이블 정보를 조회합니다 (2025년 5월 기준)",
+            description="미리 수집된 충남대학교 셔틀버스의 일반적인 타임 테이블 정보를 조회합니다 (2025년 5월 기준)",
             parameters={
                 "type": "object",
                 "properties": {
@@ -134,7 +153,7 @@ Cnuma3Functions = FunctionCalling(
         ),
         FunctionSchema(
             name="fetch_shuttle_bus_time_table_from_web",
-            description="충남대학교 셔틀버스의 최신 운영 시간표를 조회합니다 (2025년 5월 이후 변경 사항이 있는지 확인하기 위함)",
+            description="충남대학교 셔틀버스의 최신 운영 시간표를 홈페이지로부터 가져옵니다 (2025년 5월 이후 변경 사항이 있는지 확인하기 위함)",
             parameters={
                 "type": "object",
                 "properties": {
@@ -159,7 +178,8 @@ Cnuma3Functions = FunctionCalling(
         get_all_departments_list=graduation.get_all_departments_list,
         get_cnu_notices=cnu.get_cnu_notices,
         search_cnu_site=cnu.search_cnu_site,
-        get_academic_schedule=cnu.get_academic_schedule,
+        get_academic_schedule=calendar.get_academic_schedule,
+        fetch_academic_schedule_from_web=calendar.fetch_academic_schedule_from_web,
         get_cafeteria_menu=cnu.get_cafeteria_menu,
         get_shuttle_general_time_table=shuttle.get_shuttle_general_time_table,
         fetch_shuttle_bus_time_table_from_web=shuttle.fetch_shuttle_bus_time_table_from_web

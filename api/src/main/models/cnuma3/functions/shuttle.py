@@ -17,7 +17,8 @@ def get_shuttle_general_time_table():
     return """
 # 2025학년도 학교셔틀버스 운영 안내 (2025년 5월 기준)
 
-- **운영기간**: 학기 중 평일 운행 (평일 야간, 주말, 공휴일, 방학, 수학능력시험일(10시 이전) 등 미운영)  
+- **운영기간**: 학기 중 평일 운행 (평일 야간, 주말, 공휴일, 임시 공휴일, 방학, 수학능력시험일(10시 이전) 등 미운영)  
+  - *추가사항*: 2025년 6월 3일이 대통령 선거로 인해 임시 공휴일로 지정되어 셔틀버스가 운영되지 않습니다.
 - **운행시간표는 학교 사정에 따라 변동될 수 있음**
 - **학생회 협의 요청 시**: 임시 셔틀버스 운영 가능
 - **운행시간은 정기적인 점검, 학교행사, 교통상황, 정원 등에 따라 변경 가능**
@@ -82,12 +83,12 @@ def get_shuttle_general_time_table():
 def fetch_shuttle_bus_time_table_from_web(url: str = "https://plus.cnu.ac.kr/html/kr/sub05/sub05_050403.html", retry: int = 3) -> str:
     for attempt in range(retry):
         try:
-            # 웹 페이지에서 셔틀버스 시간표를 가져옵니다
             data = web_search.fetch_webpage(url)
-            if data:
-                return data
+            if "text_content" in data:
+                return data['text_content']
         except requests.RequestException as e:
             print(f"웹 페이지 가져오기 실패: {e}. 재시도 중... ({attempt + 1}/{retry})")
+    return "학교 홈페이지가 현재 접속되지 않아 셔틀버스 시간표를 가져오는 데 실패했습니다. 나중에 다시 시도해주세요."
 
 
 if __name__ == '__main__':
