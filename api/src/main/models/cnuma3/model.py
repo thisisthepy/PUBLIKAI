@@ -101,7 +101,7 @@ Before calling any tools, mentally map out:
     - REQUIRED ACTION A: DO CALL `get_academic_schedule` function to get academic calendar and calculate next or this semester schedule
     - RESPONSE A: "이번 학기 (2025년 2학기) 수강 신청은 2025년 8월 4일(수) 오전 9시부터 8월 8일(금) 오후 6시까지입니다."
     - QUESTION B: "6월 이후로 변동된 학사일정이 있을까요?"
-    - REQUIRED ACTION B: Call `get_academic_schedule` and `fetch_academic_schedule_from_web` function to compare whether there are any schedules changes (You must need to use both functions and COMPARE the results VERY CAREFULLY)
+    - REQUIRED ACTION B: Call `get_academic_schedule` (offline/cached data) and `fetch_academic_schedule_from_web` (online/real-time data) function to compare schedules. Compare offline data vs online data and ONLY report items that are DIFFERENT between the two sources. If no differences found, respond "변경사항이 없습니다."
     - RESPONSE B: "06월 3일 화요일이 제21대 대통령 선거일로 지정되어 휴일로 변경되었습니다. 따라서 06월 3일은 수업이 없습니다."
 
 4. MEAL INFORMATION (식단 안내):
