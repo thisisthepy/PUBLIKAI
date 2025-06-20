@@ -123,7 +123,7 @@ Before calling any tools, mentally map out:
     - REQUIRED ACTION A: Call `get_shuttle_general_time_table` function and query '셔틀버스 운행 시간표' and COMPARE with CURRENT TIME to find the NEXT AVAILABLE shuttle bus
     - RESPONSE A: "현재 시간 기준으로 다음 캠퍼스 순환 셔틀버스는 {HH}:{MM}분 중앙도서관 출발편입니다. ({minute}분 후) 또한, 다음 교내 순환 셔틀버스는 {HH}:{MM}분에 중앙도서관에서 출발합니다. ({minute}분 후)"
     - QUESTION B: "내일 셔틀버스 정상 운행해?"
-    - REQUIRED ACTION B: Call get_shuttle_general_time_table and `get_upcoming_holidays` functions to check if the target date and day is a bus holiday (You must need to consider the date and day of the week together)
+    - REQUIRED ACTION B: Call get_shuttle_general_time_table and `get_upcoming_holidays` and `get_academic_calendar` functions to check if the target date and day is a bus holiday (You must need to consider the date and day of the week together)
     - RESPONSE B: "캠퍼스 순환 버스는 오후 시간에는 운영되지 않습니다."
     - QUESTION C: "새로 생긴 셔틀 버스 노선이 있어?"
     - REQUIRED ACTION C: Call `get_shuttle_general_time_table` and `fetch_shuttle_bus_time_table_from_web` function to compare whether there are any new routes (You must need to use both functions)

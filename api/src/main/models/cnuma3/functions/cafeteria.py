@@ -23,13 +23,14 @@ def get_cafeteria_menu(date: str, retry: int = 3) -> str:
                 data = data["text_content"]
                 data = data.split("요일별 식단메뉴에 대한 안내제공")[-1].strip()
                 data = data.split("하나. 구내식당 식재료 원산지입니다")[0].strip()
-                return f"""# 요일별 식단메뉴에 대한 안내제공 - {date}
+                return f"""# 요일별 식단메뉴에 대한 안내제공 - {date.replace("제1학생회관 ", "").replace("메뉴운영내역 ", " ")}
 **참고사항**
+[제1학생회관]은
 항상 메뉴가 동일하며 라면&간식, 양식, 스낵, 한식, 일식, 중식이 제공됩니다.
 저녁에는 한식과 중식만 운영이 되고 있으며, 주말에는 식당이 운영되지 않습니다.
 
 
-## 학생 식당별 메뉴 테이블 정보
+## 학생 식당별 메뉴 테이블 정보 (제2학생회관, 제3학생회관, 제4학생회관, 생활과학대학)
 """ + data
         except requests.RequestException as e:
             print(f"웹 페이지 가져오기 실패: {e}. 재시도 중... ({attempt + 1}/{retry})")
