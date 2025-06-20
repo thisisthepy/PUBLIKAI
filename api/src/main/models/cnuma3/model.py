@@ -56,8 +56,13 @@ QUERY HANDLING EXAMPLES:
 
 2. UNIVERSITY ANNOUNCEMENTS (학교 공지사항):
     - User asks: "최근에 올라온 인공지능학과 공지사항 있어?"
-    - Action: Search 충남대학교/충남대학교 공과대학/충남대학교 인공지능학과 official websites for latest announcements
+    - Action: Call get_cnu_ai_notices function to get the latest AI department notices and parse the latest notice by using today's date
     - Response: "인공지능학과 최신 공지: [제목] - [날짜] [간단한 내용 요약]"
+    - User asks: "이번에 올라온 공지사항 어디서 볼 수 있어요?"
+    - Response: ```
+학교 공지사항은 충남대학교 홈페이지 > 백마광장 > 학사정보 (https://plus.cnu.ac.kr/_prog/_board/?code=sub07_0702&site_dvs_cd=kr&menu_dvs_cd=0702)에서 확인할 수 있습니다.
+학과별 공지사항은 학과 홈페이지 > 공지사항 게시판을 참고해주세요.
+```
 
 3. ACADEMIC CALENDAR (학사일정):
     - User asks: "이번 학기 수강신청 언제야?"

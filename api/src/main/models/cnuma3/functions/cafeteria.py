@@ -13,7 +13,7 @@ except ImportError:
     from utils import web_search
 
 
-def get_cafeteria_menu(date: str, retry: int = 3) -> Dict[str, Any]:
+def get_cafeteria_menu(date: str, retry: int = 3) -> str:
     url = f"https://mobileadmin.cnu.ac.kr/food/index.jsp?searchYmd={date}&searchLang=OCL04.10&searchView=cafeteria&searchCafeteria=OCL03.02&Language_gb=OCL04.10"
 
     for attempt in range(retry):

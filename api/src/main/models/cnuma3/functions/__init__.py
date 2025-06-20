@@ -1,5 +1,5 @@
 from ....utils import FunctionCalling, FunctionSchema
-from . import graduation, calendar, cafeteria, shuttle, cnu
+from . import graduation, calendar, cafeteria, shuttle, notice
 
 
 Cnuma3Functions = FunctionCalling(
@@ -31,49 +31,37 @@ Cnuma3Functions = FunctionCalling(
         ),
         FunctionSchema(
             name="get_cnu_notices",
-            description="충남대학교 공지사항을 조회합니다",
+            description="충남대학교 최신 공지사항을 조회하거나 검색합니다",
             parameters={
                 "type": "object",
                 "properties": {
-                    "source": {
+                    "query": {
                         "type": "string",
-                        "description": "공지사항 소스",
-                        "enum": ["대학", "인공지능학과"],
-                        "default": "대학"
+                        "description": "검색 쿼리 (검색 쿼리가 없으면 최신 공지사항을 조회합니다)",
                     },
-                    "max_results": {
+                    "retry": {
                         "type": "integer",
-                        "description": "최대 결과 수",
-                        "default": 10,
-                        "minimum": 1,
-                        "maximum": 20
+                        "description": "홈페이지 조회 실패시 재시도 횟수",
+                        "default": 3
                     }
                 },
                 "required": []
             }
         ),
         FunctionSchema(
-            name="search_cnu_site",
-            description="충남대학교 사이트에서 검색합니다",
+            name="get_cnu_ai_notices",
+            description="충남대학교 인공지능학과의 최신 공지사항을 조회하거나 검색합니다",
             parameters={
                 "type": "object",
                 "properties": {
                     "query": {
                         "type": "string",
-                        "description": "검색 쿼리"
+                        "description": "검색 쿼리 (검색 쿼리가 없으면 최신 공지사항을 조회합니다)"
                     },
-                    "site": {
-                        "type": "string",
-                        "description": "검색할 사이트",
-                        "enum": ["plus", "ai"],
-                        "default": "plus"
-                    },
-                    "max_results": {
+                    "retry": {
                         "type": "integer",
-                        "description": "최대 결과 수",
-                        "default": 5,
-                        "minimum": 1,
-                        "maximum": 10
+                        "description": "홈페이지 조회 실패시 재시도 횟수",
+                        "default": 3
                     }
                 },
                 "required": ["query"]
@@ -194,8 +182,8 @@ Cnuma3Functions = FunctionCalling(
         **FunctionCalling.DEFAULT.implementations,
         get_graduation_requirements=graduation.get_graduation_credits,
         get_all_departments_list=graduation.get_all_departments_list,
-        get_cnu_notices=cnu.get_cnu_notices,
-        search_cnu_site=cnu.search_cnu_site,
+        get_cnu_notices=notice.get_cnu_notices,
+        get_cnu_ai_notices=notice.get_cnu_ai_notices,
         get_academic_schedule=calendar.get_academic_schedule,
         fetch_academic_schedule_from_web=calendar.fetch_academic_schedule_from_web,
         get_cafeteria_menu=cafeteria.get_cafeteria_menu,
