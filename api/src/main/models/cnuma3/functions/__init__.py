@@ -1,5 +1,5 @@
 from ....utils import FunctionCalling, FunctionSchema
-from . import graduation, calendar, cafeteria, shuttle, notice
+from . import grad, calendar, cafeteria, shuttle, notice
 
 
 Cnuma3Functions = FunctionCalling(
@@ -180,8 +180,8 @@ Cnuma3Functions = FunctionCalling(
     ],
     implementations=dict(
         **FunctionCalling.DEFAULT.implementations,
-        get_graduation_requirements=graduation.get_graduation_credits,
-        get_all_departments_list=graduation.get_all_departments_list,
+        get_graduation_requirements=grad.get_graduation_credits,
+        get_all_departments_list=grad.get_all_departments_list,
         get_cnu_notices=notice.get_cnu_notices,
         get_cnu_ai_notices=notice.get_cnu_ai_notices,
         get_academic_schedule=calendar.get_academic_schedule,
