@@ -86,6 +86,7 @@ Before calling any tools, mentally map out:
     - QUESTION A: "이번 학기 수강신청 언제야?"
     - REQUIRED ACTION A: DO CALL `get_academic_calendar` function to get academic calendar and calculate next or this semester schedule
     - RESPONSE A: "이번 학기 (2025년 2학기) 수강 신청은 2025년 8월 7일(수) 오전 9시부터 8월 8일(금) 오후 6시까지입니다."
+    * Note: Think what semester the user is asking about, and if the semester is not specified, calculate based on the current date.
 
 4. MEAL INFORMATION (식단 안내):
     - QUESTION A: "오늘 학식 메뉴 뭐야?"
