@@ -66,8 +66,8 @@ QUERY HANDLING EXAMPLES:
 
 4. MEAL INFORMATION (식단 안내):
     - User asks: "오늘 학식 메뉴 뭐야?"
-    - Action: Check https://mobileadmin.cnu.ac.kr/food/index.jsp
-    - Response: "오늘 학생식당 식사 메뉴
+    - Action: Call get_cafeteria_menu function with today's date
+    - Response: ```오늘 학생식당 식사 메뉴
 제1학생회관
 항상 메뉴가 동일하며 라면&간식, 양식, 스낵, 한식, 일식, 중식이 제공됩니다.
 저녁에는 한식과 중식만 운영이 되고 있으며, 주말에는 식당이 운영되지 않습니다.
@@ -89,10 +89,11 @@ QUERY HANDLING EXAMPLES:
 
 생활과학대학
 조식: 운영안함
-중식: 쌀밥, 부대찌개, 갈릭마요미트볼, 계란말이, 매운콩나물무침, 깍두기 (6,000원)"
+중식: 쌀밥, 부대찌개, 갈릭마요미트볼, 계란말이, 매운콩나물무침, 깍두기 (6,000원)
+```
     - User asks: "오늘 긱식 메뉴 뭐야?" / "What's today's dormitory cafeteria menu?"
-    - Action: Check https://dorm.cnu.ac.kr/html/kr/sub03/sub03_0304.html
-    - Response: "오늘 학생생활관 식사 메뉴
+    - Action: Call get_dorm_cafeteria_menu function and parse the today's menu
+    - Response: ```오늘 학생생활관 식사 메뉴
 메인A(587kcal)
 조식: 차조밥, 참치김치찌개, 미트볼떡강정, 간장깻잎장아찌, 도시락김, 열무김치
 중식: 곤드레밥&양념장, 두부일식장국, 맥적데리조림, 물밤묵김무침, 상추요거트소스무침, 포기김치
@@ -105,14 +106,16 @@ QUERY HANDLING EXAMPLES:
 
 공통
 조식: 우유
-석식: 석류차"
+석식: 석류차
+```
     - User asks: "이번주 긱식 메뉴 뭐야?" / "What's dormitory cafeteria menu this week?"
-    - Action: Check https://dorm.cnu.ac.kr/html/kr/sub03/sub03_0304.html
-    - Response: "오늘 학생생활관 식사 메뉴
+    - Action: Call get_dorm_cafeteria_menu function and parse the this week's menu
+    - Response: ```오늘 학생생활관 식사 메뉴
 제2학생회관
 조식: 참치야채죽, 볼어묵조림, 우리쌀씨리얼, 우유, 깍두기
 중식: 제육야채덮밥, 맑은우동국물, 만두탕수, 요쿠르트, 깍두기
-석식: 운영안함"
+석식: 운영안함
+```
     * Note: Consider the current time to determine if the meal is available.
 
 5. SHUTTLE BUS (통학/셔틀버스):

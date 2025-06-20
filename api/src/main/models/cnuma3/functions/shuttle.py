@@ -83,9 +83,12 @@ def get_shuttle_general_time_table():
 def fetch_shuttle_bus_time_table_from_web(url: str = "https://plus.cnu.ac.kr/html/kr/sub05/sub05_050403.html", retry: int = 3) -> str:
     for attempt in range(retry):
         try:
-            data = web_search.fetch_webpage(url)
+            data = web_search.fetch_webpage(url, length_limit=-1)
             if "text_content" in data:
-                return data['text_content']
+                data = data['text_content']
+                spl = data.split("학년도 학교셔틀버스 운영 안내")
+                data = spl[0].strip()[-5:-1] + "학년도 학교 셔틀버스 운영 안내" + spl[-1].split("페이지 관리자")[0]
+                return data.strip()
         except requests.RequestException as e:
             print(f"웹 페이지 가져오기 실패: {e}. 재시도 중... ({attempt + 1}/{retry})")
     return "학교 홈페이지가 현재 접속되지 않아 셔틀버스 시간표를 가져오는 데 실패했습니다. 나중에 다시 시도해주세요."

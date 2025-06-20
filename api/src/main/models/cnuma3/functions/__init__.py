@@ -1,5 +1,5 @@
 from ....utils import FunctionCalling, FunctionSchema
-from . import graduation, calendar, shuttle, cnu
+from . import graduation, calendar, cafeteria, shuttle, cnu
 
 
 Cnuma3Functions = FunctionCalling(
@@ -122,20 +122,38 @@ Cnuma3Functions = FunctionCalling(
         ),
         FunctionSchema(
             name="get_cafeteria_menu",
-            description="충남대학교 교내 식당 식단을 조회합니다",
+            description="충남대학교 교내 식당 식단을 조회합니다 (실시간 조회)",
             parameters={
                 "type": "object",
                 "properties": {
                     "date": {
                         "type": "string",
-                        "description": "조회할 날짜 (today, tomorrow, YYYY-MM-DD)",
-                        "default": "today"
+                        "description": "조회할 날짜 (YYYY.MM.DD)"
                     },
-                    "cafeteria": {
-                        "type": "string",
-                        "description": "식당명",
-                        "enum": ["학생회관", "생활관", "교직원식당"],
-                        "default": "학생회관"
+                    "retry": {
+                        "type": "integer",
+                        "description": "홈페이지 조회 실패시 재시도 횟수",
+                        "default": 3
+                    }
+                },
+                "required": ["date"]
+            }
+        ),
+        FunctionSchema(
+            name="get_dorm_cafeteria_menu",
+            description="일주일(월요일~일요일) 치의 충남대학교 학생생활관 식당 식단을 조회합니다 (실시간 조회)",
+            parameters={
+                "type": "object",
+                "properties": {
+                    "week": {
+                        "type": "integer",
+                        "description": "조회할 주차를 지정하는 페이지 번호입니다. 1=이번 주, 2=지난 주, 3=2주 전... 순서로 조회됩니다. 기본값은 1입니다.",
+                        "default": 1
+                    },
+                    "retry": {
+                        "type": "integer",
+                        "description": "홈페이지 조회 실패시 재시도 횟수",
+                        "default": 3
                     }
                 },
                 "required": []
@@ -180,7 +198,8 @@ Cnuma3Functions = FunctionCalling(
         search_cnu_site=cnu.search_cnu_site,
         get_academic_schedule=calendar.get_academic_schedule,
         fetch_academic_schedule_from_web=calendar.fetch_academic_schedule_from_web,
-        get_cafeteria_menu=cnu.get_cafeteria_menu,
+        get_cafeteria_menu=cafeteria.get_cafeteria_menu,
+        get_dorm_cafeteria_menu=cafeteria.get_dorm_cafeteria_menu,
         get_shuttle_general_time_table=shuttle.get_shuttle_general_time_table,
         fetch_shuttle_bus_time_table_from_web=shuttle.fetch_shuttle_bus_time_table_from_web
     )
