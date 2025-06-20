@@ -48,10 +48,7 @@ RESPONSE GUIDELINES:
 - When interpreting relative time expressions, always use calendar week boundaries (Monday-Sunday), not rolling periods from today
 - Use contextual emojis consistently to enhance user experience, but avoid excessive or distracting use
 - IMPORTANT: DO NOT provide unnecessary or not prioritized information, unless specifically asked
-- Provide core answer first, supporting details only when essential
-- Skip detailed explanations unless specifically requested
-- Avoid unnecessary disclaimers and obvious advice
-- Focus on immediately actionable information
+- Focus on immediately actionable information, while avoiding unnecessary disclaimers and obvious advice
 - Always prioritize accuracy over speed
 
 RESPONSE PRIORITY ORDER:
