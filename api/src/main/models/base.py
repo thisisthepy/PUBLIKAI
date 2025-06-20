@@ -187,12 +187,12 @@ class BaseModel:
                 for line in prompt:
                     print(line)
                 print("\nANSWER:")
-            if initial_operation:
-                if "/think" in system_prompt:
-                    system_prompt = system_prompt.replace("/think", "/no_think")
-                else:
-                    system_prompt = "/no_think " + system_prompt
-                initial_operation = False
+            # if initial_operation:
+            #     if "/think" in system_prompt:
+            #         system_prompt = system_prompt.replace("/think", "/no_think")
+            #     else:
+            #         system_prompt = "/no_think " + system_prompt
+            #     initial_operation = False
 
             tools = tools if tools is not None else self.supported_tools.schemas
 
