@@ -170,6 +170,24 @@ class BaseModel:
             print_output (bool, optional): Print output. Defaults to False.
             **kwargs: Additional arguments
         """
+        def adaptive_special_tag_buffering(outs, wait_tokens_for=6):
+            """
+            Adaptive buffering for special tags in the output stream.
+            Needed for models that uses fine-grained tokenizer which can produce special tags separately.
+            """
+            buffer = ""
+            patient = wait_tokens_for
+            for wd in outs:
+                if "<" in wd or buffer:  # Start of special tag
+                    patient -= 1
+                    buffer += wd
+                    if ">" in buffer or patient == 0:  # Incomplete tag
+                        yield buffer
+                        buffer = ""
+                        patient = wait_tokens_for
+                else:
+                    yield wd
+
         initial_operation = True
         function_called = True
         while function_called:
@@ -187,12 +205,9 @@ class BaseModel:
                 for line in prompt:
                     print(line)
                 print("\nANSWER:")
-            # if initial_operation:
-            #     if "/think" in system_prompt:
-            #         system_prompt = system_prompt.replace("/think", "/no_think")
-            #     else:
-            #         system_prompt = "/no_think " + system_prompt
-            #     initial_operation = False
+            if initial_operation:
+                initial_operation = False
+                # TODO: Add kv cache control for tool-calling here
 
             tools = tools if tools is not None else self.supported_tools.schemas
 
@@ -210,7 +225,7 @@ class BaseModel:
             )
             generation_kwargs.update(kwargs)
             outputs = self.parse_tool_calling(
-                self.runtime(**generation_kwargs),
+                adaptive_special_tag_buffering(self.runtime(**generation_kwargs)),
                 chat_history=chat_history,
                 tools=tools,
                 stream=stream,

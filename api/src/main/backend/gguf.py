@@ -1,12 +1,13 @@
+from typing import List, Tuple, Dict, Optional, Union, Generator
+import sys
+import os
+import gc
+
+from .core import CoreRuntime
+
+
 try:
     from llama_cpp import Llama, CreateChatCompletionStreamResponse
-
-    from typing import List, Tuple, Dict, Optional, Union, Generator
-    import sys
-    import os
-    import gc
-
-    from .core import CoreRuntime
 
 
     class GGUFRuntime(CoreRuntime):
@@ -109,6 +110,7 @@ try:
                         yield token_delta
             else:
                 return outputs['choices'][0]['text']
+
 
     CoreRuntime.register_backend("GGUFRuntime", GGUFRuntime, default=True)
 except ImportError:
