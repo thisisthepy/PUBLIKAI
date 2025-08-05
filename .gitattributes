@@ -1,0 +1,2 @@
+echo "*.wasm filter=lfs diff=lfs merge=lfs -text" >> .gitattributes
+echo "*.wasm binary" >> .gitattributes
