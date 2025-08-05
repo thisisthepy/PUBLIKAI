@@ -1,12 +1,13 @@
+from typing import List, Dict, Optional, Union, Generator
+import threading
+import os
+
+from .core import CoreRuntime
+
+
 try:
     from transformers import AutoModelForCausalLM, AutoTokenizer, BitsAndBytesConfig, TextIteratorStreamer
     import torch
-
-    from typing import List, Dict, Optional, Union, Generator
-    import threading
-    import os
-
-    from .core import CoreRuntime
 
 
     class BinRuntime(CoreRuntime):
@@ -96,6 +97,7 @@ try:
             else:
                 outputs = self.model.generate(**generation_kwargs)
                 return self.tokenizer.decode(outputs[0], skip_special_tokens=True)
+
 
     CoreRuntime.register_backend("BinRuntime", BinRuntime)
 except ImportError:
