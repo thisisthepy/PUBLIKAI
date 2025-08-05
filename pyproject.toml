@@ -1,7 +1,7 @@
 [project]
-name = "gemstone"
+name = "publikai"
 version = "1.0.0"
-description = "This is a open-source multi-platform AI Chat UI written with Compose Multiplatform."
+description = "An intelligent chatbot generator designed for public sector websites to create AI assistants for citizen services and government information."
 readme = "README.md"
 requires-python = ">=3.12,<3.13"
 dependencies = [

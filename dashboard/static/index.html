@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gemstone AI</title>
+    <link rel="icon" href="/static/icons/favicon.ico">
+    <meta property="og:image" content="/static/icons/favicon.ico">
+
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/brython@3/brython.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/brython@3/brython_stdlib.js"></script>
+
+    <link rel="stylesheet" href="/static/index.css">
+    <script type="text/python">
+        import browser
+
+        def module_init(_id, module_name):
+            import sys
+            sys.modules[module_name] = sys.modules[_id]
+            return browser.window.console.log, print
+
+        browser.__dict__['module_init'] = module_init
+    </script>
+    <script type="text/python" src="/static/models/config.py"></script>
+    <script type="text/python" src="/static/index.py"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css">
+</head>
+<body onload="brython()">
+    <h1 class="mb-4">Publikai 4B 4bitQ IT</h1>
+    <div class="container chat-container">
+        <ul id="messages"><div class="my-4"></div></ul>
+        <form id="form" class="form-inline">
+            <textarea id="message_text" class="form-control mr-2" autocomplete="off" placeholder="Qwen3에게 메시지 보내기"></textarea>
+            <button type="submit" class="btn btn-icon"><i class="fas fa-arrow-up"></i></button>
+        </form>
+    </div>
+</body>
+</html>

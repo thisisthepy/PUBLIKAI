@@ -5,8 +5,8 @@ from ...backend import BackendType, CoreRuntime
 
 
 # Set model id
-model_id = "Qwen/Qwen3-14B-Instruct"
-gguf_model_id = "Qwen/Qwen3-14B-GGUF"
+model_id = "Qwen/Qwen3-4B-Instruct"
+gguf_model_id = "Qwen/Qwen3-4B-GGUF"
 context_length = 40960  # Set context length to 40960 tokens (max 40960)
 
 

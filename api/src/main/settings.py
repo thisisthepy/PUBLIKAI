@@ -18,17 +18,17 @@ MODEL_LIST = dict(
     ),
     qwen3=ModelSettings(
         model_name="Qwen 3",
-        model_description="Qwen 3 14B 4bitQ IT"
+        model_description="Qwen 3 4B 4bitQ IT"
     ),
-    cnuma3=ModelSettings(
-        model_name="Cnuma 3",
-        model_description="Cnuma 3 14B 4bitQ IT"
+    publikai=ModelSettings(
+        model_name="Publikai",
+        model_description="Publikai 4B 4bitQ IT"
     ),
 )
-MODEL_LIST['default'] = MODEL_LIST['qwen3']
+MODEL_LIST['default'] = MODEL_LIST['publikai']
 
-STATIC_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), "../test/static")
-WEBPACK_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), "../test/webpack")
+STATIC_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), "../../../dashboard/static")
+WEBPACK_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), "../../../dashboard/webpack")
 
 
 class Session:
