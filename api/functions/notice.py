@@ -1,0 +1,40 @@
+import requests
+from typing import Dict, Any
+from datetime import datetime, timedelta
+import sys
+import os
+import re
+
+try:
+    from ..utils import web_search
+except ImportError:
+    parent = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+    sys.path.insert(0, parent)
+    from utils import web_search
+
+
+def get_general_notices(query: str = "", retry: int = 3) -> str:
+    url = "https://www.cheonanurc.or.kr/new/?keyword_type=all"
+
+    if query:
+        url += f"&keyword={query}"
+
+    for attempt in range(retry):
+        try:
+            data = web_search.fetch_webpage(url, length_limit=-1)
+            if "text_content" in data:
+                data = data["text_content"].split("Copyrightⓒ")[0].strip().split("검색어 입력 Previous")[0].strip()
+                data = data.split("천안시 도시재생지원센터 site search")[-1].strip()
+                return data
+        except requests.RequestException as e:
+            print(f"웹 페이지 가져오기 실패: {e}. 재시도 중... ({attempt + 1}/{retry})")
+    return "홈페이지가 현재 접속되지 않아 공지사항 조회에 실패했습니다.. 나중에 다시 시도해주세요."
+
+
+if __name__ == '__main__':
+    # Example usage
+    print("최신 공지사항:")
+    print(get_general_notices())
+
+    print("\n도시재생 공지사항:")
+    print(get_general_notices("도시재생"))
