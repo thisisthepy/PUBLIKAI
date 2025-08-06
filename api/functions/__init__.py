@@ -75,11 +75,6 @@ PublikaiFunctions = FunctionCalling(
             parameters={
                 "type": "object",
                 "properties": {
-                    "retry": {
-                        "type": "integer",
-                        "description": "홈페이지 조회 실패시 재시도 횟수",
-                        "default": 3
-                    }
                 },
                 "required": []
             }
