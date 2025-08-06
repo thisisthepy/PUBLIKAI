@@ -5,6 +5,8 @@ description = "An intelligent chatbot generator designed for public sector websi
 readme = "README.md"
 requires-python = ">=3.12,<3.13"
 dependencies = [
+    "gradio>=5.41.0",
+    "spaces>=0.39.0",
     "uvicorn>=0.34.2",
     "fastapi>=0.115.12",
     "websockets>=15.0.1",

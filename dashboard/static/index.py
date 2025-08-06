@@ -8,12 +8,31 @@ import re
 chat_history = ChatHistory()
 ws = False
 
-MODEL_ID = "publikai"  # "qwen3"
+MODEL_ID = "midm2"
+DISPLAY_NAME = "PUBLIKAI"
+THINKING_ENABLED = False  # Reasoning mode enabled
+
 SERVER_URL = window.location.host  # "127.0.0.1:23100"
-WEBSOCKET_URL = f"ws://{SERVER_URL}/api/chat/streaming"
+GREETING_URL = f"ws://{SERVER_URL}/api/greetings"
+WEBSOCKET_URL = f"ws://{SERVER_URL}/api/chat"
 SESSION_URL = f"http://{SERVER_URL}/api/models/{MODEL_ID}/sessions/"
 SESSION_UNLOAD_URL = f"http://{SERVER_URL}/api/sessions/"
 __SESSION_ID = None
+
+
+def connect_websocket(url=WEBSOCKET_URL):
+    global ws
+    if ws:
+        return  # 챗봇이 대답하고 있는 중에 버튼을 누르면 진행 안함
+
+    # open a web socket
+    ws = window.WebSocket.new(url)
+
+    # bind functions to web socket events
+    ws.bind('open', on_open)
+    ws.bind('message', on_message)
+    ws.bind('close', on_close)
+    ws.bind('error', lambda e: print("Websocket error", e))
 
 
 async def get_session_id():
@@ -26,10 +45,10 @@ async def get_session_id():
     data = await response.json()
     __SESSION_ID = data['session_id']
     print(f"Session ID: {__SESSION_ID}")
+
+    connect_websocket(GREETING_URL)  # Connect to the greeting websocket
+
     return __SESSION_ID
-
-
-aio.run(get_session_id())
 
 
 @bind(window, 'unload')
@@ -39,14 +58,17 @@ def on_unload(_):
 
 
 def on_open(_):
-    print("Websocket connection is now open")
+    print(f"Websocket connection is now open to {ws.url}")
 
     data = document['message_text'].value.strip()
-    if data and __SESSION_ID:
+    if (data or ws.url == GREETING_URL) and __SESSION_ID:
         ws.send(json.dumps({"session_id": __SESSION_ID}))  # 세션 ID 전송
         ws.send(json.dumps(chat_history))  # chat history 전송
         ws.send(data)  # user prompt 전송
-        chat_history.append("user", data)  # chat history 업데이트
+        if not data and ws.url == GREETING_URL:
+            chat_history.append("user", "안녕하세요?")
+        else:
+            chat_history.append("user", data)  # chat history 업데이트
         update_screen(data, True)  # 화면 업데이트
         document['message_text'].value = ""  # 입력창 초기화
 
@@ -105,31 +127,40 @@ def update_screen(text: str, user_content: bool = True, think: bool = False):
             message_list.appendChild(user)
             user.classList.add("message")
             user.classList.add("message-user")
+            if not text:
+                user.classList.add("d-none")  # 빈 메시지는 안보이도록
 
             # assistant content
+            asst_div = document.createElement("div")
+            asst_div.classList.add("message")
+            asst_div.classList.add("message-server-container")
+            asst_div.classList.add("d-none")  # 메시지 도달 되기 전까지 안보이도록
+            asst_div.innerHTML = "" \
+                + '<div class="think-container">' \
+                + '    <i class="bi bi-diamond-fill icon"></i>' \
+                + f'    <p class="think-desc fst-italic">{DISPLAY_NAME}</p>' \
+                + f'    <button class="think-toggle{ "" if THINKING_ENABLED else " d-none" }" onclick="toggleThinking(this)">▼</button>' \
+                + '</div>' \
+                + '<div class="think-content d-none"></div>'
             asst = document.createElement("li")
             asst.classList.add("message")
             asst.classList.add("message-server")
-            asst.classList.add("d-none")  # 메시지 도달 되기 전까지 안보이도록
-            asst.innerHTML = '<i class="bi bi-diamond-fill icon"></i>' \
-                + '<div class="think-container">' \
-                + '<i class="think-desc">0초 동안 생각 중...</i>' \
-                + '<button class="think-toggle" onclick="toggleThinking(this)">▼</button>' \
-                + '<div class="think-content d-none"></div>' \
-                + '</div>' \
-                + '<span class="message-content"></span>'
-            message_list.appendChild(asst)
+            asst.innerHTML = '<span class="message-content"></span>'
+            asst_div.appendChild(asst)
+            message_list.appendChild(asst_div)
             user.innerHTML += text
-            message_list.scrollTop = message_list.scrollHeight  # scroll to bottom
         else:
             target = document['messages'].lastChild
             desc = target.querySelector(".think-desc")
             if "d-none" in target.classList:
                 target.classList.remove("d-none")  # 메시지 도달 되면 보이도록
                 thinking_started = time.time()
-            if think:
+            if think and THINKING_ENABLED:
                 if not hasattr(desc, 'elapsed'):
-                    desc.elapsed = float(desc.innerHTML.split("초")[0])
+                    try:
+                        desc.elapsed = float(desc.innerHTML.split("초")[0])
+                    except ValueError:
+                        desc.elapsed = 0
                 desc.elapsed += float(time.time() - thinking_started)
                 elapsed_msg = f"{int(desc.elapsed)}초 동안 생각 중..."
                 if desc.innerHTML != elapsed_msg:
@@ -140,33 +171,22 @@ def update_screen(text: str, user_content: bool = True, think: bool = False):
                 desc.innerHTML = desc.innerHTML.replace("생각 중...", "생각 완료")  # 생각 완료 표시
                 target = target.querySelector(".message-content")
             target.innerHTML = target.innerHTML.lstrip() + text
+        message_list.scrollTop = message_list.scrollHeight  # scroll to bottom
     except Exception as e:
         print("Error updating screen:", e)
 
 
-@bind('#form', 'submit')
+@bind('#send_chat', 'submit')
 def ws_open(e):
     e.preventDefault()  # 기본 submit 동작 방지
-
-    global ws
-    if ws:
-        return  # 챗봇이 대답하고 있는 중에 버튼을 누르면 진행 안함
-
-    # open a web socket
-    ws = window.WebSocket.new(WEBSOCKET_URL)
-
-    # bind functions to web socket events
-    ws.bind('open', on_open)
-    ws.bind('message', on_message)
-    ws.bind('close', on_close)
-    ws.bind('error', lambda e: print("Websocket error", e))
+    connect_websocket()
 
 
 @bind('#message_text', 'keydown')
 def keydown_disable(e):
     if e.key == "Enter" and not e.shiftKey:  # shift + Enter는 줄바꿈
         e.preventDefault()  # 기본 Enter 동작 방지
-        document["form"].requestSubmit()  # 폼 전송
+        document["send_chat"].requestSubmit()  # 폼 전송
 
 
 # JavaScript 함수를 window 객체에 추가
@@ -175,10 +195,13 @@ window.showHistory = lambda: chat_history  # chat history 출력 함수
 
 
 def toggle_thinking(btn):
-    think_content = btn.parentElement.querySelector(".think-content")
+    think_content = btn.parentElement.parentElement.querySelector(".think-content")
     if "d-none" in think_content.classList:
         think_content.classList.remove("d-none")
         btn.innerHTML = "▲"
     else:
         think_content.classList.add("d-none")
         btn.innerHTML = "▼"
+
+
+aio.run(get_session_id())
