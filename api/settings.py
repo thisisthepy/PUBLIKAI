@@ -13,8 +13,8 @@ class ModelSettings:
 
 MODEL_LIST = dict(
     midm2=ModelSettings(
-        model_name="KT Mi:dm 2.0 Mini",
-        model_description="Mi:dm 2.0 Mini 2.3B 4bitQ Instruct"
+        model_name="KT Mi:dm 2.0 Base",
+        model_description="Mi:dm 2.0 Base 11.5B 4bitQ Instruct"
     ),
     qwen3=ModelSettings(
         model_name="Qwen 3",

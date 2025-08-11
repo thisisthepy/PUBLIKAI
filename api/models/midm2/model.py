@@ -6,7 +6,7 @@ from ...functions import PublikaiFunctions
 
 
 # Set model id
-model_id = "mykor/Midm-2.0-Mini-Instruct-gguf"
+model_id = "mykor/Midm-2.0-Base-Instruct-gguf"
 context_length = 32768  # Set context length to 32768 tokens (max)
 
 
@@ -42,7 +42,11 @@ Mi:dm은 사용자의 요청을 처리하기 위해 제공된 도구(함수)를 
     - 도구 호출 결과를 활용하여 응답을 생성한다.
     - 도구가 필요하지 않은 경우에는 일반적인 방식으로 응답한다.
     - 도구 호출 정보는 다음과 같이 <tool_call></tool_call> XML 태그 사이에 작성한다.
-    <tool_call>\n{"name": "tool_name", "arguments": {"param": "value"}}\n</tool_call>"""
+    ```
+    <tool_call>
+    {"name": "tool_name", "arguments": {"param": "value"}}
+    </tool_call>
+    ```"""
 print("INFO:     Default system prompt is -", system_prompt)
 
 
