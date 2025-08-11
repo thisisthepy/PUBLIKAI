@@ -13,7 +13,7 @@ except ImportError:
     from utils import web_search
 
 
-def get_work_information(retry: int = 3) -> str:
+def get_business_information(retry: int = 3) -> str:
     url = "https://www.cheonanurc.or.kr/68"
 
     for attempt in range(retry):
@@ -31,4 +31,4 @@ def get_work_information(retry: int = 3) -> str:
 if __name__ == '__main__':
     # Example usage
     print("사업 정보:")
-    print(get_work_information())
+    print(get_business_information())
