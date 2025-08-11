@@ -42,9 +42,9 @@
     background: paint(squircle);
     --squircle-fill: #f5f4f1;
     z-index: 10;
-  }
-  
-  #chatbot .center-name a {
+}
+
+#chatbot .center-name a {
     display: block; 
     max-width: 100%;
     white-space: normal; 
@@ -53,7 +53,7 @@
     font-weight: bold;
     font-size: 20px;
     text-decoration: none;
-  }
+}
 
 #chatbot .chat-container {
     max-width: 450px;
