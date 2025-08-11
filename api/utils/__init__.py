@@ -122,7 +122,7 @@ class FunctionCallResult(list):
                 for data in self[1:]:
                     if 'tool_call_id' in data:
                         data['content'] = f"<cached_result:{data['tool_call_id']}>"
-                result = state + "\n" + tag[0] + "\n" + dumps(dict(history=self, ensure_ascii=False)) + "\n" + tag[1]
+                result = state + "\n" + tag[0] + "\n" + dumps(dict(history=self), ensure_ascii=False) + "\n" + tag[1]
 
                 # Clear the job list and message queue
                 self.job_list = []
@@ -161,6 +161,8 @@ class FunctionCallResult(list):
         try:
             if name not in self.implementations:
                 raise ValueError(f"Function '{name}' is not registered.")
+            if len(arguments) == 1 and "properties" in arguments:
+                arguments = arguments["properties"]  # un-nesting arguments
             result = self.implementations[name](**arguments)
         except Exception as e:
             result = str(e)
