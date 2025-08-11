@@ -6,10 +6,11 @@
 }
 
 #chatbot {
-    background-color: #ffffff;
+    background-color: #eeece8;
     font-family: 'SUITE-Regular', 'Arial', sans-serif;
     height: 100vh;
-    --squircle-radius: 40px;
+    position: relative;
+    --squircle-radius: 20px;
 }
 
 #chatbot h1 {
@@ -30,14 +31,41 @@
     background-color: #e0e0e0;
 }
 
+#chatbot .center-name {
+    max-width: 450px;
+    position: absolute;
+    top: 2%;
+    right: 5%;
+    height: auto;
+    width: min(90vw, 600px);
+    padding: 10px;
+    background: paint(squircle);
+    --squircle-fill: #f5f4f1;
+    z-index: 10;
+  }
+  
+  #chatbot .center-name a {
+    display: block; 
+    max-width: 100%;
+    white-space: normal; 
+    overflow-wrap: anywhere;
+    color: #333;
+    font-weight: bold;
+    font-size: 20px;
+    text-decoration: none;
+  }
+
 #chatbot .chat-container {
-    max-width: 600px;
+    max-width: 450px;
     width: 100%;
-    height: 100%;
+    height: 90%;
+    position: absolute;
+    bottom: 0;
+    right: 5%;
     margin: 0 auto;
     padding: 20px;
-    background-color: #ffffff;
-    border-radius: 10px;
+    background: paint(squircle);
+    --squircle-fill:#1e1e1e;
     box-shadow: none;
     border: none;
     flex-grow: 1;
@@ -77,24 +105,22 @@
 }
 
 #chatbot .message-user {
-    background-color: #f4f4f4;
     color: #333333;
     text-align: left;
     margin-left: auto;
-    border: 1px solid rgba(132, 129, 129, 0.12);
-    border-radius: 20px;
-    float: right;
+    background: paint(squircle);
+    --squircle-fill: #f4f4f4;
+    width: fit-content;
     padding: 4px 12px;
     word-wrap: break-word;
     white-space: pre-wrap;
 }
 
 #chatbot .message-server-container .message-server {
-    background-color: #ffffff;
-    color: #333333;
+    background: paint(squircle);
+    --squircle-fill: #3c3c3c;
+    color: #dbdbdb;
     text-align: left;
-    border: 1px solid rgba(237, 237, 237, 0.62);
-    border-radius: 20px;
     overflow: visible;
     margin-top: 2px;
     margin-bottom: 10px;
@@ -107,7 +133,7 @@
     animation: chatbot-message-icon-pulse 1.2s ease-in-out infinite;
     will-change: transform;
     font-size: 20px;
-    color: #454545;
+    color: #ffffff;
     margin-right: 5px;
     margin-left: 5px;
 }
@@ -125,7 +151,8 @@
 
 #chatbot .message-server-container .think-desc {
     font-size: 14px;
-    color: #454545;
+    color: #ffffff;
+    font-weight: bold;
     margin: 0 2px;
 }
 
@@ -147,6 +174,7 @@
 #chatbot .message-server-container .think-toggle:focus,
 #chatbot .message-server-container .think-toggle:active {
     outline: none;
+    box-shadow: none;
     border: none;
 }
 
@@ -170,9 +198,10 @@
 
 #chatbot .form-control {
     background: paint(squircle);
-    --squircle-fill: #f4f4f4;
+    --squircle-fill: #f4f4f4e5;
+    border: none;
+    outline: none;
     padding: 10px 15px;
-    border: 1px solid #fff;
     box-shadow: none;
     flex-grow: 1;
     resize: none;
@@ -183,32 +212,39 @@
 }
 
 #chatbot .form-control:focus {
+    background: paint(squircle);
     --squircle-fill: #f4f4f4;
-    border-color: #ddd;
     box-shadow: none;
 }
 
 #chatbot .btn-icon {
     border: none; /* 테두리 제거 */
-    background-color: #151515; /* 버튼 배경색 */
+    background-color: #ffffff; /* 버튼 배경색 */
     border-radius: 50%; /* 원형으로 만들기 */
     padding: 10px; /* 내부 여백 */
     font-size: 18px; /* 아이콘 크기 조정 */
-    color: #ffffff; /* 아이콘 색상 */
+    color: #1e1e1e; /* 아이콘 색상 */
     cursor: pointer; /* 마우스 포인터를 클릭 커서로 변경 */
     display: flex; /* 아이콘을 중앙에 위치시키기 위해 flexbox 사용 */
     align-items: center;
     justify-content: center;
+    margin-left: 2.5px;
+    margin-right: 2.5px;
     height: 40px; /* 버튼 높이 */
     width: 40px; /* 버튼 너비 */
 }
 
 #chatbot .btn-icon:hover {
     color: #bcbcbc; /* 호버 시 아이콘 색상을 흰색으로 유지 */
+    margin-left: 0px;
+    margin-right: 0px;
+    height: 45px; /* 버튼 높이 */
+    width: 45px; /* 버튼 너비 */
 }
 
 #chatbot .btn-icon:focus {
     border-color: #ddd;
+    outline: none;
     box-shadow: none;
     color: #fff; /* 아이콘 색상 */
     outline: none; /* 포커스 시 테두리 제거 */

@@ -138,7 +138,7 @@ def update_screen(text: str, user_content: bool = True, think: bool = False):
             asst_div.innerHTML = "" \
                 + '<div class="think-container">' \
                 + '    <i class="bi bi-diamond-fill icon"></i>' \
-                + f'    <p class="think-desc fst-italic">{DISPLAY_NAME}</p>' \
+                + f'    <p class="think-desc">{DISPLAY_NAME}</p>' \
                 + f'    <button class="think-toggle{ "" if THINKING_ENABLED else " d-none" }" onclick="toggleThinking(this)">▼</button>' \
                 + '</div>' \
                 + '<div class="think-content d-none"></div>'
