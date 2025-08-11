@@ -23,7 +23,7 @@ MODEL_LIST = dict(
 )
 MODEL_LIST['default'] = MODEL_LIST['midm2']
 
-STATIC_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), "../dashboard/static")
+STATIC_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), "../dist")
 
 
 class Session:

@@ -10,8 +10,7 @@ const IS_DEV = process.env.NODE_ENV === 'development';
 export default defineConfig({
 	site: IS_DEV ? `http://localhost:${DEV_PORT}` : 'http://localhost:8000',
 	base: IS_DEV ? '/' : '/dashboard',
-	output: 'static',
-	outDir: './static',
+	srcDir: './dashboard',
 	trailingSlash: IS_DEV ? 'ignore' : 'always',
 
 	server: {

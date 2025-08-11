@@ -14,8 +14,8 @@ function parseTypeParam(endpoint: string | undefined) {
 }
 
 /* Controllers */
-
-export const get: APIRoute = ({ params /* , request */ }) => {
+// NOTE: Astro expects uppercase HTTP method exports (GET, POST, etc.)
+export const GET: APIRoute = ({ params /* , request */ }) => {
 	console.log('Hit!', params.entity);
 
 	const operationName = parseTypeParam(params.entity);
@@ -31,6 +31,9 @@ export const get: APIRoute = ({ params /* , request */ }) => {
 		},
 	});
 };
+
+// Ensure static generation of these API endpoints when using `astro build`
+export const prerender = true;
 
 /* ... */
 
