@@ -6,8 +6,8 @@ from ...functions import PublikaiFunctions
 
 
 # Set model id
-model_id = "Qwen/Qwen3-4B-Instruct"
-gguf_model_id = "Qwen/Qwen3-4B-GGUF"
+model_id = "Qwen/Qwen3-8B-Instruct"
+gguf_model_id = "Qwen/Qwen3-8B-GGUF"
 context_length = 40960  # Set context length to 40960 tokens (max 40960)
 
 

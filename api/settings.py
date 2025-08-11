@@ -18,7 +18,7 @@ MODEL_LIST = dict(
     ),
     qwen3=ModelSettings(
         model_name="Qwen 3",
-        model_description="Qwen 3 4B 4bitQ IT"
+        model_description="Qwen 3 8B 4bitQ IT"
     ),
 )
 MODEL_LIST['default'] = MODEL_LIST['midm2']

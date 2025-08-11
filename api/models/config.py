@@ -51,7 +51,7 @@ class ChatHistory(list):
         return [
             {
                 'role': "system",
-                'content': f"The user's local time is {datetime.now()} {date.today().strftime('%a').upper()} ({time.tzname[0]}). For reference, the corresponding UTC time is {datetime.now(timezone.utc)}. " + system_prompt
+                'content': f"현재 유저의 지역 시간은: {datetime.now()} {date.today().strftime('%a').upper()} ({time.tzname[0]}). 참고사항으로, 해당 UTC 시간은 {datetime.now(timezone.utc)}입니다. " + system_prompt
             },
             *self,
             {
