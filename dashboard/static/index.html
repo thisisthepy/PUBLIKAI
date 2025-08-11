@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="ko">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -16,7 +17,7 @@
     <script>
         if ("paintWorklet" in CSS) {
             CSS.paintWorklet.addModule(
-            "https://www.unpkg.com/css-houdini-squircle/squircle.min.js"
+                "https://www.unpkg.com/css-houdini-squircle/squircle.min.js"
             );
         }
     </script>
@@ -35,11 +36,15 @@
     <script type="text/python" src="/static/models/config.py"></script>
     <script type="text/python" src="/static/index.py"></script>
 </head>
+
 <body onload="brython()">
     <section id="chatbot">
+        <div class="center-name text-center"><a href="https://www.cheonanurc.or.kr/">천안시 도시재생지원센터</a></div>
         <div class="container chat-container">
             <ul class="chatbot-msg" id="messages"></ul>
-            <p class="text-center fst-italic text-muted"><small>PUBLIKAI는 실수를 할 수 있습니다. 중요한 정보는 재차 확인해 주세요.</small></p>
+            <p class="text-center fst-italic text-muted">
+                <small class="text-white">PUBLIKAI는 실수를 할 수 있습니다. 중요한 정보는 재차 확인해 주세요.</small>
+            </p>
             <form id="send_chat" class="d-flex flex-nowrap align-items-center">
                 <textarea id="message_text" class="form-control flex-grow-1 me-2" autocomplete="off" placeholder="챗봇에게 문의하기"></textarea>
                 <button type="submit" class="btn btn-icon flex-shrink-0"><i class="fas fa-arrow-up"></i></button>
