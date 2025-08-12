@@ -1,297 +1,342 @@
-# [Flowbite Astro Admin Dashboard](https://themesberg.github.io/flowbite-astro-admin-dashboard/) [![Tweet](https://img.shields.io/twitter/url/http/shields.io.svg?style=social&logo=twitter)](https://twitter.com/intent/tweet?url=https%3A%2F%2Fgithub.com%2Fthemesberg%2Fflowbite-astro-admin-dashboard&text=Check%20out%20this%20open-source%20admin%20dashboard%20built%20with%20Flowbite%2C%20Astro%20and%20Tailwind%20CSS)
+# 💎 Gemstone AI
 
-<!-- NOTE: This is a Tailwind in MD experiment, to make it nice when rendered with Astro -->
-<div align="center" class="flex flex-wrap justify-evenly w-full">
-	<a href="https://github.com/themesberg/flowbite-astro-admin-dashboard"><img src="https://img.shields.io/badge/version-v1.0.2-blue" alt="version"></a>
-	<a href="LICENSE"><img src="https://img.shields.io/badge/license-MIT-blue.svg" alt="license"></a>
-	<a href="https://github.com/themesberg/flowbite-admin-dashboard/issues?q=is%3Aopen+is%3Aissue"><img src="https://img.shields.io/github/issues/themesberg/flowbite-astro-admin-dashboard.svg" alt="GitHub issues open"></a>
-	<a href="https://github.com/themesberg/flowbite-admin-dashboard/issues?q=is%3Aissue+is%3Aclosed"><img src="https://img.shields.io/github/issues-closed-raw/themesberg/flowbite-astro-admin-dashboard.svg" alt="GitHub issues closed"></a>
+<div align="center">
+  <img src="https://img.shields.io/badge/Kotlin-Multiplatform-7F52FF?style=for-the-badge&logo=kotlin" alt="Kotlin Multiplatform"/>
+  <img src="https://img.shields.io/badge/Compose-Multiplatform-4285F4?style=for-the-badge&logo=jetpackcompose" alt="Compose Multiplatform"/>
+  <img src="https://img.shields.io/badge/Python-3.12+-3776AB?style=for-the-badge&logo=python" alt="Python"/>
 </div>
-
-<a class="hidden" href="https://themesberg.github.io/flowbite-astro-admin-dashboard/"><img class="w-full rounded-md overflow-hidden" src="https://flowbite.s3.amazonaws.com/templates/flowbite-admin-dashboard/flowbite-admin-dashboard-preview.png" alt="Flowbite Admin Dashboard Live Preview"></a>
-
-This project is a free and open-source UI admin dashboard template built with the components from [Flowbite](https://github.com/themesberg/flowbite) and based on the utility-first [Tailwind CSS](https://github.com/tailwindlabs/tailwindcss) framework featuring charts, tables, widgets, CRUD layouts, modals, drawers, and more.
-
-This admin dashboard can quickly help you get started building an application for your project using the newest UI/UX development technologies in the open-source area including Tailwind CSS and Flowbite.
+<br><br>
+<div align="center">
+  <img src="app/src/desktopMain/resources/simple_white.png" alt="Gemstone AI Logo" width="200" height="200" />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+  <img src="app/src/desktopMain/resources/simple_black.png" alt="Gemstone AI Logo" width="200" height="200" />
+  <h3>🌟 Universal AI Chat System with On-Device Intelligence</h3>
+  <p>This is a open-source multi-platform AI Chat System written with Kotlin Compose Multiplatform and Python.</p>
+</div>
 
 ---
 
-<div align="center" class="flex flex-wrap justify-evenly w-full my-16">
-	<a href="https://stackblitz.com/github/themesberg/flowbite-astro-admin-dashboard"><img src="https://developer.stackblitz.com/img/open_in_stackblitz.svg" alt="Open in StackBlitz"></a>
-	<a href="https://codesandbox.io/p/github/themesberg/flowbite-astro-admin-dashboard/main"><img src="https://assets.codesandbox.io/github/button-edit-lime.svg" alt="Open with CodeSandbox"></a>
+## ✨ Key Features
+
+- 🎯 **Universal Platform Support** - Run on Web, Android, iOS, Windows, Linux, and macOS
+- 🧠 **On-Device AI** - Privacy-first local AI processing with Python Multiplatform
+- 🎨 **Modern UI** - Beautiful, responsive interface built with Compose Multiplatform
+- 💾 **Offline Capability** - Full functionality without internet connection
+- 🔄 **Real-time Chat** - WebSocket-based real-time messaging
+- 📱 **Cross-Platform Sync** - Seamless experience across all devices
+
+
+## 🚀 Platform Support
+
+<div align="center">
+  <table>
+    <tr>
+      <td align="center">🌐 <strong>Web</strong></td>
+      <td align="center">📱 <strong>Android</strong></td>
+      <td align="center">🍎 <strong>iOS</strong></td>
+    </tr>
+    <tr>
+      <td align="center">🪟 <strong>Windows</strong></td>
+      <td align="center">🐧 <strong>Linux</strong></td>
+      <td align="center">🍎 <strong>macOS</strong></td>
+    </tr>
+  </table>
 </div>
 
-<div class="hidden">
+> **Note:** Developed with Python Multiplatform
 
----
+## 🛠️ Technology Stacks
 
-## Table of Contents
+### 🔧 Model Serving API
+> **⚡ Note:** Planning to support OpenAI-like API for AI model serving.
 
-<details><summary>Click to expand</summary>
+- **Transformers/BitsAndBytes & PyTorch** (INT4/INT8)
+- **Transformers/AutoGPTQ & PyTorch** (SAFETENSORS)  
+- **Llama-cpp-python & Numpy** (GGUF)
 
-- [Table of Contents](#table-of-contents)
-- [🕹 Demo pages](#-demo-pages)
-- [🌀 Built with Flowbite](#-built-with-flowbite)
-- [💨 Tailwind CSS utility classes](#-tailwind-css-utility-classes)
-- [📊 15 example pages](#-15-example-pages)
-- [🧱 Advanced components](#-advanced-components)
-- [📚 Flowbite documentation](#-flowbite-documentation)
-- [👨‍🚀 Development](#-development)
-  - [⚙️ Workflow](#️-workflow)
-  - [🚀 Quick start](#-quick-start)
-  - [Project Structure](#project-structure)
-  - [🛠 Tools](#-tools)
-- [Browser Support](#browser-support)
-- [Resources](#resources)
-  - [JavaScript Frameworks](#javascript-frameworks)
-  - [Back-end Frameworks](#back-end-frameworks)
-- [Reporting Issues](#reporting-issues)
-- [Technical Support or Questions](#technical-support-or-questions)
-- [Licensing](#licensing)
-- [Useful Links](#useful-links)
-- [Authors](#authors)
+### 📱 Mobile/Web Client APP
+- **Kotlin Multiplatform Mobile**
+- **Compose Multiplatform Mobile**
+
+> **🔮 Note:** Scheduled to adapt Python Multiplatform for On-Device AI model serving.
+
+## 🤖 Supported Models
+
+### 🖥️ Server Models
+- **Qwen 3 14b 4bitQ** (BitsAndBytes)
+- **To be done...**
+
+### 📱 On-Device Models  
+- **Llama 3.1 8B** (llama.cpp)
+- **Qwen 3 14b 4bitQ** (llama.cpp)
+- **To be done...**
+
+## 📖 API Reference
+
+```json
+chat_history = [
+    {
+        "role": "user",
+        "content": "오늘 대전 날씨가 어때?"
+    },
+    {
+        "role": "assistant",
+        "content": "",
+        "tool_calls": [
+            {
+                "id": "call_20250614125444",
+                "function": {
+                    "name": "get_weather",
+                    "arguments": {
+                        "location": "Daejeon, South Korea",
+                        "unit": "celsius"
+                    }
+                }
+            }
+        ]
+    },
+    {
+        "role": "tool",
+        "tool_call_id": "call_20250614125444",
+        "content": "<cached_result:call_20250614125444>"
+    },
+    {
+        "role": "assistant",
+        "content": "오늘 대전의 날씨는 다음과 같습니다:\n\n- 🌡️ 온도: 26.3°C (체감 온도: 30.6°C)\n- ☁️ 날씨: 주로 맑음\n- 💧 습도: 81%\n- 💨 바람: 13.8 m/s (북동)\n- 📊 기압: 994 hPa\n\n이 정보는 Open-Meteo에서 제공합니다."
+    }
+]
+```
+
+## 🏗️ APP Architecture
+
+Gemstone AI follows Clean Architecture principles with clear separation of concerns:
+
+```
+📁 app/
+├── 🎯 domain/           # Business logic and entities
+├── 🔄 adapter/          # Controllers and presenters
+└── 🛠️ framework/        # UI, database, network, and AI infrastructure
+```
+
+<details>
+<summary>📁 Detailed Project Structure (Click to expand)</summary>
+
+```
+app/
+├── domain/
+│   ├── entity/
+│   │   ├── Message.kt
+│   │   ├── ChatSession.kt
+│   │   ├── User.kt
+│   │   ├── AIModel.kt
+│   │   └── value/
+│   │       ├── MessageId.kt
+│   │       ├── SessionId.kt
+│   │       └── Timestamp.kt
+│   ├── usecase/
+│   │   ├── chat/
+│   │   │   ├── SendMessageUseCase.kt
+│   │   │   ├── GetChatHistoryUseCase.kt
+│   │   │   ├── CreateSessionUseCase.kt
+│   │   │   └── DeleteSessionUseCase.kt
+│   │   ├── ai/
+│   │   │   ├── SwitchAIModelUseCase.kt
+│   │   │   ├── DownloadModelUseCase.kt
+│   │   │   └── GetAvailableModelsUseCase.kt
+│   │   └── user/
+│   │       ├── SaveUserPreferencesUseCase.kt
+│   │       └── GetUserPreferencesUseCase.kt
+│   ├── repository/
+│   │   ├── ChatRepository.kt
+│   │   ├── AIModelRepository.kt
+│   │   └── UserRepository.kt
+│   └── service/
+│       ├── AIService.kt
+│       ├── ValidationService.kt
+│       └── NotificationService.kt
+├── adapter/
+│   ├── controller/
+│   │   ├── chat/
+│   │   │   ├── ChatController.kt
+│   │   │   ├── SessionController.kt
+│   │   │   └── dto/
+│   │   │       ├── SendMessageRequest.kt
+│   │   │       └── CreateSessionRequest.kt
+│   │   ├── ai/
+│   │   │   ├── AIModelController.kt
+│   │   │   └── dto/
+│   │   │       └── SwitchModelRequest.kt
+│   │   └── settings/
+│   │       ├── SettingsController.kt
+│   │       └── dto/
+│   │           └── UpdatePreferencesRequest.kt
+│   ├── presenter/
+│   │   ├── chat/
+│   │   │   ├── ChatPresenter.kt
+│   │   │   ├── SessionPresenter.kt
+│   │   │   └── model/
+│   │   │       ├── ChatUiState.kt
+│   │   │       ├── MessageUiModel.kt
+│   │   │       └── SessionUiModel.kt
+│   │   ├── ai/
+│   │   │   ├── AIModelPresenter.kt
+│   │   │   └── model/
+│   │   │       ├── AIModelUiState.kt
+│   │   │       └── ModelDownloadUiModel.kt
+│   │   └── settings/
+│   │       ├── SettingsPresenter.kt
+│   │       └── model/
+│   │           └── SettingsUiState.kt
+└── framework/
+    ├── ui/
+    │   ├── compose/
+    │   │   ├── screen/
+    │   │   │   ├── chat/
+    │   │   │   │   ├── MainScreen.kt
+    │   │   │   │   ├── SideScreen.kt
+    │   │   │   │   ├── ChatScreen.kt
+    │   │   │   │   └── component/
+    │   │   │   │       ├── MessageItem.kt
+    │   │   │   │       ├── MessageInput.kt
+    │   │   │   │       └── SubjectCard.kt
+    │   │   │   ├── model/
+    │   │   │   │   ├── ModelSelectionScreen.kt
+    │   │   │   │   └── component/
+    │   │   │   │       ├── ModelItem.kt
+    │   │   │   │       └── DownloadProgress.kt
+    │   │   │   └── settings/
+    │   │   │       ├── SettingsScreen.kt
+    │   │   │       └── component/
+    │   │   │           └── PreferenceItem.kt
+    │   │   ├── navigation/
+    │   │   │   ├── AppNavigation.kt
+    │   │   │   └── NavigationRoute.kt
+    │   │   └── theme/
+    │   │       ├── Color.kt
+    │   │       ├── Dimen.kt
+    │   │       ├── Shape.kt
+    │   │       ├── Theme.kt
+    │   │       └── Type.kt
+    │   └── viewmodel/
+    │       ├── ChatViewModel.kt
+    │       ├── AIModelViewModel.kt
+    │       └── SettingsViewModel.kt
+    ├── database/
+    │   └── ChatDatabase.kt
+    ├── network/
+    │   ├── http/
+    │   │   ├── HttpClientFactory.kt
+    │   │   └── api/
+    │   │       ├── ChatApiService.kt
+    │   │       └── AIModelApiService.kt
+    │   └── websocket/
+    │       └── ChatWebSocketClient.kt
+    ├── ai/
+    │   ├── local/
+    │   │   └── LocalModelManager.kt
+    │   ├── remote/
+    │   │   ├── OpenAIClient.kt
+    │   │   ├── AnthropicClient.kt
+    │   │   └── HuggingFaceClient.kt
+    │   └── common/
+    │       └── ModelManager.kt
+    └── storage/
+        └── FileManager.kt
+```
 
 </details>
 
----
+## 🚀 Installation
 
-</div>
+### 📋 Prerequisites
+- **Git**
+- **Python 3.12+**
+- **Java 21+** (for Kotlin Multiplatform)
+- **Xcode 14+** - For iOS development (macOS only)
 
-<div class="hidden">
+### 🔧 Setup
 
-## 🕹 Demo pages
-
-| Dashboard                                                                                                                                                             | Stacked Layout                                                                                                                                                                            | Products (CRUD)                                                                                                                                                                                |
-| --------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| [![Dashboard](https://flowbite.s3.amazonaws.com/templates/flowbite-admin-dashboard/github/homepage.jpg)](http://themesberg.github.io/flowbite-astro-admin-dashboard/) | [![Stacked Layout](https://flowbite.s3.amazonaws.com/templates/flowbite-admin-dashboard/github/stacked.jpg)](http://themesberg.github.io/flowbite-astro-admin-dashboard/layouts/stacked/) | [![Products (CRUD)](https://flowbite.s3.amazonaws.com/templates/flowbite-admin-dashboard/github/products-crud.jpg)](http://themesberg.github.io/flowbite-astro-admin-dashboard/crud/products/) |
-
-| Users (CRUD)                                                                                                                                                                     | Settings                                                                                                                                                                      | Pricing page                                                                                                                                                                          |
-| -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| [![Users (CRUD)](https://flowbite.s3.amazonaws.com/templates/flowbite-admin-dashboard/github/users.jpg)](http://themesberg.github.io/flowbite-astro-admin-dashboard/crud/users/) | [![Settings](https://flowbite.s3.amazonaws.com/templates/flowbite-admin-dashboard/github/settings.jpg)](http://themesberg.github.io/flowbite-astro-admin-dashboard/settings/) | [![Pricing page](https://flowbite.s3.amazonaws.com/templates/flowbite-admin-dashboard/github/pricing.jpg)](http://themesberg.github.io/flowbite-astro-admin-dashboard/pages/pricing/) |
-
-| Login page                                                                                                                                                                                 | Register page                                                                                                                                                                                    | Reset password                                                                                                                                                                                                 |
-| ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| [![Login page](https://flowbite.s3.amazonaws.com/templates/flowbite-admin-dashboard/github/login.jpg)](http://themesberg.github.io/flowbite-astro-admin-dashboard/authentication/sign-in/) | [![Register page](https://flowbite.s3.amazonaws.com/templates/flowbite-admin-dashboard/github/register.jpg)](http://themesberg.github.io/flowbite-astro-admin-dashboard/authentication/sign-up/) | [![Reset password](https://flowbite.s3.amazonaws.com/templates/flowbite-admin-dashboard/github/reset-password.jpg)](http://themesberg.github.io/flowbite-astro-admin-dashboard/authentication/reset-password/) |
-
-| Forgot password                                                                                                                                                                                                   | Profile lock                                                                                                                                                                                             | Maintenance page                                                                                                                                                                                  |
-| ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| [![Forgot password](https://flowbite.s3.amazonaws.com/templates/flowbite-admin-dashboard/github/forgot-password.jpg)](http://themesberg.github.io/flowbite-astro-admin-dashboard/authentication/forgot-password/) | [![Profile lock](https://flowbite.s3.amazonaws.com/templates/flowbite-admin-dashboard/github/profile-lock.jpg)](http://themesberg.github.io/flowbite-astro-admin-dashboard/authentication/profile-lock/) | [![Maintenance page](https://flowbite.s3.amazonaws.com/templates/flowbite-admin-dashboard/github/maintenance.jpg)](http://themesberg.github.io/flowbite-astro-admin-dashboard/pages/maintenance/) |
-
-| 404 not found                                                                                                                                                                  | 500 server error                                                                                                                                                                  | Playground                                                                                                                                                                                  |
-| ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| [![404 not found](https://flowbite.s3.amazonaws.com/templates/flowbite-admin-dashboard/github/404.jpg)](http://themesberg.github.io/flowbite-astro-admin-dashboard/pages/404/) | [![500 server error](https://flowbite.s3.amazonaws.com/templates/flowbite-admin-dashboard/github/500.jpg)](http://themesberg.github.io/flowbite-astro-admin-dashboard/pages/500/) | [![Playground](https://flowbite.s3.amazonaws.com/templates/flowbite-admin-dashboard/github/playground.jpg)](http://themesberg.github.io/flowbite-astro-admin-dashboard/playground/sidebar/) |
-
-- [Live Preview](http://themesberg.github.io/flowbite-astro-admin-dashboard/)
-</div>
-
-## 🌀 Built with Flowbite
-
-The interactive components such as the navbars, modals, drawers, and tooltips are all based on the popular [open-source component library called Flowbite](https://flowbite.com/) which enables us to use these elements by creating more complex set of pages and widgets inside a fully-fledged admin dashboard template.
-
-## 💨 Tailwind CSS utility classes
-
-All of the pages, widgets, and components are solely based on the utility-first classes from Tailwind CSS and it is compatible with the latest `v3.x` of the technology by automatically purging all of the classes based on the template paths.
-
-## 📊 15 example pages
-
-Get started with 15 advanced examples pages including two different layouts of a dashboard's homepage full of charts widgets, tables, datepickers, and statistics and also with two CRUD layout pages for products, users, a settings page, authentication pages for login and register and even custom 404 and 500 error pages.
-
-## 🧱 Advanced components
-
-This admin dashboard contains many advanced components both from Flowbite but also from other third-party libraries such as ApexCharts which have been customly tailored with Tailwind CSS classes and designed based on the [Flowbite Design System](https://flowbite.com/figma/).
-
-## 📚 Flowbite documentation
-
-If you want to use this project we recommend to also [study the component library](https://flowbite.com/docs/getting-started/introduction/) that we used to build this dashboard because you can use even more components from that library to enhance the examples that we've coded here already.
-
-## 👨‍🚀 Development
-
-### ⚙️ Workflow
-
-This product is built using the following widely used technologies:
-
-- Tailwind CSS: [tailwindcss.com](https://tailwindcss.com/)
-- Flowbite: [flowbite.com](http://flowbite.com/)
-- Astro: [astro.build](https://astro.build/)
-
-### 🚀 Quick start
-
-1. Clone this repository or download the ZIP file
-2. Make sure that you have **Node.js** and NPM, PNPM or Yarn installed
-3. Install the project dependencies from the `package.json` file:
-
-```sh
-pnpm install
-# or
-npm install
-# or
-yarn
+#### 1️⃣ Clone this repository
+```bash
+git clone https://github.com/thisisthepy/Gemstone.git
+cd Gemstone
 ```
 
-_PNPM is the package manager of choice for illustration, but you can use what you want._
-
-1. Launch the Astro local development server on `localhost:2121` by running the following command:
-
-```sh
-pnpm run dev
+#### 2️⃣ Install Python dependencies
+```bash
+uv sync
 ```
 
-You can also build the project and get the distribution files inside the `dist/` folder by running:
+#### 3️⃣ Install Llama-cpp-python with CUDA support (Optional)
+> For GPU acceleration with NVIDIA cards
 
-```sh
-pnpm run build
+```bash
+CMAKE_ARGS="-DGGML_CUDA=on -DLLAVA_BUILD=off -DCMAKE_CUDA_ARCHITECTURES=native" \
+FORCE_CMAKE=1 uv pip install llama-cpp-python --no-cache-dir --force-reinstall --upgrade
 ```
 
-Then, you can preview the generated build with a local web server:
-
-```sh
-pnpm run preview
+#### 4️⃣ Run the server
+```bash
+python -m api run server
 ```
 
-For deployment, see the GitHub workflow, where you can plug your target (pre-configured for GitHub pages).
-See [docs.astro.build/en/guides/deploy](https://docs.astro.build/en/guides/deploy)
+## 🎯 Usage
 
-Website is configured for static deployment, but you can flip it to **Server-Side rendering** by simply
-uncommenting `output: "server"` in the `./astro.config.mjs`.
+### 🖥️ Desktop Application
+```bash
+./gradlew :app:run
+```
+
+### 📱 Android
+```bash
+./gradlew :app:installDebug
+```
+
+### 🌐 Web
+```bash
+./gradlew :app:wasmJsBrowserDevelopmentRun
+```
+
+### 🍎 iOS
+```bash
+./gradlew :app:iosSimulatorArm64Test
+```
+
+## 🤝 Contributing
+
+We welcome contributions! Please see our [Contributing Guide](CONTRIBUTING.md) for details.
+
+### 🐛 Bug Reports
+- Use the [issue tracker](https://github.com/thisisthepy/Gemstone/issues)
+- Provide detailed reproduction steps
+- Include platform and version information
+
+### 💡 Feature Requests
+- Check existing [feature requests](https://github.com/thisisthepy/Gemstone/issues?q=is%3Aissue+is%3Aopen+label%3Aenhancement)
+- Propose new ideas with clear use cases
+- Consider implementation complexity
+
+## 📄 License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+## 🙏 Acknowledgments
+
+- **JetBrains** for Kotlin Multiplatform and Compose
+- **Hugging Face** for the Transformers library
+- **Llama.cpp** for efficient local model serving
+- **Llama-cpp-python** for Python bindings
+- **Meta** for Llama models
+- **Alibaba** for Qwen models
+- **Google** for Gemma models
+
 
 ---
-
-### Project Structure
-
-After cloning this repository, you'll find the following (simplified) structure:
-
-```sh
-🛬
-├── 💧 data
-│   └── **/*.json                        # Satic data sources for REST etc.
-│
-└── src
-    │
-    ├── 🧱 app
-    │   └── **/*.astro                   # Application-wide components
-    │
-    ├── 🌠 assets
-    │   └── **/*.{svg,…}                 # Transformable assets
-    │
-    ├── 🧱 components
-    │   └── **/*.astro                   # Simple, atomic UI elements
-    │
-    ├── 📚 lib
-    │   └── **/*.ts                      # Utilities (Databases, APIs…)
-    │
-    ├── 🧱 modules
-    │   └── **/*.astro                   # Complex views made of elements
-    │
-    ├── 📑 pages
-    │   ├── **/*.astro                   # File-based client routes
-    │   │
-    │   └── 🌐 api
-    │        └── [...entities].ts        # Catch-all endpoint for CRUD ops.
-    │
-    ├── 🚀 services
-    │   └── *.ts                         # Server-side CRUD operations
-    │
-    └── 📐 types
-        └── *.ts                         # Data entities typings
-
-```
-
-### 🛠 Tools
-
-Efforts have been put on fast **onboarding** and **developer experience**.
-
-This project comes with extensive support for TypeScript, Astro, Tailwind, and VS Code.  
-It is configured with sensible defaults, a bit of opinions, plus some tricks to make it plays nice together.
-
-- **TypeScript**: _strictest_ Astro's settings. Full-stack, type-safe code base
-- **ESLint**: featuring `astro-eslint-parser` + `eslint-plugin-astro`
-- **Prettier**: featuring `prettier-plugin-astro` (bundled with `astro`)
-- **Editorconfig**: conforming with prettier
-- **VS Code**: extensions recommendations, tooling settings
-- **Tailwind**: Astro integration (using Vite and PostCSS)
-- **Flowbite**: dependencies (core, typography), settings
-- **GitHub**: a [pre-configured workflow](https://github.com/themesberg/flowbite-astro-admin-dashboard/tree/main/.github/workflows) for deployment (using PNPM cache)
-- **Sandboxes**: project is tested against and fully compatible with web containers
-
-Feel free to hack those settings to cater for your own needs.
 
 <div align="center">
-<a href="https://user-images.githubusercontent.com/603498/224380239-0aff9ec2-3436-4fca-a842-230f29dd9677.png"><img class="w-full rounded-md overflow-hidden" alt="ide-tooling" src="https://user-images.githubusercontent.com/603498/224380239-0aff9ec2-3436-4fca-a842-230f29dd9677.png"></a>
-<a href="https://user-images.githubusercontent.com/603498/224374764-dd1f98f8-df45-43c0-97f7-4b89ec427628.png"><img class="w-full rounded-md overflow-hidden" alt="gh-workflow" src="https://user-images.githubusercontent.com/603498/224374764-dd1f98f8-df45-43c0-97f7-4b89ec427628.png"></a>
-<a href="https://user-images.githubusercontent.com/603498/224353577-51262536-742a-4204-b85f-3f83c209697d.png"><img class="w-full rounded-md overflow-hidden" alt="gh-workflow" src="https://user-images.githubusercontent.com/603498/224353577-51262536-742a-4204-b85f-3f83c209697d.png"></a>
+  <p><strong>🎉 Ready to chat with AI across all your devices!</strong></p>
+  <p>
+    <a href="https://github.com/thisisthepy/thisisthepy/issues">🐛 Report Bug</a> |
+    <a href="">💬 Discuss on Discord</a> |
+    <a href="https://github.com/thisisthepy/thisisthepy">⭐ Star on GitHub</a>
+  </p>
 </div>
-
-## Browser Support
-
-At present, we officially aim to support the last two versions of the following browsers:
-
-<div align="center" class="flex justify-between w-full">
-<img src="https://s3.amazonaws.com/creativetim_bucket/github/browser/chrome.png" width="64" height="64"> <img src="https://s3.amazonaws.com/creativetim_bucket/github/browser/firefox.png" width="64" height="64"> <img src="https://s3.amazonaws.com/creativetim_bucket/github/browser/edge.png" width="64" height="64"> <img src="https://s3.amazonaws.com/creativetim_bucket/github/browser/safari.png" width="64" height="64"> <img src="https://s3.amazonaws.com/creativetim_bucket/github/browser/opera.png" width="64" height="64">
-</div>
-
-## Resources
-
-- Live preview: <https://themesberg.github.io/flowbite-astro-admin-dashboard/>
-
-- Flowbite documentation: <https://flowbite.com/docs/getting-started/introduction/>
-- Tailwind CSS documentation: <https://tailwindcss.com/>
-- License Agreement: <https://flowbite.com/docs/getting-started/license/>
-- Issues: [Github Issues Page](https://github.com/themesberg/flowbite-admin-dashboard/issues)
-
-### JavaScript Frameworks
-
-Here's a list of compatible technologies and guides for Flowbite and Tailwind CSS:
-
-The awesome open-source community also built and currently maintains the following standalone libraries for React, Vue, Svelte, and Angular:
-
-- [🌀 Flowbite React Library](https://github.com/themesberg/flowbite-react)
-- [🍀 Flowbite Vue Library](https://github.com/themesberg/flowbite-vue)
-- [🎸 Flowbite Svelte Library](https://github.com/themesberg/flowbite-svelte)
-- [📕 Flowbite Angular Library](https://github.com/themesberg/flowbite-angular)
-
-We also wrote integration guides for the following front-end frameworks and libraries:
-
-- [📝 Flowbite with React guide](https://flowbite.com/docs/getting-started/react/)
-- [📝 Flowbite with Next.js guide](https://flowbite.com/docs/getting-started/next-js/)
-- [📝 Flowbite with Vue guide](https://flowbite.com/docs/getting-started/vue/)
-- [📝 Flowbite with Nuxt.js guide](https://flowbite.com/docs/getting-started/nuxt-js/)
-- [📝 Flowbite with Svelte guide](https://flowbite.com/docs/getting-started/svelte/)
-
-### Back-end Frameworks
-
-Flowbite has a great integration with most of the back-end frameworks because it relies on vanilla JavaScript:
-
-- [📚 Using Flowbite with Laravel](https://flowbite.com/docs/getting-started/laravel/)
-- [🚊 Using Flowbite with Ruby on Rails 7](https://flowbite.com/docs/getting-started/rails/)
-- [🐸 Using Flowbite with Django](https://flowbite.com/docs/getting-started/django/)
-- [🌶 Using Flowbite with Flask](https://flowbite.com/docs/getting-started/flask/)
-
-## Reporting Issues
-
-We use GitHub Issues as the official bug tracker for Flowbite Admin Dashboard. Here are some advices for our users that want to report an issue:
-
-1. Make sure that you are using the latest version of Flowbite Admin Dashboard. Check the CHANGELOG from your dashboard on the [GitHub releases page](https://github.com/themesberg/flowbite-admin-dashboard/releases).
-2. Providing us reproducible steps for the issue will shorten the time it takes for it to be fixed.
-3. Some issues may be browser specific, so specifying in what browser you encountered the issue might help.
-
-## Technical Support or Questions
-
-If you have questions or need help integrating the product please [contact us](https://flowbite.com/contact/) instead of opening an issue.
-
-## Licensing
-
-- Copyright 2019-2023 Bergside Inc. (https://flowbite.com)
-- Open-source under the [MIT License](https://github.com/themesberg/flowbite-admin-dashboard/blob/main/LICENSE)
-
-## Useful Links
-
-- 📚 [Flowbite Library](https://flowbite.com/) - Open-source components built with Tailwind CSS
-- 🎨 [Flowbite Figma](https://flowbite.com/figma/) - Design system built for Figma
-- 🧱 [Flowbite Blocks](https://flowbite.com/blocks/) - Building sections for website and applications
-- 💎 [Flowbite Pro](https://flowbite.com/pro/) - A larger collection of the open-source version of the latter three
-
-## Authors
-
-- [Julian Cataldo](https://twitter.com/Julian_Cataldo)
-- [Zoltán Szőgyényi](https://twitter.com/zoltanszogyenyi)
-- [Robert Tanislav](https://twitter.com/roberttanislav)

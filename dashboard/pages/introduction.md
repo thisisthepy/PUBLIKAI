@@ -1,3 +1,8 @@
+---
+import LayoutSidebar from '../app/LayoutSidebar.astro';
+import DashBoard from '../modules/DashBoard.astro';
+---
+
 # 천안시 도시재생지원센터 소개
 
 도시재생은 **사람과 공간, 지역‧경제를 동시에 살리는 ‘종합적 도시 혁신’**입니다.  
