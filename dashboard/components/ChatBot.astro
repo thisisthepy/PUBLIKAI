@@ -5,8 +5,8 @@ const base = import.meta.env.BASE_URL; // e.g. '/' or '/dashboard/'
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css">
 
-<script src="https://cdn.jsdelivr.net/npm/brython@3/brython.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/brython@3/brython_stdlib.js"></script>
+<script is:inline src="https://cdn.jsdelivr.net/npm/brython@3/brython.min.js"></script>
+<script is:inline src="https://cdn.jsdelivr.net/npm/brython@3/brython_stdlib.js"></script>
 <script type="text/python">
     from browser import aio, bind, document, window
     from typing import Iterable
@@ -15,37 +15,38 @@ const base = import.meta.env.BASE_URL; // e.g. '/' or '/dashboard/'
     import json
     import re
 
-    print, pyprint = browser.window.console.log, print
+    print, pyprint = window.console.log, print
+    print("INFO: Initializing brython...")
 
 
     #############################################################################
     # models/config.py
     #############################################################################
     class ChatHistory(list):
-    """ Chat history class """
+        """ Chat history class """
 
-    def append(self, role: str | Iterable[str], content: str | Iterable[str]):
-        if isinstance(content, str):
-            if isinstance(role, str):
-                super().append({'role': role, 'content': content})
+        def append(self, role: str | Iterable[str], content: str | Iterable[str]):
+            if isinstance(content, str):
+                if isinstance(role, str):
+                    super().append({'role': role, 'content': content})
+                else:
+                    raise ValueError("Role must be a string when content is a string")
             else:
-                raise ValueError("Role must be a string when content is a string")
-        else:
-            if isinstance(role, str):
-                role = [role for _ in content]
-            for r, c in zip(role, content):
-                super().append({'role': r, 'content': c})
+                if isinstance(role, str):
+                    role = [role for _ in content]
+                for r, c in zip(role, content):
+                    super().append({'role': r, 'content': c})
 
-    def extend(self, history: Iterable):
-        for item in history:
-            try:
-                self.append(**item)
-            except TypeError:
-                self.append(**item.dict())
+        def extend(self, history: Iterable):
+            for item in history:
+                try:
+                    self.append(**item)
+                except TypeError:
+                    self.append(**item.dict())
 
-    def raw_extend(self, history: Iterable):
-        """ Append raw items without cleaning them """
-        super().extend(history)
+        def raw_extend(self, history: Iterable):
+            """ Append raw items without cleaning them """
+            super().extend(history)
 
 
     #############################################################################
@@ -174,20 +175,20 @@ const base = import.meta.env.BASE_URL; // e.g. '/' or '/dashboard/'
                 user.classList.add("message")
                 user.classList.add("message-user")
                 if not text:
-                    user.classList.add("d-none")  # 빈 메시지는 안보이도록
+                    user.classList.add("hidden")  # 빈 메시지는 안보이도록
 
                 # assistant content
                 asst_div = document.createElement("div")
                 asst_div.classList.add("message")
                 asst_div.classList.add("message-server-container")
-                asst_div.classList.add("d-none")  # 메시지 도달 되기 전까지 안보이도록
+                asst_div.classList.add("hidden")  # 메시지 도달 되기 전까지 안보이도록
                 asst_div.innerHTML = "" \
                     + '<div class="think-container">' \
                     + '    <i class="bi bi-diamond-fill icon"></i>' \
                     + f'    <p class="think-desc">{DISPLAY_NAME}</p>' \
-                    + f'    <button class="think-toggle{ "" if THINKING_ENABLED else " d-none" }" onclick="toggleThinking(this)">▼</button>' \
+                    + f'    <button class="think-toggle{ "" if THINKING_ENABLED else " hidden" }" onclick="toggleThinking(this)">▼</button>' \
                     + '</div>' \
-                    + '<div class="think-content d-none"></div>'
+                    + '<div class="think-content hidden"></div>'
                 asst = document.createElement("li")
                 asst.classList.add("message")
                 asst.classList.add("message-server")
@@ -198,8 +199,8 @@ const base = import.meta.env.BASE_URL; // e.g. '/' or '/dashboard/'
             else:
                 target = document['messages'].lastChild
                 desc = target.querySelector(".think-desc")
-                if "d-none" in target.classList:
-                    target.classList.remove("d-none")  # 메시지 도달 되면 보이도록
+                if "hidden" in target.classList:
+                    target.classList.remove("hidden")  # 메시지 도달 되면 보이도록
                     thinking_started = time.time()
                 if think and THINKING_ENABLED:
                     if not hasattr(desc, 'elapsed'):
@@ -271,7 +272,7 @@ const base = import.meta.env.BASE_URL; // e.g. '/' or '/dashboard/'
     </div>
 </section>
 
-<style>
+<style is:global>
     #chatbot {
         height: 90vh;
         --squircle-radius: 40px;
@@ -330,6 +331,10 @@ const base = import.meta.env.BASE_URL; // e.g. '/' or '/dashboard/'
         justify-content: flex-end;
     }
 
+    #chatbot .message {
+        --squircle-radius: 20px;
+    }
+
     #chatbot .chatbot-msg {
         list-style-type: none;
         padding: 0;
@@ -346,7 +351,6 @@ const base = import.meta.env.BASE_URL; // e.g. '/' or '/dashboard/'
         margin-bottom: 10px;
         max-width: 80%;
         word-wrap: break-word;
-        display: block;
         clear: both;
     }
 
@@ -454,7 +458,7 @@ const base = import.meta.env.BASE_URL; // e.g. '/' or '/dashboard/'
 
     #chatbot .form-control {
         background: paint(squircle);
-        --squircle-fill: #f4f4f4e5;
+        --squircle-fill: #f0eeeeff;
         border: none;
         outline: none;
         padding: 10px 15px;
