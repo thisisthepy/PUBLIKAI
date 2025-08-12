@@ -14,14 +14,18 @@ const sections = Object.entries(raw)
 ---
 
 <LayoutSidebar>
-	<div class="lg:pr-96 max-lg:pr-0">
-		{sections.map(s => (
-			<article id={s.id} class="section-content hidden prose dark:prose-invert max-w-none" data-section={s.id}>
-				<s.mod.Content />
-			</article>
-		))}
+	<div class="flex flex-col lg:flex-row lg:items-start">
+		<div class="flex-1 px-6 lg:px-8">
+			{sections.map(s => (
+				<article id={s.id} class="section-content hidden prose dark:prose-invert max-w-none" data-section={s.id}>
+					<s.mod.Content />
+				</article>
+			))}
+		</div>
+		<div class="lg:w-[28rem] w-full px-4 lg:pe-12">
+			<ChatBot />
+		</div>
 	</div>
-	<ChatBot />
 </LayoutSidebar>
 
 <script>

@@ -12,7 +12,7 @@ const { class: clazz, prose = false } = Astro.props;
 	<head>
 		<meta charset="UTF-8" />
 		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-		<title>{SITE_TITLE} — v{pkg.version}</title>
+		<title>{SITE_TITLE}</title>
 
 		<meta name="generator" content={Astro.generator} />
 		<meta name="description" content={pkg.description} />
@@ -23,6 +23,13 @@ const { class: clazz, prose = false } = Astro.props;
 			type="application/xml"
 			href={url('sitemap-index.xml')}
 		/>
+		<script>
+			if ("paintWorklet" in CSS) {
+				CSS.paintWorklet.addModule(
+					"https://www.unpkg.com/css-houdini-squircle/squircle.min.js"
+				);
+			}
+		</script>
 
 		<script is:inline>
 			if (
@@ -40,7 +47,6 @@ const { class: clazz, prose = false } = Astro.props;
 		class:list={[
 			//
 			clazz,
-			'bg-gray-50 dark:bg-gray-800',
 			'scrollbar scrollbar-w-3 scrollbar-thumb-rounded-[0.25rem]',
 			'scrollbar-track-slate-200  scrollbar-thumb-gray-400',
 			'dark:scrollbar-track-gray-900 dark:scrollbar-thumb-gray-700',
@@ -57,4 +63,13 @@ const { class: clazz, prose = false } = Astro.props;
 
 <style is:global>
 	@import url('https://fonts.cdnfonts.com/css/inter');
+	@font-face {
+		font-family: 'SUITE-Regular';
+		src: url('https://fastly.jsdelivr.net/gh/projectnoonnu/noonfonts_2304-2@1.0/SUITE-Regular.woff2') format('woff2');
+		font-weight: 400;
+		font-style: normal;
+	}
+	body, code {
+		font-family: 'SUITE-Regular', 'Arial', sans-serif;
+	}
 </style>
