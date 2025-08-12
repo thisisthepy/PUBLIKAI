@@ -24,7 +24,7 @@ class Message(BaseModel):
 
 
 app = FastAPI()
-app.mount("/static", StaticFiles(directory=STATIC_DIR, html=True), name="static")
+app.mount("/dashboard", StaticFiles(directory=STATIC_DIR, html=True), name="dashboard")
 
 
 @app.get("/")

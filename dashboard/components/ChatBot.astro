@@ -1,0 +1,512 @@
+---
+// ChatBot component (public assets)
+const base = import.meta.env.BASE_URL; // e.g. '/' or '/dashboard/'
+---
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css">
+
+<script is:inline src="https://cdn.jsdelivr.net/npm/brython@3/brython.min.js"></script>
+<script is:inline src="https://cdn.jsdelivr.net/npm/brython@3/brython_stdlib.js"></script>
+<script type="text/python">
+    from browser import aio, bind, document, window
+    from typing import Iterable
+    
+    import time
+    import json
+    import re
+
+    print, pyprint = window.console.log, print
+    print("INFO: Initializing brython...")
+
+
+    #############################################################################
+    # models/config.py
+    #############################################################################
+    class ChatHistory(list):
+        """ Chat history class """
+
+        def append(self, role: str | Iterable[str], content: str | Iterable[str]):
+            if isinstance(content, str):
+                if isinstance(role, str):
+                    super().append({'role': role, 'content': content})
+                else:
+                    raise ValueError("Role must be a string when content is a string")
+            else:
+                if isinstance(role, str):
+                    role = [role for _ in content]
+                for r, c in zip(role, content):
+                    super().append({'role': r, 'content': c})
+
+        def extend(self, history: Iterable):
+            for item in history:
+                try:
+                    self.append(**item)
+                except TypeError:
+                    self.append(**item.dict())
+
+        def raw_extend(self, history: Iterable):
+            """ Append raw items without cleaning them """
+            super().extend(history)
+
+
+    #############################################################################
+    # chatbot.py
+    #############################################################################
+    chat_history = ChatHistory()
+    ws = False
+
+    MODEL_ID = "midm2"
+    DISPLAY_NAME = "PUBLIKAI"
+    THINKING_ENABLED = False  # Reasoning mode enabled
+
+    SERVER_URL = window.location.host  # "127.0.0.1:23100"
+    GREETING_URL = f"ws://{SERVER_URL}/api/greetings"
+    WEBSOCKET_URL = f"ws://{SERVER_URL}/api/chat"
+    SESSION_URL = f"http://{SERVER_URL}/api/models/{MODEL_ID}/sessions/"
+    SESSION_UNLOAD_URL = f"http://{SERVER_URL}/api/sessions/"
+    __SESSION_ID = None
+
+
+    def connect_websocket(url=WEBSOCKET_URL):
+        global ws
+        if ws:
+            return  # 챗봇이 대답하고 있는 중에 버튼을 누르면 진행 안함
+
+        # open a web socket
+        ws = window.WebSocket.new(url)
+
+        # bind functions to web socket events
+        ws.bind('open', on_open)
+        ws.bind('message', on_message)
+        ws.bind('close', on_close)
+        ws.bind('error', lambda e: print("Websocket error", e))
+
+
+    async def get_session_id():
+        global __SESSION_ID
+
+        response = await window.fetch(SESSION_URL, {'method': "POST"})
+        if response.status != 200:
+            raise Exception("Failed to create session")
+
+        data = await response.json()
+        __SESSION_ID = data['session_id']
+        print(f"Session ID: {__SESSION_ID}")
+
+        connect_websocket(GREETING_URL)  # Connect to the greeting websocket
+
+        return __SESSION_ID
+
+
+    @bind(window, 'unload')
+    def on_unload(_):
+        if __SESSION_ID:
+            window.navigator.sendBeacon(SESSION_UNLOAD_URL + __SESSION_ID, b"")
+
+
+    def on_open(_):
+        print(f"Websocket connection is now open to {ws.url}")
+
+        data = document['message_text'].value.strip()
+        if (data or ws.url == GREETING_URL) and __SESSION_ID:
+            ws.send(json.dumps({"session_id": __SESSION_ID}))  # 세션 ID 전송
+            ws.send(json.dumps(chat_history))  # chat history 전송
+            ws.send(data)  # user prompt 전송
+            if not data and ws.url == GREETING_URL:
+                chat_history.append("user", "안녕하세요?")
+            else:
+                chat_history.append("user", data)  # chat history 업데이트
+            update_screen(data, True)  # 화면 업데이트
+            document['message_text'].value = ""  # 입력창 초기화
+
+
+    thinking_found = False
+    def on_message(evt):
+        # message received from server
+        print("Message received:", evt.data)
+        if evt.data == "<EOS>":
+            ws.close()
+            return
+
+        if evt.data:
+            global thinking_found
+            if thinking_found:
+                if evt.data == "</think>":
+                    thinking_found = False
+                    print("Thinking/Reasoning ended")
+                else:
+                    update_screen(evt.data, False, think=True)
+            else:
+                if evt.data == "<think>":
+                    thinking_found = True
+                    print("Thinking/Reasoning started")
+                else:
+                    if "<tool_call>" not in evt.data:  # 일반 메시지인 경우
+                        update_screen(evt.data, False)
+                    else:
+                        tool_call = json.loads(evt.data.replace("<tool_call>", "").replace("</tool_call>", ""))
+                        if "history" in tool_call:
+                            chat_history.raw_extend(tool_call['history'])
+                            print("Tool call history updated")
+                        else:  # TODO: tool call notification 처리 (call, result)
+                            pass
+
+
+    def on_close(_):
+        global ws
+        # websocket is closed
+        print("Websocket connection is now closed")
+        target = document['messages'].lastChild
+        message_content = target.querySelector(".message-content")
+        chat_history.append("assistant", message_content.textContent)  # chat history 업데이트
+        message_content.innerHTML = re.sub(r'\*\*(.*?)\*\*', r'<strong>\1</strong>', message_content.innerHTML.strip())
+        ws = None
+
+
+    thinking_started = 0
+    def update_screen(text: str, user_content: bool = True, think: bool = False):
+        try:
+            global thinking_started
+            message_list = document['messages']
+            if user_content:
+                # user content
+                user = document.createElement("li")
+                message_list.appendChild(user)
+                user.classList.add("message")
+                user.classList.add("message-user")
+                if not text:
+                    user.classList.add("hidden")  # 빈 메시지는 안보이도록
+
+                # assistant content
+                asst_div = document.createElement("div")
+                asst_div.classList.add("message")
+                asst_div.classList.add("message-server-container")
+                asst_div.classList.add("hidden")  # 메시지 도달 되기 전까지 안보이도록
+                asst_div.innerHTML = "" \
+                    + '<div class="think-container">' \
+                    + '    <i class="bi bi-diamond-fill icon"></i>' \
+                    + f'    <p class="think-desc">{DISPLAY_NAME}</p>' \
+                    + f'    <button class="think-toggle{ "" if THINKING_ENABLED else " hidden" }" onclick="toggleThinking(this)">▼</button>' \
+                    + '</div>' \
+                    + '<div class="think-content hidden"></div>'
+                asst = document.createElement("li")
+                asst.classList.add("message")
+                asst.classList.add("message-server")
+                asst.innerHTML = '<span class="message-content"></span>'
+                asst_div.appendChild(asst)
+                message_list.appendChild(asst_div)
+                user.innerHTML += text
+            else:
+                target = document['messages'].lastChild
+                desc = target.querySelector(".think-desc")
+                if "hidden" in target.classList:
+                    target.classList.remove("hidden")  # 메시지 도달 되면 보이도록
+                    thinking_started = time.time()
+                if think and THINKING_ENABLED:
+                    if not hasattr(desc, 'elapsed'):
+                        try:
+                            desc.elapsed = float(desc.innerHTML.split("초")[0])
+                        except ValueError:
+                            desc.elapsed = 0
+                    desc.elapsed += float(time.time() - thinking_started)
+                    elapsed_msg = f"{int(desc.elapsed)}초 동안 생각 중..."
+                    if desc.innerHTML != elapsed_msg:
+                        desc.innerHTML = elapsed_msg
+                    thinking_started = time.time()  # 생각 시작 시간 갱신
+                    target = target.querySelector(".think-content")
+                else:
+                    desc.innerHTML = desc.innerHTML.replace("생각 중...", "생각 완료")  # 생각 완료 표시
+                    target = target.querySelector(".message-content")
+                target.innerHTML = target.innerHTML.lstrip() + text
+            message_list.scrollTop = message_list.scrollHeight  # scroll to bottom
+        except Exception as e:
+            print("Error updating screen:", e)
+
+
+    @bind('#send_chat', 'submit')
+    def ws_open(e):
+        e.preventDefault()  # 기본 submit 동작 방지
+        connect_websocket()
+
+
+    @bind('#message_text', 'keydown')
+    def keydown_disable(e):
+        if e.key == "Enter" and not e.shiftKey:  # shift + Enter는 줄바꿈
+            e.preventDefault()  # 기본 Enter 동작 방지
+            document["send_chat"].requestSubmit()  # 폼 전송
+
+
+    # JavaScript 함수를 window 객체에 추가
+    window.toggleThinking = lambda btn: toggle_thinking(btn)
+    window.showHistory = lambda: chat_history  # chat history 출력 함수
+
+
+    def toggle_thinking(btn):
+        think_content = btn.parentElement.parentElement.querySelector(".think-content")
+        if "d-none" in think_content.classList:
+            think_content.classList.remove("d-none")
+            btn.innerHTML = "▲"
+        else:
+            think_content.classList.add("d-none")
+            btn.innerHTML = "▼"
+
+
+    aio.run(get_session_id())
+
+</script>
+
+<section id="chatbot">
+    <div class="center-name text-center">
+        <a href="https://www.cheonanurc.or.kr/">천안시 도시재생지원센터</a>
+    </div>
+    <br><br>
+    <div class="container chat-container">
+        <ul class="chatbot-msg" id="messages"></ul>
+        <p class="text-center italic text-gray-500">
+            <small class="text-white">PUBLIKAI는 실수를 할 수 있습니다. 중요한 정보는 재차 확인해 주세요.</small>
+        </p>
+        <form id="send_chat" class="flex flex-nowrap items-center mt-3">
+            <textarea id="message_text" class="form-control flex-grow mr-2" autocomplete="off" placeholder="챗봇에게 문의하기"></textarea>
+            <button type="submit" class="btn btn-icon flex-shrink-0"><i class="fas fa-arrow-up"></i></button>
+        </form>
+    </div>
+</section>
+
+<style is:global>
+    #chatbot {
+        height: 90vh;
+        --squircle-radius: 40px;
+    }
+
+    #chatbot h1 {
+        font-size: 20px;
+        font-weight: 800;
+        color: #666666;
+        position: absolute;
+        top: 10px;
+        left: 10px;
+        margin: 0;
+        z-index: 1000;
+        background-color: #ffffff;
+        padding: 5px 10px;
+        border-radius: 5px;
+    }
+
+    #chatbot h1:hover {
+        background-color: #e0e0e0;
+    }
+
+    #chatbot .center-name {
+        height: auto;
+        width: auto;
+        padding: 10px;
+        background: paint(squircle);
+        --squircle-fill: #f5f4f1;
+        z-index: 10;
+    }
+
+    #chatbot .center-name a {
+        display: block; 
+        max-width: 100%;
+        white-space: normal; 
+        overflow-wrap: anywhere;
+        color: #333;
+        font-weight: bold;
+        font-size: 20px;
+        text-decoration: none;
+    }
+
+    #chatbot .chat-container {
+        width: 100%;
+        height: 90%;
+        margin: 0 auto;
+        padding: 20px;
+        background: paint(squircle);
+        --squircle-fill:#1e1e1e;
+        box-shadow: none;
+        border: none;
+        flex-grow: 1;
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-end;
+    }
+
+    #chatbot .message {
+        --squircle-radius: 20px;
+    }
+
+    #chatbot .chatbot-msg {
+        list-style-type: none;
+        padding: 0;
+        margin: 0;
+        overflow-y: auto;
+        scrollbar-width: none;
+        padding-bottom: 10px;
+        flex-grow: 1;
+    }
+
+    #chatbot .chatbot-msg li {
+        padding: 12px 15px;
+        border-radius: 15px;
+        margin-bottom: 10px;
+        max-width: 80%;
+        word-wrap: break-word;
+        clear: both;
+    }
+
+    #chatbot .message-client {
+        background-color: #e1f5fe;
+        color: #0277bd;
+        text-align: left;
+        margin-left: auto;
+        border: 1px solid #b3e5fc;
+        border-radius: 15px;
+        float: right;
+    }
+
+    #chatbot .message-user {
+        color: #333333;
+        text-align: left;
+        margin-left: auto;
+        background: paint(squircle);
+        --squircle-fill: #f4f4f4;
+        width: fit-content;
+        padding: 4px 12px;
+        word-wrap: break-word;
+        white-space: pre-wrap;
+    }
+
+    #chatbot .message-server-container .message-server {
+        background: paint(squircle);
+        --squircle-fill: #3c3c3c;
+        color: #dbdbdb;
+        text-align: left;
+        overflow: visible;
+        margin-top: 2px;
+        margin-bottom: 10px;
+        word-wrap: break-word;
+        white-space: pre-wrap;
+    }
+
+    #chatbot .message-server-container .icon {
+        display: inline-block;
+        animation: chatbot-message-icon-pulse 1.2s ease-in-out infinite;
+        will-change: transform;
+        font-size: 20px;
+        color: #ffffff;
+        margin-right: 5px;
+        margin-left: 5px;
+    }
+
+    @keyframes chatbot-message-icon-pulse {
+        0%, 100% { transform: scale(1); }
+        50%      { transform: scale(0.85); }
+    }
+
+    #chatbot .message-server-container .think-container {
+        display: flex;
+        align-items: center;
+        gap: 2px;
+    }
+
+    #chatbot .message-server-container .think-desc {
+        font-size: 14px;
+        color: #ffffff;
+        font-weight: bold;
+        margin: 0 2px;
+    }
+
+    #chatbot .message-server-container .think-toggle {
+        background: none;
+        border: none;
+        color: #454545;
+        font-size: 12px;
+        cursor: pointer;
+        padding: 2px 4px;
+        border-radius: 3px;
+        transition: background-color 0.2s;
+    }
+
+    #chatbot .message-server-container .think-toggle:hover {
+        background-color: #f0f0f0;
+    }
+
+    #chatbot .message-server-container .think-toggle:focus,
+    #chatbot .message-server-container .think-toggle:active {
+        outline: none;
+        box-shadow: none;
+        border: none;
+    }
+
+    #chatbot .message-server-container .think-content {
+        background-color: #f8f9fa;
+        border: 1px solid #e9ecef;
+        border-radius: 10px;
+        padding: 10px;
+        margin: 4px 18px;
+        font-size: 13px;
+        color: #666;
+        white-space: pre-wrap;
+        word-wrap: break-word;
+    }
+
+    #chatbot .form-inline {
+        display: flex;
+        align-items: center;
+        margin-top: 20px;
+    }
+
+    #chatbot .form-control {
+        background: paint(squircle);
+        --squircle-fill: #f0eeeeff;
+        border: none;
+        outline: none;
+        padding: 10px 15px;
+        box-shadow: none;
+        flex-grow: 1;
+        resize: none;
+        overflow: auto;
+        scrollbar-width: none;
+        max-height: 100px;
+        min-height: 20px;
+    }
+
+    #chatbot .form-control:focus {
+        background: paint(squircle);
+        --squircle-fill: #f4f4f4;
+        box-shadow: none;
+    }
+
+    #chatbot .btn-icon {
+        border: none; /* 테두리 제거 */
+        background-color: #ffffff; /* 버튼 배경색 */
+        border-radius: 50%; /* 원형으로 만들기 */
+        padding: 10px; /* 내부 여백 */
+        font-size: 18px; /* 아이콘 크기 조정 */
+        color: #1e1e1e; /* 아이콘 색상 */
+        cursor: pointer; /* 마우스 포인터를 클릭 커서로 변경 */
+        display: flex; /* 아이콘을 중앙에 위치시키기 위해 flexbox 사용 */
+        align-items: center;
+        justify-content: center;
+        margin-left: 2.5px;
+        margin-right: 2.5px;
+        height: 40px; /* 버튼 높이 */
+        width: 40px; /* 버튼 너비 */
+    }
+
+    #chatbot .btn-icon:hover {
+        color: #bcbcbc; /* 호버 시 아이콘 색상을 흰색으로 유지 */
+        margin-left: 0px;
+        margin-right: 0px;
+        height: 45px; /* 버튼 높이 */
+        width: 45px; /* 버튼 너비 */
+    }
+
+    #chatbot .btn-icon:focus {
+        border-color: #ddd;
+        outline: none;
+        box-shadow: none;
+        color: #fff; /* 아이콘 색상 */
+        outline: none; /* 포커스 시 테두리 제거 */
+    }
+</style>

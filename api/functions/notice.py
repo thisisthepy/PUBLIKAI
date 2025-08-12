@@ -13,7 +13,7 @@ except ImportError:
     from utils import web_search
 
 
-def get_general_notices(query: str = "", retry: int = 3) -> str:
+def get_center_notices(query: str = "", retry: int = 3) -> str:
     url = "https://www.cheonanurc.or.kr/new/?keyword_type=all"
 
     if query:
@@ -34,7 +34,7 @@ def get_general_notices(query: str = "", retry: int = 3) -> str:
 if __name__ == '__main__':
     # Example usage
     print("최신 공지사항:")
-    print(get_general_notices())
+    print(get_center_notices())
 
     print("\n도시재생 공지사항:")
-    print(get_general_notices("도시재생"))
+    print(get_center_notices("도시재생"))

@@ -1,0 +1,79 @@
+---
+import LayoutSidebar from '../app/LayoutSidebar.astro';
+import ChatBot from '../components/ChatBot.astro';
+// Auto-load section markdown / mdx files moved to ../sections
+const raw = import.meta.glob('../sections/*.{md,mdx}', { eager: true });
+const sections = Object.entries(raw)
+	.map(([path, mod]) => {
+		const id = path.split('/').pop().replace(/\.(md|mdx)$/,'');
+		const fm = (mod as any).frontmatter || (mod as any).default?.frontmatter || {};
+		const order = fm.order ?? 9999;
+		const title = fm.title ?? id;
+		// Normalize a render component
+		const Content = (mod as any).Content || (mod as any).default || mod;
+		return { id, order, title, Content };
+	})
+	.sort((a,b)=> a.order - b.order);
+---
+
+<LayoutSidebar>
+	<div class="flex flex-col lg:flex-row lg:items-start">
+		<div class="flex-1 px-6 lg:px-8">
+			{sections.map(s => (
+				<article id={s.id} class="section-content hidden prose dark:prose-invert max-w-none" data-section={s.id}>
+					<s.Content />
+				</article>
+			))}
+		</div>
+		<div class="lg:w-[30rem] w-full px-4 lg:pe-12">
+			<ChatBot />
+		</div>
+	</div>
+</LayoutSidebar>
+
+<script is:inline>
+// Hash-based section navigation (robust)
+// Ensures a valid section is always shown; falls back gracefully.
+(function(){
+	function init(){
+		const sectionEls = Array.from(document.querySelectorAll('[data-section]'));
+		if(sectionEls.length === 0) return; // nothing to do
+		const sectionIds = sectionEls.map(el => el.getAttribute('data-section'));
+		const defaultId = sectionIds[0];
+
+		function showSection(id){
+			if(!sectionIds.includes(id)) id = defaultId;
+			sectionEls.forEach(el => {
+				const sec = el.getAttribute('data-section');
+				const active = sec === id;
+				// Only toggle if state changes to avoid layout thrash
+				el.classList.toggle('hidden', !active);
+			});
+			document.querySelectorAll('[data-section-link]').forEach(a => {
+				const active = a.dataset.sectionLink === id;
+				a.classList.toggle('bg-gray-100', active);
+				a.classList.toggle('dark:bg-gray-700', active);
+			});
+		}
+
+		function apply(){
+			const hashId = location.hash.slice(1);
+			showSection(hashId || defaultId);
+		}
+
+		window.addEventListener('hashchange', apply);
+		// Defer a frame to allow any late-added nodes/styles
+		requestAnimationFrame(apply);
+	}
+	if(document.readyState === 'loading'){
+		document.addEventListener('DOMContentLoaded', init);
+	} else {
+		init();
+	}
+})();
+</script>
+
+<style>
+	.section-content { animation: fade .25s ease; }
+	@keyframes fade { from { opacity:0; transform: translateY(4px);} to { opacity:1; transform: translateY(0);} }
+</style>

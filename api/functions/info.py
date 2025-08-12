@@ -17,18 +17,27 @@ dashboard_center_description = ""
 
 
 def get_center_information(retry: int = 3) -> str:
-    url = "https://www.cheonanurc.or.kr/131"
+    urls = [
+        "https://www.cheonanurc.or.kr/131",
+        "https://www.cheonanurc.or.kr/133",
+        "https://www.cheonanurc.or.kr/128"
+    ]
 
-    for attempt in range(retry):
-        try:
-            data = web_search.fetch_webpage(url, length_limit=-1)
-            if "text_content" in data:
-                data = data["text_content"].split("Copyrightⓒ")[0].strip()
-                data = data.split("천안시 도시재생지원센터 site search")[-1].strip()
-                return dashboard_center_description + data
-        except requests.RequestException as e:
-            print(f"웹 페이지 가져오기 실패: {e}. 재시도 중... ({attempt + 1}/{retry})")
-    return "홈페이지가 현재 접속되지 않아 정보 조회에 실패했습니다.. 나중에 다시 시도해주세요."
+    results = [dashboard_center_description]
+    for url in urls:
+        for attempt in range(retry):
+            try:
+                data = web_search.fetch_webpage(url, length_limit=-1)
+                if "text_content" in data:
+                    data = data["text_content"].split("Copyrightⓒ")[0].strip()
+                    data = data.split("천안시 도시재생지원센터 site search")[-1].strip()
+                    results.append(data)
+            except requests.RequestException as e:
+                if attempt == retry - 1:
+                    return "홈페이지가 현재 접속되지 않아 정보 조회에 실패했습니다.. 나중에 다시 시도해주세요."
+                else:
+                    print(f"웹 페이지 가져오기 실패: {e}. 재시도 중... ({attempt + 1}/{retry})")
+    return "\n".join(results)
 
 
 if __name__ == '__main__':

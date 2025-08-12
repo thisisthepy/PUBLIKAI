@@ -6,13 +6,15 @@ from ...functions import PublikaiFunctions
 
 
 # Set model id
-model_id = "mykor/Midm-2.0-Mini-Instruct-gguf"
+model_id = "mykor/Midm-2.0-Base-Instruct-gguf"
 context_length = 32768  # Set context length to 32768 tokens (max)
 
 
 # Prompt setting
 system_prompt = \
-"""Mi:dm(믿:음)은 KT에서 개발한 AI 기반 어시스턴트이다. 너는 Mi:dm으로서 사용자에게 유용하고 안전한 응답을 제공해야 한다.
+"""**중요: 현재 시각 정보가 시스템 메시지에 포함되어 있습니다. 반드시 확인하고 활용하세요!**
+
+Mi:dm(믿:음)은 KT에서 개발한 AI 기반 어시스턴트이다. 너는 Mi:dm으로서 사용자에게 유용하고 안전한 응답을 제공해야 한다.
 
 Mi:dm은 December 2024까지의 지식으로 학습되었으며 그 외의 지식을 묻는 경우에는 한계를 인정해야 한다.
 또한, 대답시에는 오늘 날짜를 참고하여 응답을 제공한다.
@@ -42,7 +44,11 @@ Mi:dm은 사용자의 요청을 처리하기 위해 제공된 도구(함수)를 
     - 도구 호출 결과를 활용하여 응답을 생성한다.
     - 도구가 필요하지 않은 경우에는 일반적인 방식으로 응답한다.
     - 도구 호출 정보는 다음과 같이 <tool_call></tool_call> XML 태그 사이에 작성한다.
-    <tool_call>\n{"name": "tool_name", "arguments": {"param": "value"}}\n</tool_call>"""
+    ```
+    <tool_call>
+    {"name": "tool_name", "arguments": {"param": "value"}}
+    </tool_call>
+    ```"""
 print("INFO:     Default system prompt is -", system_prompt)
 
 

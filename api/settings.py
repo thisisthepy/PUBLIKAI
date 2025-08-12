@@ -13,17 +13,17 @@ class ModelSettings:
 
 MODEL_LIST = dict(
     midm2=ModelSettings(
-        model_name="KT Mi:dm 2.0 Mini",
-        model_description="Mi:dm 2.0 Mini 2.3B 4bitQ Instruct"
+        model_name="KT Mi:dm 2.0 Base",
+        model_description="Mi:dm 2.0 Base 11.5B 4bitQ Instruct"
     ),
     qwen3=ModelSettings(
         model_name="Qwen 3",
-        model_description="Qwen 3 4B 4bitQ IT"
+        model_description="Qwen 3 8B 4bitQ IT"
     ),
 )
 MODEL_LIST['default'] = MODEL_LIST['midm2']
 
-STATIC_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), "../dashboard/static")
+STATIC_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), "../dist")
 
 
 class Session:

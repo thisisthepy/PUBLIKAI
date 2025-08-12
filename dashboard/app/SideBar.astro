@@ -1,0 +1,141 @@
+---
+/* eslint max-lines: 'off' */
+
+import { url } from '../lib/data.js';
+const base = import.meta.env.BASE_URL; // e.g. '/' (dev) or '/dashboard/' (prod)
+const sectionMods = import.meta.glob('../sections/*.{md,mdx}', { eager: true });
+const sectionLinks = Object.entries(sectionMods).map(([p,m])=>{
+	const id = p.split('/').pop().replace(/\.(md|mdx)$/,'');
+	const fm = (m as any).frontmatter || {};
+	return { id, title: fm.title || id, order: fm.order ?? 9999 };
+}).sort((a,b)=> a.order - b.order);
+---
+
+<!-- TODO: Dynamic dropdowns -->
+<aside
+	id="sidebar"
+	class="fixed top-0 left-0 z-20 flex flex-col flex-shrink-0 hidden w-30 h-full font-normal duration-75 lg:flex transition-width"
+	aria-label="Sidebar"
+>
+	<div
+		class="relative flex flex-col flex-1 min-h-0 pt-0 bg-white border-r border-gray-200 dark:bg-gray-800 dark:border-gray-700"
+	>
+		<div
+			class:list={[
+				'flex flex-col flex-1 pt-5 pb-28 overflow-y-auto',
+				'scrollbar scrollbar-w-2 scrollbar-thumb-rounded-[0.1667rem]',
+				'scrollbar-thumb-slate-200 scrollbar-track-gray-400',
+				'dark:scrollbar-thumb-slate-900 dark:scrollbar-track-gray-800',
+			]}
+		>
+			<img class="block mx-auto w-10 h-auto mt-1 mb-5" src="https://cdn.imweb.me/thumbnail/20220404/0acd231afa493.png">
+			<div
+				class="flex-1 px-3 space-y-1 bg-white divide-y divide-gray-200 dark:bg-gray-800 dark:divide-gray-700"
+			>
+				<ul class="pb-2 space-y-2">
+					{sectionLinks.map(s => (
+						<li>
+							<a href={url('#' + s.id)} data-section-link={s.id} class="flex justify-center p-2 text-base text-gray-900 rounded-lg hover:bg-gray-100 group dark:text-gray-200 dark:hover:bg-gray-700">
+								<span sidebar-toggle-item>{s.title}</span>
+							</a>
+						</li>
+					))}
+				</ul>
+			</div>
+		</div>
+		<div
+			class="absolute bottom-0 left-0 justify-center hidden w-full p-4 space-x-4 bg-white lg:flex dark:bg-gray-800"
+			sidebar-bottom-menu
+		>
+			<a
+				href={`${base}settings/`}
+				data-tooltip-target="tooltip-settings"
+				class="inline-flex justify-center p-2 text-gray-500 rounded cursor-pointer hover:text-gray-900 hover:bg-gray-100 dark:hover:bg-gray-700 dark:hover:text-white"
+			>
+				<svg
+					class="w-6 h-6"
+					fill="currentColor"
+					viewBox="0 0 20 20"
+					xmlns="http://www.w3.org/2000/svg"
+					><path
+						fill-rule="evenodd"
+						d="M11.49 3.17c-.38-1.56-2.6-1.56-2.98 0a1.532 1.532 0 01-2.286.948c-1.372-.836-2.942.734-2.106 2.106.54.886.061 2.042-.947 2.287-1.561.379-1.561 2.6 0 2.978a1.532 1.532 0 01.947 2.287c-.836 1.372.734 2.942 2.106 2.106a1.532 1.532 0 012.287.947c.379 1.561 2.6 1.561 2.978 0a1.533 1.533 0 012.287-.947c1.372.836 2.942-.734 2.106-2.106a1.533 1.533 0 01.947-2.287c1.561-.379 1.561-2.6 0-2.978a1.532 1.532 0 01-.947-2.287c.836-1.372-.734-2.942-2.106-2.106a1.532 1.532 0 01-2.287-.947zM10 13a3 3 0 100-6 3 3 0 000 6z"
+						clip-rule="evenodd"></path></svg
+				>
+			</a>
+			<div
+				id="tooltip-settings"
+				role="tooltip"
+				class="absolute z-10 invisible inline-block px-3 py-2 text-sm font-medium text-white transition-opacity duration-300 bg-gray-900 rounded-lg shadow-sm opacity-0 tooltip dark:bg-gray-700"
+			>
+				Settings page
+				<div class="tooltip-arrow" data-popper-arrow></div>
+			</div>
+		</div>
+	</div>
+</aside>
+
+<div
+	class="fixed inset-0 z-10 hidden bg-gray-900/50 dark:bg-gray-900/90"
+	id="sidebarBackdrop"
+>
+</div>
+
+<script>
+	const sidebar = document.getElementById('sidebar');
+
+	if (sidebar) {
+		const toggleSidebarMobile = (
+			sidebar: HTMLElement,
+			sidebarBackdrop: HTMLElement,
+			toggleSidebarMobileHamburger: HTMLElement,
+			toggleSidebarMobileClose: HTMLElement,
+		) => {
+			sidebar.classList.toggle('hidden');
+			sidebarBackdrop.classList.toggle('hidden');
+			toggleSidebarMobileHamburger.classList.toggle('hidden');
+			toggleSidebarMobileClose.classList.toggle('hidden');
+		};
+
+		const toggleSidebarMobileEl = document.getElementById(
+			'toggleSidebarMobile',
+		);
+		const sidebarBackdrop = document.getElementById('sidebarBackdrop')!;
+		const toggleSidebarMobileHamburger = document.getElementById(
+			'toggleSidebarMobileHamburger',
+		)!;
+		const toggleSidebarMobileClose = document.getElementById(
+			'toggleSidebarMobileClose',
+		)!;
+		const toggleSidebarMobileSearch = document.getElementById(
+			'toggleSidebarMobileSearch',
+		)!;
+
+		toggleSidebarMobileSearch?.addEventListener('click', () => {
+			toggleSidebarMobile(
+				sidebar,
+				sidebarBackdrop,
+				toggleSidebarMobileHamburger,
+				toggleSidebarMobileClose,
+			);
+		});
+
+		toggleSidebarMobileEl?.addEventListener('click', () => {
+			toggleSidebarMobile(
+				sidebar,
+				sidebarBackdrop,
+				toggleSidebarMobileHamburger,
+				toggleSidebarMobileClose,
+			);
+		});
+
+		sidebarBackdrop?.addEventListener('click', () => {
+			toggleSidebarMobile(
+				sidebar,
+				sidebarBackdrop,
+				toggleSidebarMobileHamburger,
+				toggleSidebarMobileClose,
+			);
+		});
+	}
+</script>

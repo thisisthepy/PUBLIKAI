@@ -1,0 +1,83 @@
+---
+import pkg from '../../package.json' assert { type: 'json' };
+import { url } from '../lib/data.js';
+
+import { SITE_TITLE } from './constants.js';
+
+const { class: clazz, prose = false } = Astro.props;
+---
+
+<!DOCTYPE html>
+<html lang="ko">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>{SITE_TITLE}</title>
+
+		<meta name="generator" content={Astro.generator} />
+		<meta name="description" content={pkg.description} />
+		<meta name="" content={pkg.description} />
+		<link rel="icon" type="image/svg+xml" href={url('favicon.svg')} />
+		<link
+			rel="sitemap"
+			type="application/xml"
+			href={url('sitemap-index.xml')}
+		/>
+		<script is:inline>
+		/* CSS Houdini squircle paint worklet loader (kept inline to avoid bundler removal) */
+		(function(){
+			if(typeof window === 'undefined') return; // SSR 안전
+			if(!('CSS' in window) || !('paintWorklet' in CSS)) return; // 미지원 브라우저
+			if(window.__squircleWorkletLoaded) return; // 중복 방지
+			window.__squircleWorkletLoaded = false;
+			var url = 'https://unpkg.com/css-houdini-squircle/squircle.min.js';
+			try {
+				CSS.paintWorklet.addModule(url)
+					.then(function(){ window.__squircleWorkletLoaded = true; })
+					.catch(function(e){ console.warn('[squircle] load failed', e); });
+			} catch(e){ console.warn('[squircle] unexpected', e); }
+		})();
+		</script>
+
+		<script is:inline>
+			if (
+				localStorage.getItem('color-theme') === 'dark' ||
+				(!('color-theme' in localStorage) &&
+					window.matchMedia('(prefers-color-scheme: dark)').matches)
+			) {
+				document.documentElement.classList.add('dark');
+			} else {
+				document.documentElement.classList.remove('dark');
+			}
+		</script>
+	</head>
+	<body
+		class:list={[
+			//
+			clazz,
+			'scrollbar scrollbar-w-3 scrollbar-thumb-rounded-[0.25rem]',
+			'scrollbar-track-slate-200  scrollbar-thumb-gray-400',
+			'dark:scrollbar-track-gray-900 dark:scrollbar-thumb-gray-700',
+		]}
+	>
+		<slot />
+	</body>
+</html>
+
+<script>
+	import 'flowbite';
+	import 'flowbite/dist/datepicker.js';
+</script>
+
+<style is:global>
+	@import url('https://fonts.cdnfonts.com/css/inter');
+	@font-face {
+		font-family: 'SUITE-Regular';
+		src: url('https://fastly.jsdelivr.net/gh/projectnoonnu/noonfonts_2304-2@1.0/SUITE-Regular.woff2') format('woff2');
+		font-weight: 400;
+		font-style: normal;
+	}
+	body, code {
+		font-family: 'SUITE-Regular', 'Arial', sans-serif;
+	}
+</style>
