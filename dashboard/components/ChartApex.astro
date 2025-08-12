@@ -4,20 +4,82 @@ export interface Props { id?: string; type?: string; height?: number; series: Se
 const { id = `chart-${Math.random().toString(36).slice(2)}`, type = 'line', height = 300, series = [], options = {} } = Astro.props as Props;
 ---
 <div id={id} class="w-full" style={`min-height:${height}px;`}></div>
-<script>
-  import ApexCharts from 'apexcharts';
+<script define:vars={{ id, type, height, series, options }}>
   const config = {
     chart: { type, height, toolbar: { show: false } },
     series,
     ...options
   };
+
   if (typeof window !== 'undefined') {
     queueMicrotask(() => {
       const el = document.getElementById(id);
-      if (el) {
-        const chart = new ApexCharts(el, config);
-        chart.render();
+      if (!el) return;
+
+      function isVisible(target){
+        if(!target) return false;
+        const style = window.getComputedStyle(target);
+        if(style.display === 'none' || style.visibility === 'hidden') return false;
+        if(target.offsetParent === null) return false;
+        if(target.clientWidth === 0) return false;
+        return true;
       }
+
+      function ensureLib(){
+        return new Promise((resolve, reject) => {
+          if(window.ApexCharts) return resolve(window.ApexCharts);
+          if(document.getElementById('apexcharts-cdn-script')) {
+            const interval = setInterval(() => {
+              if(window.ApexCharts){ clearInterval(interval); resolve(window.ApexCharts); }
+            }, 30);
+            setTimeout(()=>{ clearInterval(interval); if(!window.ApexCharts) reject(new Error('ApexCharts load timeout')); }, 5000);
+            return;
+          }
+          const s = document.createElement('script');
+          s.src = 'https://cdn.jsdelivr.net/npm/apexcharts';
+          s.id = 'apexcharts-cdn-script';
+          s.async = true;
+            s.onload = () => window.ApexCharts ? resolve(window.ApexCharts) : reject(new Error('ApexCharts global missing after load'));
+          s.onerror = () => reject(new Error('Failed to load ApexCharts CDN'));
+          document.head.appendChild(s);
+        });
+      }
+
+      function initChart(){
+        try {
+          if(el.dataset.chartMounted) return;
+          ensureLib().then((Apex) => {
+            const chart = new Apex(el, config);
+            chart.render();
+            el.dataset.chartMounted = '1';
+            window.addEventListener('resize', () => {
+              try { chart.updateOptions({}, false, true); } catch(_) {}
+            });
+            const obs = new MutationObserver(() => {
+              if(isVisible(el)) {
+                try { chart.updateOptions({}, false, true); } catch(_) {}
+              }
+            });
+            obs.observe(el.parentElement || el, { attributes:true, attributeFilter:['class','style'] });
+          }).catch(e => {
+            console.error('[ChartApex] ApexCharts 로드 실패:', e);
+            el.innerHTML = '<div style="padding:.75rem;border:1px solid #f87171;background:#fef2f2;color:#991b1b;border-radius:.5rem;font-size:12px;">ApexCharts 로드 실패</div>';
+          });
+        } catch (e) {
+          console.error('[ChartApex] 렌더 실패:', e, config);
+          el.innerHTML = '<div style="padding:.75rem;border:1px solid #f87171;background:#fef2f2;color:#991b1b;border-radius:.5rem;font-size:12px;">차트 초기화 오류</div>';
+        }
+      }
+
+      let attempts = 0;
+      (function waitVisible(){
+        attempts++;
+        if(isVisible(el) || attempts > 120){ // 최대 ~2초 (60fps 가정)
+          initChart();
+        } else {
+          requestAnimationFrame(waitVisible);
+        }
+      })();
     });
   }
 </script>

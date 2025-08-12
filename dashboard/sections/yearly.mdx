@@ -4,14 +4,8 @@ order: 6
 ---
 import ChartApex from '../components/ChartApex.astro';
 
-{/* ChartApex 가 undefined 로 들어오는 경우를 디버깅하기 위한 임시 로그 */}
-{typeof ChartApex === 'undefined' && (
-  <div style={{padding:'0.75rem',border:'1px solid #f87171',background:'#fef2f2',color:'#991b1b',borderRadius:'0.5rem'}}>
-    ChartApex import 실패 (임시 안내). 경로: ../components/ChartApex.astro
-  </div>
-)}
 
-# 대시보드 개요 (MDX)
+# 년도별 분석
 
 차트가 포함된 예시 섹션입니다.
 
@@ -24,7 +18,7 @@ import ChartApex from '../components/ChartApex.astro';
     dataLabels: { enabled: false },
     colors: ['#2563eb'],
     tooltip: { y: { formatter: (val) => `${val} 건` } },
-    title: { text: '월별 매출', style: { fontSize: '14px' } }
+    title: { text: '년도별 매출', style: { fontSize: '14px' } }
   }}
 />
 
