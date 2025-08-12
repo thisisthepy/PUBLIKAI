@@ -23,12 +23,20 @@ const { class: clazz, prose = false } = Astro.props;
 			type="application/xml"
 			href={url('sitemap-index.xml')}
 		/>
-		<script>
-			if ("paintWorklet" in CSS) {
-				CSS.paintWorklet.addModule(
-					"https://www.unpkg.com/css-houdini-squircle/squircle.min.js"
-				);
-			}
+		<script is:inline>
+		/* CSS Houdini squircle paint worklet loader (kept inline to avoid bundler removal) */
+		(function(){
+			if(typeof window === 'undefined') return; // SSR 안전
+			if(!('CSS' in window) || !('paintWorklet' in CSS)) return; // 미지원 브라우저
+			if(window.__squircleWorkletLoaded) return; // 중복 방지
+			window.__squircleWorkletLoaded = false;
+			var url = 'https://unpkg.com/css-houdini-squircle/squircle.min.js';
+			try {
+				CSS.paintWorklet.addModule(url)
+					.then(function(){ window.__squircleWorkletLoaded = true; })
+					.catch(function(e){ console.warn('[squircle] load failed', e); });
+			} catch(e){ console.warn('[squircle] unexpected', e); }
+		})();
 		</script>
 
 		<script is:inline>

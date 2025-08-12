@@ -2,7 +2,8 @@
 /* eslint max-lines: 'off' */
 
 import { url } from '../lib/data.js';
-const sectionMods = import.meta.glob('../pages/*.{md,mdx}', { eager: true });
+const base = import.meta.env.BASE_URL; // e.g. '/' (dev) or '/dashboard/' (prod)
+const sectionMods = import.meta.glob('../sections/*.{md,mdx}', { eager: true });
 const sectionLinks = Object.entries(sectionMods).map(([p,m])=>{
 	const id = p.split('/').pop().replace(/\.(md|mdx)$/,'');
 	const fm = (m as any).frontmatter || {};
@@ -47,7 +48,7 @@ const sectionLinks = Object.entries(sectionMods).map(([p,m])=>{
 			sidebar-bottom-menu
 		>
 			<a
-				href="/settings/"
+				href={`${base}settings/`}
 				data-tooltip-target="tooltip-settings"
 				class="inline-flex justify-center p-2 text-gray-500 rounded cursor-pointer hover:text-gray-900 hover:bg-gray-100 dark:hover:bg-gray-700 dark:hover:text-white"
 			>
