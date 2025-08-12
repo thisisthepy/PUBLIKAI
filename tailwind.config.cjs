@@ -110,6 +110,7 @@ module.exports = {
 		//
 		require('flowbite/plugin'),
 		require('flowbite-typography'),
+		require('@tailwindcss/typography'),
 		require('tailwind-scrollbar')({ nocompatible: true }),
 	],
 };

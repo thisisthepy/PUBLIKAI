@@ -4,11 +4,11 @@ import { url } from '../lib/data.js';
 
 import { SITE_TITLE } from './constants.js';
 
-const { class: clazz } = Astro.props;
+const { class: clazz, prose = false } = Astro.props;
 ---
 
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ko">
 	<head>
 		<meta charset="UTF-8" />
 		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -23,12 +23,6 @@ const { class: clazz } = Astro.props;
 			type="application/xml"
 			href={url('sitemap-index.xml')}
 		/>
-
-		<meta
-			name="author"
-			content="Julian Cataldo, Zoltán Szőgyényi, Robert Tanislav"
-		/>
-		<meta name="copyright" content="MIT" />
 
 		<script is:inline>
 			if (
