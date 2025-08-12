@@ -1,0 +1,31 @@
+---
+title: 월별 분석
+order: 3
+---
+import ChartApex from '../components/ChartApex.astro';
+
+{/* ChartApex 가 undefined 로 들어오는 경우를 디버깅하기 위한 임시 로그 */}
+{typeof ChartApex === 'undefined' && (
+  <div style={{padding:'0.75rem',border:'1px solid #f87171',background:'#fef2f2',color:'#991b1b',borderRadius:'0.5rem'}}>
+    ChartApex import 실패 (임시 안내). 경로: ../components/ChartApex.astro
+  </div>
+)}
+
+# 대시보드 개요 (MDX)
+
+차트가 포함된 예시 섹션입니다.
+
+<ChartApex
+  type="bar"
+  height={320}
+  series={[{ name: '매출', data: [10, 18, 14, 22, 30, 27] }]}
+  options={{
+    xaxis: { categories: ['1월','2월','3월','4월','5월','6월'] },
+    dataLabels: { enabled: false },
+    colors: ['#2563eb'],
+    tooltip: { y: { formatter: (val) => `${val} 건` } },
+    title: { text: '월별 매출', style: { fontSize: '14px' } }
+  }}
+/>
+
+> 이 섹션은 MDX 이므로 Astro 컴포넌트를 직접 임포트해 사용할 수 있습니다.

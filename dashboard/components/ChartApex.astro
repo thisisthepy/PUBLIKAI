@@ -1,0 +1,23 @@
+---
+interface Series { name: string; data: (number|null)[] }
+export interface Props { id?: string; type?: string; height?: number; series: Series[]; options?: any; }
+const { id = `chart-${Math.random().toString(36).slice(2)}`, type = 'line', height = 300, series = [], options = {} } = Astro.props as Props;
+---
+<div id={id} class="w-full" style={`min-height:${height}px;`}></div>
+<script>
+  import ApexCharts from 'apexcharts';
+  const config = {
+    chart: { type, height, toolbar: { show: false } },
+    series,
+    ...options
+  };
+  if (typeof window !== 'undefined') {
+    queueMicrotask(() => {
+      const el = document.getElementById(id);
+      if (el) {
+        const chart = new ApexCharts(el, config);
+        chart.render();
+      }
+    });
+  }
+</script>

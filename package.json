@@ -36,6 +36,7 @@
 		"start": "astro dev"
 	},
 	"dependencies": {
+		"@astrojs/mdx": "3.0.0",
 		"@astrojs/sitemap": "^3.1.0",
 		"@astrojs/tailwind": "^5.1.0",
 		"@faker-js/faker": "^7.6.0",

@@ -1,6 +1,6 @@
 /* eslint-disable no-param-reassign */
 
-import type { Endpoint } from '../types/entities.js';
+import type { Endpoint } from '../lib/entities.js';
 import { fetchData } from '../lib/data.js';
 import { endpointsToOperations } from '../pages/api/[...entity].js';
 

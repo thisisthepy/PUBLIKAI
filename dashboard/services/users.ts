@@ -1,7 +1,7 @@
 /* eslint-disable no-param-reassign */
 import { faker } from '@faker-js/faker';
 import { RANDOMIZE } from '../app/constants.js';
-import type { Users } from '../types/entities.js';
+import type { Users } from '../lib/entities.js';
 
 import usersStaticJSON from '../../data/users.json' assert { type: 'json' };
 

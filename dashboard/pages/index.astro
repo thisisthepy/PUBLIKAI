@@ -1,8 +1,52 @@
 ---
 import LayoutSidebar from '../app/LayoutSidebar.astro';
-import LandingReadme from '../modules/LandingReadme.astro';
+import ChatBot from '../components/ChatBot.astro';
+// Auto-load all section markdown / mdx files
+const raw = import.meta.glob('./*.{md,mdx}', { eager: true });
+const sections = Object.entries(raw)
+	.map(([path, mod]) => {
+		const id = path.split('/').pop().replace(/\.(md|mdx)$/,'');
+		const order = (mod as any).frontmatter?.order ?? 9999;
+		const title = (mod as any).frontmatter?.title ?? id;
+		return { id, mod, order, title };
+	})
+	.sort((a,b)=> a.order - b.order);
 ---
 
 <LayoutSidebar>
-	<LandingReadme />
+	<div class="lg:pr-96 max-lg:pr-0">
+		{sections.map(s => (
+			<article id={s.id} class="section-content hidden prose dark:prose-invert max-w-none" data-section={s.id}>
+				<s.mod.Content />
+			</article>
+		))}
+	</div>
+	<ChatBot />
 </LayoutSidebar>
+
+<script>
+	const sectionIds = Array.from(document.querySelectorAll('[data-section]')).map(el=>el.getAttribute('data-section'));
+	function showSection(id){
+		sectionIds.forEach(sec => {
+			const el = document.getElementById(sec);
+			if(!el) return;
+			el.classList.toggle('hidden', sec !== id);
+		});
+		document.querySelectorAll('[data-section-link]').forEach(a => {
+			a.classList.toggle('bg-gray-100', a.dataset.sectionLink === id);
+			a.classList.toggle('dark:bg-gray-700', a.dataset.sectionLink === id);
+		});
+	}
+	const firstSection = sectionIds[0];
+	const apply = ()=>{
+		const h = location.hash.slice(1) || firstSection;
+		showSection(h);
+	};
+	window.addEventListener('hashchange', apply);
+	apply();
+</script>
+
+<style>
+	.section-content { animation: fade .25s ease; }
+	@keyframes fade { from { opacity:0; transform: translateY(4px);} to { opacity:1; transform: translateY(0);} }
+</style>

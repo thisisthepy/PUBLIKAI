@@ -5,8 +5,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>PUBLIKAI Chat</title>
-    <link rel="icon" href="/static/icons/favicon.ico">
-    <meta property="og:image" content="/static/icons/favicon.ico">
+    <link rel="icon" href="/dashboard/favicon.svg">
+    <meta property="og:image" content="/dashboard/favicon.svg">
 
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css">
@@ -22,7 +22,7 @@
         }
     </script>
 
-    <link rel="stylesheet" href="/static/index.css">
+    <link rel="stylesheet" href="/dashboard/chatbot.css">
     <script type="text/python">
         import browser
 
@@ -33,8 +33,8 @@
 
         browser.__dict__['module_init'] = module_init
     </script>
-    <script type="text/python" src="/static/models/config.py"></script>
-    <script type="text/python" src="/static/index.py"></script>
+    <script type="text/python" src="/dashboard/models/config.py"></script>
+    <script type="text/python" src="/dashboard/chatbot.py"></script>
 </head>
 
 <body onload="brython()">

@@ -1,4 +1,4 @@
-import type { PlaygroundAction } from '../../types/entities.js';
+import type { PlaygroundAction } from '../../../lib/entities.js';
 
 export const playgroundActions = ['refetchCrudData', 'hardReloadPage'] as const;
 
