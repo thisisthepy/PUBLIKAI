@@ -43,6 +43,7 @@
 		"apexcharts": "^3.37.2",
 		"astro": "^4.10.0",
 		"flowbite": "^2.1.1",
+		"flowbite-datepicker": "^1.3.2",
 		"flowbite-typography": "^1.0.3",
 		"shiki": "^1.0.0",
 		"tailwind-scrollbar": "^3.0.0",

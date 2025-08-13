@@ -1,0 +1,55 @@
+{
+  "satisfaction": {
+    "2022": {
+      "January":   { "like": 60, "dislike": 20, "neutral": 20 },
+      "February":  { "like": 61, "dislike": 19, "neutral": 20 },
+      "March":     { "like": 62, "dislike": 19, "neutral": 19 },
+      "April":     { "like": 61, "dislike": 18, "neutral": 21 },
+      "May":       { "like": 63, "dislike": 17, "neutral": 20 },
+      "June":      { "like": 64, "dislike": 16, "neutral": 20 },
+      "July":      { "like": 63, "dislike": 17, "neutral": 20 },
+      "August":    { "like": 65, "dislike": 16, "neutral": 19 },
+      "September": { "like": 64, "dislike": 15, "neutral": 21 },
+      "October":   { "like": 66, "dislike": 15, "neutral": 19 },
+      "November":  { "like": 67, "dislike": 14, "neutral": 19 },
+      "December":  { "like": 68, "dislike": 13, "neutral": 19 }
+    },
+    "2023": {
+      "January":   { "like": 67, "dislike": 14, "neutral": 19 },
+      "February":  { "like": 68, "dislike": 13, "neutral": 19 },
+      "March":     { "like": 69, "dislike": 12, "neutral": 19 },
+      "April":     { "like": 68, "dislike": 13, "neutral": 19 },
+      "May":       { "like": 70, "dislike": 12, "neutral": 18 },
+      "June":      { "like": 71, "dislike": 11, "neutral": 18 },
+      "July":      { "like": 70, "dislike": 12, "neutral": 18 },
+      "August":    { "like": 72, "dislike": 10, "neutral": 18 },
+      "September": { "like": 71, "dislike": 11, "neutral": 18 },
+      "October":   { "like": 73, "dislike": 10, "neutral": 17 },
+      "November":  { "like": 74, "dislike": 9, "neutral": 17 },
+      "December":  { "like": 75, "dislike": 8, "neutral": 17 }
+    },
+    "2024": {
+      "January":   { "like": 74, "dislike": 9, "neutral": 17 },
+      "February":  { "like": 75, "dislike": 8, "neutral": 17 },
+      "March":     { "like": 76, "dislike": 7, "neutral": 17 },
+      "April":     { "like": 75, "dislike": 8, "neutral": 17 },
+      "May":       { "like": 77, "dislike": 7, "neutral": 16 },
+      "June":      { "like": 78, "dislike": 6, "neutral": 16 },
+      "July":      { "like": 77, "dislike": 7, "neutral": 16 },
+      "August":    { "like": 79, "dislike": 5, "neutral": 16 },
+      "September": { "like": 78, "dislike": 6, "neutral": 16 },
+      "October":   { "like": 80, "dislike": 5, "neutral": 15 },
+      "November":  { "like": 81, "dislike": 5, "neutral": 14 },
+      "December":  { "like": 82, "dislike": 4, "neutral": 14 }
+    },
+    "2025": {
+      "January":   { "like": 81, "dislike": 5, "neutral": 14 },
+      "February":  { "like": 82, "dislike": 4, "neutral": 14 },
+      "March":     { "like": 83, "dislike": 4, "neutral": 13 },
+      "April":     { "like": 82, "dislike": 5, "neutral": 13 },
+      "May":       { "like": 84, "dislike": 4, "neutral": 12 },
+      "June":      { "like": 85, "dislike": 3, "neutral": 12 },
+      "July":      { "like": 84, "dislike": 4, "neutral": 12 }
+    }
+  }
+}

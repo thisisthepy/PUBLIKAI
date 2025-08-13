@@ -1,0 +1,55 @@
+{
+  "renewedHomes": {
+    "2022": {
+      "January":   { "renovation": 5, "reconstruction": 1, "community": 1, "tinyHomes": 2, "energyEfficiency": 3, "seismicReinforcement": 2 },
+      "February":  { "renovation": 6, "reconstruction": 2, "community": 0, "tinyHomes": 1, "energyEfficiency": 4, "seismicReinforcement": 1 },
+      "March":     { "renovation": 7, "reconstruction": 1, "community": 1, "tinyHomes": 3, "energyEfficiency": 2, "seismicReinforcement": 3 },
+      "April":     { "renovation": 5, "reconstruction": 2, "community": 2, "tinyHomes": 2, "energyEfficiency": 5, "seismicReinforcement": 2 },
+      "May":       { "renovation": 8, "reconstruction": 1, "community": 1, "tinyHomes": 4, "energyEfficiency": 4, "seismicReinforcement": 4 },
+      "June":      { "renovation": 9, "reconstruction": 3, "community": 2, "tinyHomes": 3, "energyEfficiency": 6, "seismicReinforcement": 3 },
+      "July":      { "renovation": 7, "reconstruction": 2, "community": 1, "tinyHomes": 2, "energyEfficiency": 5, "seismicReinforcement": 4 },
+      "August":    { "renovation": 10, "reconstruction": 2, "community": 3, "tinyHomes": 4, "energyEfficiency": 7, "seismicReinforcement": 5 },
+      "September": { "renovation": 8, "reconstruction": 1, "community": 2, "tinyHomes": 3, "energyEfficiency": 6, "seismicReinforcement": 4 },
+      "October":   { "renovation": 11, "reconstruction": 3, "community": 2, "tinyHomes": 5, "energyEfficiency": 8, "seismicReinforcement": 6 },
+      "November":  { "renovation": 12, "reconstruction": 2, "community": 3, "tinyHomes": 4, "energyEfficiency": 9, "seismicReinforcement": 5 },
+      "December":  { "renovation": 15, "reconstruction": 4, "community": 4, "tinyHomes": 6, "energyEfficiency": 10, "seismicReinforcement": 7 }
+    },
+    "2023": {
+      "January":   { "renovation": 13, "reconstruction": 3, "community": 2, "tinyHomes": 5, "energyEfficiency": 8, "seismicReinforcement": 6 },
+      "February":  { "renovation": 12, "reconstruction": 2, "community": 3, "tinyHomes": 4, "energyEfficiency": 7, "seismicReinforcement": 5 },
+      "March":     { "renovation": 16, "reconstruction": 4, "community": 3, "tinyHomes": 6, "energyEfficiency": 9, "seismicReinforcement": 8 },
+      "April":     { "renovation": 14, "reconstruction": 3, "community": 2, "tinyHomes": 5, "energyEfficiency": 10, "seismicReinforcement": 7 },
+      "May":       { "renovation": 17, "reconstruction": 5, "community": 4, "tinyHomes": 7, "energyEfficiency": 11, "seismicReinforcement": 9 },
+      "June":      { "renovation": 18, "reconstruction": 4, "community": 3, "tinyHomes": 6, "energyEfficiency": 12, "seismicReinforcement": 8 },
+      "July":      { "renovation": 15, "reconstruction": 3, "community": 2, "tinyHomes": 5, "energyEfficiency": 10, "seismicReinforcement": 7 },
+      "August":    { "renovation": 20, "reconstruction": 6, "community": 5, "tinyHomes": 8, "energyEfficiency": 14, "seismicReinforcement": 10 },
+      "September": { "renovation": 18, "reconstruction": 5, "community": 4, "tinyHomes": 7, "energyEfficiency": 13, "seismicReinforcement": 9 },
+      "October":   { "renovation": 22, "reconstruction": 7, "community": 5, "tinyHomes": 9, "energyEfficiency": 16, "seismicReinforcement": 12 },
+      "November":  { "renovation": 21, "reconstruction": 6, "community": 4, "tinyHomes": 8, "energyEfficiency": 15, "seismicReinforcement": 11 },
+      "December":  { "renovation": 25, "reconstruction": 8, "community": 6, "tinyHomes": 10, "energyEfficiency": 18, "seismicReinforcement": 14 }
+    },
+    "2024": {
+      "January":   { "renovation": 23, "reconstruction": 7, "community": 5, "tinyHomes": 9, "energyEfficiency": 16, "seismicReinforcement": 12 },
+      "February":  { "renovation": 21, "reconstruction": 6, "community": 4, "tinyHomes": 8, "energyEfficiency": 15, "seismicReinforcement": 11 },
+      "March":     { "renovation": 26, "reconstruction": 8, "community": 6, "tinyHomes": 10, "energyEfficiency": 19, "seismicReinforcement": 15 },
+      "April":     { "renovation": 24, "reconstruction": 7, "community": 5, "tinyHomes": 9, "energyEfficiency": 18, "seismicReinforcement": 13 },
+      "May":       { "renovation": 28, "reconstruction": 9, "community": 7, "tinyHomes": 11, "energyEfficiency": 20, "seismicReinforcement": 16 },
+      "June":      { "renovation": 30, "reconstruction": 8, "community": 6, "tinyHomes": 10, "energyEfficiency": 22, "seismicReinforcement": 15 },
+      "July":      { "renovation": 27, "reconstruction": 7, "community": 5, "tinyHomes": 9, "energyEfficiency": 20, "seismicReinforcement": 14 },
+      "August":    { "renovation": 32, "reconstruction": 10, "community": 8, "tinyHomes": 12, "energyEfficiency": 25, "seismicReinforcement": 18 },
+      "September": { "renovation": 30, "reconstruction": 9, "community": 7, "tinyHomes": 11, "energyEfficiency": 23, "seismicReinforcement": 17 },
+      "October":   { "renovation": 35, "reconstruction": 11, "community": 9, "tinyHomes": 14, "energyEfficiency": 28, "seismicReinforcement": 20 },
+      "November":  { "renovation": 33, "reconstruction": 10, "community": 8, "tinyHomes": 12, "energyEfficiency": 26, "seismicReinforcement": 19 },
+      "December":  { "renovation": 40, "reconstruction": 12, "community": 10, "tinyHomes": 15, "energyEfficiency": 30, "seismicReinforcement": 22 }
+    },
+    "2025": {
+      "January":   { "renovation": 38, "reconstruction": 11, "community": 9, "tinyHomes": 13, "energyEfficiency": 28, "seismicReinforcement": 20 },
+      "February":  { "renovation": 36, "reconstruction": 10, "community": 8, "tinyHomes": 12, "energyEfficiency": 26, "seismicReinforcement": 19 },
+      "March":     { "renovation": 42, "reconstruction": 13, "community": 11, "tinyHomes": 16, "energyEfficiency": 32, "seismicReinforcement": 24 },
+      "April":     { "renovation": 40, "reconstruction": 12, "community": 10, "tinyHomes": 14, "energyEfficiency": 30, "seismicReinforcement": 22 },
+      "May":       { "renovation": 45, "reconstruction": 14, "community": 12, "tinyHomes": 18, "energyEfficiency": 35, "seismicReinforcement": 26 },
+      "June":      { "renovation": 48, "reconstruction": 15, "community": 13, "tinyHomes": 17, "energyEfficiency": 38, "seismicReinforcement": 28 },
+      "July":      { "renovation": 46, "reconstruction": 14, "community": 12, "tinyHomes": 16, "energyEfficiency": 36, "seismicReinforcement": 27 }
+    }
+  }
+}
