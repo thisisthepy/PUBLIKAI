@@ -1,0 +1,55 @@
+{
+  "agedHomes": {
+    "2022": {
+      "January":   { "total": 955, "reported": 555, "inspected": 325, "resolved": 155 },
+      "February":  { "total": 968, "reported": 568, "inspected": 338, "resolved": 168 },
+      "March":     { "total": 981, "reported": 581, "inspected": 351, "resolved": 181 },
+      "April":     { "total": 994, "reported": 594, "inspected": 364, "resolved": 194 },
+      "May":       { "total": 1007, "reported": 607, "inspected": 377, "resolved": 207 },
+      "June":      { "total": 1020, "reported": 620, "inspected": 390, "resolved": 220 },
+      "July":      { "total": 1033, "reported": 633, "inspected": 403, "resolved": 233 },
+      "August":    { "total": 1046, "reported": 646, "inspected": 416, "resolved": 246 },
+      "September": { "total": 1059, "reported": 659, "inspected": 429, "resolved": 259 },
+      "October":   { "total": 1072, "reported": 672, "inspected": 442, "resolved": 272 },
+      "November":  { "total": 1085, "reported": 685, "inspected": 455, "resolved": 285 },
+      "December":  { "total": 1100, "reported": 700, "inspected": 470, "resolved": 300 }
+    },
+    "2023": {
+      "January":   { "total": 1115, "reported": 715, "inspected": 485, "resolved": 315 },
+      "February":  { "total": 1130, "reported": 730, "inspected": 500, "resolved": 330 },
+      "March":     { "total": 1145, "reported": 745, "inspected": 515, "resolved": 345 },
+      "April":     { "total": 1160, "reported": 760, "inspected": 530, "resolved": 360 },
+      "May":       { "total": 1175, "reported": 775, "inspected": 545, "resolved": 375 },
+      "June":      { "total": 1190, "reported": 790, "inspected": 560, "resolved": 390 },
+      "July":      { "total": 1205, "reported": 805, "inspected": 575, "resolved": 405 },
+      "August":    { "total": 1220, "reported": 820, "inspected": 590, "resolved": 420 },
+      "September": { "total": 1235, "reported": 835, "inspected": 605, "resolved": 435 },
+      "October":   { "total": 1250, "reported": 850, "inspected": 620, "resolved": 450 },
+      "November":  { "total": 1265, "reported": 865, "inspected": 635, "resolved": 465 },
+      "December":  { "total": 1280, "reported": 880, "inspected": 650, "resolved": 480 }
+    },
+    "2024": {
+      "January":   { "total": 1298, "reported": 898, "inspected": 668, "resolved": 498 },
+      "February":  { "total": 1316, "reported": 916, "inspected": 686, "resolved": 516 },
+      "March":     { "total": 1334, "reported": 934, "inspected": 704, "resolved": 534 },
+      "April":     { "total": 1352, "reported": 952, "inspected": 722, "resolved": 552 },
+      "May":       { "total": 1370, "reported": 970, "inspected": 740, "resolved": 570 },
+      "June":      { "total": 1388, "reported": 988, "inspected": 758, "resolved": 588 },
+      "July":      { "total": 1406, "reported": 1006, "inspected": 776, "resolved": 606 },
+      "August":    { "total": 1424, "reported": 1024, "inspected": 794, "resolved": 624 },
+      "September": { "total": 1442, "reported": 1042, "inspected": 812, "resolved": 642 },
+      "October":   { "total": 1460, "reported": 1060, "inspected": 830, "resolved": 660 },
+      "November":  { "total": 1478, "reported": 1078, "inspected": 848, "resolved": 678 },
+      "December":  { "total": 1500, "reported": 1100, "inspected": 870, "resolved": 700 }
+    },
+    "2025": {
+      "January":   { "total": 1520, "reported": 1120, "inspected": 890, "resolved": 720 },
+      "February":  { "total": 1540, "reported": 1140, "inspected": 910, "resolved": 740 },
+      "March":     { "total": 1560, "reported": 1160, "inspected": 930, "resolved": 760 },
+      "April":     { "total": 1580, "reported": 1180, "inspected": 950, "resolved": 780 },
+      "May":       { "total": 1600, "reported": 1200, "inspected": 970, "resolved": 800 },
+      "June":      { "total": 1620, "reported": 1220, "inspected": 990, "resolved": 820 },
+      "July":      { "total": 1640, "reported": 1240, "inspected": 1010, "resolved": 840 }
+    }
+  }
+}

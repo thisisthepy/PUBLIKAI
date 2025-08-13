@@ -18,6 +18,16 @@ export default defineConfig({
 	server: {
 		port: DEV_PORT
 	},
+	
+	  // 🔽 여기 추가
+  vite: {
+    resolve: {
+      alias: {
+        // v1 경로 → v2 분리 패키지로 매핑 (소스 수정 없이 해결)
+        'flowbite/dist/datepicker.js': 'flowbite-datepicker',
+      },
+    },
+  },
 
 	integrations: [
 		sitemap(),
