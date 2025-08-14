@@ -300,8 +300,7 @@ const base = import.meta.env.BASE_URL; // e.g. '/' or '/dashboard/'
         height: auto;
         width: auto;
         padding: 10px;
-        background: paint(squircle);
-        --squircle-fill: #f5f4f1;
+        
         z-index: 10;
     }
 
@@ -315,6 +314,28 @@ const base = import.meta.env.BASE_URL; // e.g. '/' or '/dashboard/'
         font-size: 20px;
         text-decoration: none;
     }
+
+    @media (prefers-color-scheme: dark) {
+       /* 어두운 모드 스타일 */
+       #chatbot .center-name {
+            background: paint(squircle);
+            --squircle-fill: #f5f4f1;
+       }
+       #chatbot .center-name a {
+            color: #333;
+       }
+     }
+
+     @media (prefers-color-scheme: light) {
+       /* 밝은 모드 스타일 */
+       #chatbot .center-name {
+            background: paint(squircle);
+            --squircle-fill: #1e1e1e;
+       }
+       #chatbot .center-name a {
+            color: #fff;
+       }
+     }
 
     #chatbot .chat-container {
         width: 100%;
@@ -458,6 +479,7 @@ const base = import.meta.env.BASE_URL; // e.g. '/' or '/dashboard/'
 
     #chatbot .form-control {
         background: paint(squircle);
+        color: #333;
         --squircle-fill: #f0eeeeff;
         border: none;
         outline: none;
