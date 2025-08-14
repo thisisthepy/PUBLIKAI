@@ -1,0 +1,16 @@
+{
+  "2025": {
+    "January": { "allocated": 50000000, "spent": 30000000 },
+    "February": { "allocated": 50000000, "spent": 35000000 },
+    "March": { "allocated": 50000000, "spent": 40000000 },
+    "April": { "allocated": 50000000, "spent": 42000000 },
+    "May": { "allocated": 50000000, "spent": 45000000 },
+    "June": { "allocated": 50000000, "spent": 46000000 },
+    "July": { "allocated": 50000000, "spent": 47000000 },
+    "August": { "allocated": 50000000, "spent": 48000000 },
+    "September": { "allocated": 50000000, "spent": 49000000 },
+    "October": { "allocated": 50000000, "spent": 49500000 },
+    "November": { "allocated": 50000000, "spent": 49800000 },
+    "December": { "allocated": 50000000, "spent": 50000000 }
+  }
+}

@@ -2,24 +2,29 @@
 title: 월별 분석
 order: 5
 ---
-import ChartApex from '../components/ChartApex.astro';
+{/* import ChartApex from '../components/ChartApex.astro'; */}
 
+{/* 차트가 포함된 예시 섹션입니다. */}
+
+{/* <ChartApex */}
+{/*   type="bar" */}
+{/*   height={320} */}
+{/*   series={[{ name: '매출', data: [10, 18, 14, 22, 30, 27] }]} */}
+{/*   options={{ */}
+{/*     xaxis: { categories: ['1월','2월','3월','4월','5월','6월'] }, */}
+{/*     dataLabels: { enabled: false }, */}
+{/*     colors: ['#2563eb'], */}
+{/*     tooltip: { y: { formatter: (val) => `${val} 건` } }, */}
+{/*     title: { text: '월별 매출', style: { fontSize: '14px' } } */}
+{/*   }} */}
+{/* /> */}
+
+{/* > 이 섹션은 MDX 이므로 Astro 컴포넌트를 직접 임포트해 사용할 수 있습니다. */}
+
+import MonthlyRegeneration from '../components/MonthlyRegeneration.astro';
+import MonthlyBudget from '../components/MonthlyBudget.astro';
 
 # 월별 분석
 
-차트가 포함된 예시 섹션입니다.
-
-<ChartApex
-  type="bar"
-  height={320}
-  series={[{ name: '매출', data: [10, 18, 14, 22, 30, 27] }]}
-  options={{
-    xaxis: { categories: ['1월','2월','3월','4월','5월','6월'] },
-    dataLabels: { enabled: false },
-    colors: ['#2563eb'],
-    tooltip: { y: { formatter: (val) => `${val} 건` } },
-    title: { text: '월별 매출', style: { fontSize: '14px' } }
-  }}
-/>
-
-> 이 섹션은 MDX 이므로 Astro 컴포넌트를 직접 임포트해 사용할 수 있습니다.
+<MonthlyRegeneration />
+<MonthlyBudget />
