@@ -51,10 +51,11 @@ const { class: clazz, prose = false } = Astro.props;
 			}
 		</script>
 	</head>
-	<body
+	<body style="float: left;"
 		class:list={[
 			//
 			clazz,
+			'min-h-screen w-full', 
 			'scrollbar scrollbar-w-3 scrollbar-thumb-rounded-[0.25rem]',
 			'scrollbar-track-slate-200  scrollbar-thumb-gray-400',
 			'dark:scrollbar-track-gray-900 dark:scrollbar-thumb-gray-700',
