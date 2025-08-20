@@ -253,6 +253,17 @@ const base = import.meta.env.BASE_URL; // e.g. '/' or '/dashboard/'
 
     aio.run(get_session_id())
 
+    def update_chatbot_position():
+        chatbot = document['chatbot']
+
+        if window.innerWidth < 1024:
+            chatbot.style.marginTop = "0px"
+        else:
+            chatbot.style.marginTop = f"{window.pageYOffset}px"
+    
+    window.addEventListener('scroll', lambda e: update_chatbot_position())
+    window.addEventListener('resize', lambda e: update_chatbot_position())
+    update_chatbot_position()  # 초기화
 </script>
 
 <section id="chatbot">
@@ -272,6 +283,8 @@ const base = import.meta.env.BASE_URL; // e.g. '/' or '/dashboard/'
 <style is:global>
     #chatbot {
         --squircle-radius: 40px;
+        height: 96vh;
+        transition: margin-top 0.1s ease-out;
     }
 
     #chatbot h1 {
@@ -292,7 +305,9 @@ const base = import.meta.env.BASE_URL; // e.g. '/' or '/dashboard/'
     }
 
     #chatbot .chat-container {
+        height: 90%;
         padding: 20px;
+        padding-bottm: 0px;
         background: paint(squircle);
         --squircle-fill: #1e1e1e;
         box-shadow: none;
