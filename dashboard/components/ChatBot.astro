@@ -149,9 +149,14 @@ const base = import.meta.env.BASE_URL; // e.g. '/' or '/dashboard/'
                             chat_history.raw_extend(tool_call['history'])
                             print("Tool call history updated")
                             for call in tool_call['history'][0]['tool_calls']:
-                                if "navigate_to_dashboard" == call['function']['name']:
-                                    hsh = call['function']['arguments']['section']
-                                    window.location.hash = hsh if '#' in hsh else '#'+hsh
+                                f_name = call['function']['name']
+                                match f_name:
+                                    case "get_center_information":
+                                        window.location.hash = "#introduction"
+                                    case "get_business_information":
+                                        window.location.hash = "#monthly"
+                                    case "get_upcoming_programs" | "get_program_history" | "get_tour_information":
+                                        window.location.hash = "#participation"
                         else:  # TODO: tool call notification 처리 (call, result)
                             pass
 

@@ -108,20 +108,6 @@ PublikaiFunctions = FunctionCalling(
                 },
                 "required": []
             }
-        ),
-        FunctionSchema(
-            name="navigate_to_dashboard",
-            description="현재 유저가 보고 있는 대시보드 페이지를 이동시킵니다",
-            parameters={
-                "type": "object",
-                "properties": {
-                    "section": {
-                        "type": "string",
-                        "description": "이동할 대시보드 섹션 이름 (예: '#welcome', '#introduction', '#participation', '#monthly', '#yearly')"
-                    }
-                },
-                "required": ["section"]
-            }
         )
     ] + FunctionCalling.DEFAULT.schemas,
     implementations=dict(
@@ -132,7 +118,6 @@ PublikaiFunctions = FunctionCalling(
         get_program_history=program.get_program_history,
         get_tour_information=tour.get_tour_information,
         get_center_news=news.get_center_news,
-        navigate_to_dashboard=lambda section: None,
         **FunctionCalling.DEFAULT.implementations
     )
 )
