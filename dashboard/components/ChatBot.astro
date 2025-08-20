@@ -148,6 +148,10 @@ const base = import.meta.env.BASE_URL; // e.g. '/' or '/dashboard/'
                         if "history" in tool_call:
                             chat_history.raw_extend(tool_call['history'])
                             print("Tool call history updated")
+                            for call in tool_call['history'][0]['tool_calls']:
+                                if "navigate_to_dashboard" == call['function']['name']:
+                                    hsh = call['function']['arguments']['section']
+                                    window.location.hash = hsh if '#' in hsh else '#'+hsh
                         else:  # TODO: tool call notification 처리 (call, result)
                             pass
 
@@ -327,10 +331,6 @@ const base = import.meta.env.BASE_URL; // e.g. '/' or '/dashboard/'
         }
     }
 
-    #chatbot .message {
-        --squircle-radius: 20px;
-    }
-
     #chatbot .chatbot-msg {
         list-style-type: none;
         overflow-y: auto;
@@ -362,8 +362,7 @@ const base = import.meta.env.BASE_URL; // e.g. '/' or '/dashboard/'
         color: #333333;
         text-align: left;
         margin-left: auto;
-        background: paint(squircle);
-        --squircle-fill: #f4f4f4;
+        background: #f4f4f4;
         width: fit-content;
         padding: 4px 12px;
         word-wrap: break-word;
@@ -371,8 +370,7 @@ const base = import.meta.env.BASE_URL; // e.g. '/' or '/dashboard/'
     }
 
     #chatbot .message-server-container .message-server {
-        background: paint(squircle);
-        --squircle-fill: #3c3c3c;
+        background: #3c3c3c;
         color: #dbdbdb;
         text-align: left;
         overflow: visible;
