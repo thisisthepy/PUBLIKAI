@@ -370,18 +370,18 @@ const base = import.meta.env.BASE_URL; // e.g. '/' or '/dashboard/'
     #chatbot h1 {
         font-size: 20px;
         font-weight: 800;
-        color: #666666;
+        color: #78716c;
         top: 10px;
         left: 10px;
         margin: 0;
         z-index: 1000;
-        background-color: #ffffff;
+        background-color: #f7f5f3;
         padding: 5px 10px;
         border-radius: 5px;
     }
 
     #chatbot h1:hover {
-        background-color: #e0e0e0;
+        background-color: #f1ede7;
     }
 
     #chatbot .chat-container {
@@ -425,20 +425,20 @@ const base = import.meta.env.BASE_URL; // e.g. '/' or '/dashboard/'
     }
 
     #chatbot .message-client {
-        background-color: #e1f5fe;
-        color: #0277bd;
+        background-color: #fef3e2;
+        color: #92400e;
         text-align: left;
         margin-left: auto;
-        border: 1px solid #b3e5fc;
+        border: 1px solid #fde5c7;
         border-radius: 15px;
         float: right;
     }
 
     #chatbot .message-user {
-        color: #333333;
+        color: #57534e;
         text-align: left;
         margin-left: auto;
-        background: #f4f4f4;
+        background: #f7f5f3;
         width: fit-content;
         padding: 4px 12px;
         word-wrap: break-word;
@@ -507,13 +507,13 @@ const base = import.meta.env.BASE_URL; // e.g. '/' or '/dashboard/'
     }
 
     #chatbot .message-server-container .think-content {
-        background-color: #f8f9fa;
-        border: 1px solid #e9ecef;
+        background-color: #fefbf3;
+        border: 1px solid #f9b968;
         border-radius: 10px;
         padding: 10px;
         margin: 4px 18px;
         font-size: 13px;
-        color: #666;
+        color: #78716c;
         white-space: pre-wrap;
         word-wrap: break-word;
     }
@@ -526,8 +526,8 @@ const base = import.meta.env.BASE_URL; // e.g. '/' or '/dashboard/'
 
     #chatbot .form-control {
         background: paint(squircle);
-        color: #333;
-        --squircle-fill: #f0eeeeff;
+        color: #57534e;
+        --squircle-fill: #faf8f5ff;
         border: none;
         outline: none;
         padding: 10px 15px;
@@ -542,17 +542,17 @@ const base = import.meta.env.BASE_URL; // e.g. '/' or '/dashboard/'
 
     #chatbot .form-control:focus {
         background: paint(squircle);
-        --squircle-fill: #f4f4f4;
+        --squircle-fill: #f7f5f3;
         box-shadow: none;
     }
 
     #chatbot .btn-icon {
         border: none;
-        background-color: #ffffff;
+        background-color: #f9b968;
         border-radius: 50%;
         padding: 10px;
         font-size: 18px;
-        color: #1e1e1e;
+        color: #ffffff;
         cursor: pointer;
         display: flex;
         align-items: center;
@@ -561,14 +561,17 @@ const base = import.meta.env.BASE_URL; // e.g. '/' or '/dashboard/'
         margin-right: 2.5px;
         height: 40px;
         width: 40px;
+        box-shadow: 0 2px 8px rgba(249, 185, 104, 0.3);
     }
 
     #chatbot .btn-icon:hover {
-        color: #bcbcbc;
+        background-color: #f59e0b;
+        color: #ffffff;
         margin-left: 0px;
         margin-right: 0px;
         height: 45px;
         width: 45px;
+        box-shadow: 0 4px 16px rgba(249, 185, 104, 0.4);
     }
 
     #chatbot .btn-icon:focus {
