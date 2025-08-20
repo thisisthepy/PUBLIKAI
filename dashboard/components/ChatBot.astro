@@ -283,7 +283,7 @@ const base = import.meta.env.BASE_URL; // e.g. '/' or '/dashboard/'
 <style is:global>
     #chatbot {
         --squircle-radius: 40px;
-        height: 96vh;
+        height: 97vh;
         transition: margin-top 0.1s ease-out;
     }
 
@@ -307,7 +307,10 @@ const base = import.meta.env.BASE_URL; // e.g. '/' or '/dashboard/'
     #chatbot .chat-container {
         height: 90%;
         padding: 20px;
-        padding-bottm: 0px;
+        --squircle-radius-top-left: 40px;
+        --squircle-radius-top-right: 40px;
+        --squircle-radius-bottom-right: 0px;
+        --squircle-radius-bottom-left: 0px;
         background: paint(squircle);
         --squircle-fill: #1e1e1e;
         box-shadow: none;
@@ -316,6 +319,12 @@ const base = import.meta.env.BASE_URL; // e.g. '/' or '/dashboard/'
         display: flex;
         flex-direction: column;
         justify-content: flex-end;
+    }
+
+    @media (max-width: 1024px) {
+        #chatbot .chat-container {
+            height: 100%;
+        }
     }
 
     #chatbot .message {
