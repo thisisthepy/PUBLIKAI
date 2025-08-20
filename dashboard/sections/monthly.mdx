@@ -7,7 +7,7 @@ import ChartApex from '../components/ChartApex.astro';
 # 월별 성과 분석
 
 <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 w-full">
-    <div class="p-6 bg-white border border-gray-200 rounded-lg shadow-sm dark:border-gray-700 dark:bg-gray-800">
+    <div class="chart-card">
         <ChartApex
             type="bar"
             height={600}
@@ -23,7 +23,7 @@ import ChartApex from '../components/ChartApex.astro';
             }}
         />
     </div>
-    <div class="p-6 bg-white border border-gray-200 rounded-lg shadow-sm dark:border-gray-700 dark:bg-gray-800">
+    <div class="chart-card">
         <ChartApex
             type="bar"
             height={600}
@@ -46,7 +46,7 @@ import ChartApex from '../components/ChartApex.astro';
             }}
         />
     </div>
-    <div class="p-6 bg-white border border-gray-200 rounded-lg shadow-sm dark:border-gray-700 dark:bg-gray-800">
+    <div class="chart-card">
         <ChartApex
             type="line"
             height={600}
@@ -63,7 +63,7 @@ import ChartApex from '../components/ChartApex.astro';
             }}
         />
     </div>
-    <div class="p-6 bg-white border border-gray-200 rounded-lg shadow-sm dark:border-gray-700 dark:bg-gray-800">
+    <div class="chart-card">
         <ChartApex
             type="bar"
             height={600}
@@ -85,3 +85,20 @@ import ChartApex from '../components/ChartApex.astro';
         />
     </div>
 </div>
+
+<style is:global>
+{`
+    .chart-card {
+        --squircle-radius: 20px;
+        --squircle-fill: #ffffff;
+        background: paint(squircle);
+        padding: 24px;
+    }
+
+    @media (prefers-color-scheme: dark) {
+        .chart-card {
+            --squircle-fill: #1f2937;
+        }
+    }
+`}
+</style>
