@@ -2,23 +2,86 @@
 title: 월별 분석
 order: 5
 ---
-{/* import ChartApex from '../components/ChartApex.astro'; */}
-
-{/* 차트가 포함된 예시 섹션입니다. */}
-
-{/* <ChartApex */}
-{/*   type="bar" */}
-{/*   height={320} */}
-{/*   series={[{ name: '매출', data: [10, 18, 14, 22, 30, 27] }]} */}
-{/*   options={{ */}
-{/*     xaxis: { categories: ['1월','2월','3월','4월','5월','6월'] }, */}
-{/*     dataLabels: { enabled: false }, */}
-{/*     colors: ['#2563eb'], */}
-{/*     tooltip: { y: { formatter: (val) => `${val} 건` } }, */}
-{/*     title: { text: '월별 매출', style: { fontSize: '14px' } } */}
-{/*   }} */}
-{/* /> */}
-
-{/* > 이 섹션은 MDX 이므로 Astro 컴포넌트를 직접 임포트해 사용할 수 있습니다. */}
+import ChartApex from '../components/ChartApex.astro';
 
 # 월별 성과 분석
+
+<div class="grid grid-cols-1 lg:grid-cols-2 gap-8 w-full">
+    <div class="p-6 bg-white border border-gray-200 rounded-lg shadow-sm dark:border-gray-700 dark:bg-gray-800">
+        <ChartApex
+            type="bar"
+            height={600}
+            width="100%"
+            series={[{ name: '노후화 주택', data: [45, 52, 38, 61, 47, 59] }]}
+            options={{
+                xaxis: { categories: ['1월','2월','3월','4월','5월','6월'] },
+                dataLabels: { enabled: false },
+                colors: ['#dc2626'],
+                tooltip: { y: { formatter: (val) => `${val} 건` } },
+                title: { text: '천안시 노후화 주택 현황', style: { fontSize: '14px' } },
+                chart: { width: '100%' }
+            }}
+        />
+    </div>
+    <div class="p-6 bg-white border border-gray-200 rounded-lg shadow-sm dark:border-gray-700 dark:bg-gray-800">
+        <ChartApex
+            type="bar"
+            height={600}
+            width="100%"
+            series={[{ name: '응답 비율', data: [65, 20, 15] }]}
+            options={{
+                xaxis: { categories: ['만족', '불만족', '보통'] },
+                dataLabels: { enabled: true },
+                colors: ['#16a34a', '#dc2626', '#f59e0b'],
+                tooltip: { y: { formatter: (val) => `${val}%` } },
+                title: { text: '시민 만족도 설문조사 결과', style: { fontSize: '14px' } },
+                chart: { width: '100%' },
+                plotOptions: {
+                    bar: {
+                        distributed: true,
+                        horizontal: false
+                    }
+                },
+                legend: { show: false }
+            }}
+        />
+    </div>
+    <div class="p-6 bg-white border border-gray-200 rounded-lg shadow-sm dark:border-gray-700 dark:bg-gray-800">
+        <ChartApex
+            type="line"
+            height={600}
+            width="100%"
+            series={[{ name: '재생 완료', data: [12, 18, 25, 32, 28, 41] }]}
+            options={{
+                xaxis: { categories: ['1월','2월','3월','4월','5월','6월'] },
+                dataLabels: { enabled: false },
+                colors: ['#16a34a'],
+                tooltip: { y: { formatter: (val) => `${val} 건` } },
+                title: { text: '재생 완료된 주택 현황', style: { fontSize: '14px' } },
+                chart: { width: '100%' },
+                stroke: { curve: 'smooth', width: 3 }
+            }}
+        />
+    </div>
+    <div class="p-6 bg-white border border-gray-200 rounded-lg shadow-sm dark:border-gray-700 dark:bg-gray-800">
+        <ChartApex
+            type="bar"
+            height={600}
+            width="100%"
+            series={[
+                { name: '인건비', data: [850, 920, 780, 1100, 950, 1080] },
+                { name: '자재비', data: [1200, 1350, 1180, 1450, 1300, 1520] },
+                { name: '기타', data: [300, 280, 350, 420, 380, 450] }
+            ]}
+            options={{
+                xaxis: { categories: ['1월','2월','3월','4월','5월','6월'] },
+                dataLabels: { enabled: false },
+                colors: ['#2563eb', '#f59e0b', '#8b5cf6'],
+                tooltip: { y: { formatter: (val) => `${val} 만원` } },
+                title: { text: '예산 사용 내역', style: { fontSize: '14px' } },
+                chart: { width: '100%', stacked: true },
+                legend: { position: 'top' }
+            }}
+        />
+    </div>
+</div>
