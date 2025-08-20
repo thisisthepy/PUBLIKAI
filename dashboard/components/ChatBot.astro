@@ -157,6 +157,8 @@ const base = import.meta.env.BASE_URL; // e.g. '/' or '/dashboard/'
                                         smooth_scroll_to_hash("#monthly")
                                     case "get_upcoming_programs" | "get_program_history" | "get_tour_information":
                                         smooth_scroll_to_hash("#participation")
+                                    case "subscribe_newsletter":
+                                        smooth_scroll_to_hash("#news")
                         else:  # TODO: tool call notification 처리 (call, result)
                             pass
 
