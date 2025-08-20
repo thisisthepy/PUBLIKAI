@@ -112,12 +112,11 @@ async def chat_with_streaming(websocket: WebSocket):
             system_prompt(model_name),
             print_output=True,
         )
+        del model
     
     for token in run():
         await websocket.send_text(token)
         await asyncio.sleep(0.0001)  # 0.1ms delay between tokens
-
-    del model
 
     await websocket.send_text("<EOS>")  # EOS token to signal the end of the conversation
     await websocket.close()
