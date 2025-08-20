@@ -152,13 +152,70 @@ const base = import.meta.env.BASE_URL; // e.g. '/' or '/dashboard/'
                                 f_name = call['function']['name']
                                 match f_name:
                                     case "get_center_information":
-                                        window.location.hash = "#introduction"
+                                        smooth_scroll_to_hash("#introduction")
                                     case "get_business_information":
-                                        window.location.hash = "#monthly"
+                                        smooth_scroll_to_hash("#monthly")
                                     case "get_upcoming_programs" | "get_program_history" | "get_tour_information":
-                                        window.location.hash = "#participation"
+                                        smooth_scroll_to_hash("#participation")
                         else:  # TODO: tool call notification 처리 (call, result)
                             pass
+
+
+    def smooth_scroll_to_hash(hash_id):
+        try:
+            target_element = document.querySelector(hash_id)
+
+            current_scroll = window.pageYOffset
+            target_offset = target_element.offsetTop - 100
+            scroll_distance = abs(target_offset - current_scroll)
+
+            scroll_duration = min(1500, max(800, scroll_distance * 0.8))
+
+            def ease_in_out_cubic(t):
+                return 4 * t * t * t if t < 0.5 else 1 - pow(-2 * t + 2, 3) / 2
+
+            start_time = window.performance.now()
+            start_scroll = current_scroll
+
+            def animate_scroll(current_time):
+                elapsed = current_time - start_time
+                progress = min(elapsed / scroll_duration, 1)
+                eased_progress = ease_in_out_cubic(progress)
+
+                new_scroll = start_scroll + (target_offset - start_scroll) * eased_progress
+                window.scrollTo(0, new_scroll)
+                
+                if progress < 1:
+                    window.requestAnimationFrame(animate_scroll)
+                else:
+                    def gentle_highlight():
+                        window.location.hash = hash_id
+                        target_element.style.transition = "box-shadow 1.5s ease-out, transform 1s ease-out"
+                        target_element.style.boxShadow = "0 0 20px rgba(66, 66, 66, 0.15)"
+                        target_element.style.transform = "scale(1.002)"
+
+                        window.setTimeout(lambda: fade_out_highlight(target_element), 1500)
+
+                    window.setTimeout(gentle_highlight, 200)
+
+            window.requestAnimationFrame(animate_scroll)
+        except Exception as e:
+            print(f"Smooth scroll error: {e}")
+            window.location.hash = hash_id
+
+
+    def fade_out_highlight(element):
+        element.style.transition = "box-shadow 2s ease-out, transform 1s ease-out"
+        element.style.boxShadow = "none"
+        element.style.transform = "scale(1)"
+
+        window.setTimeout(lambda: remove_highlight_styles(element), 2000)
+    
+    
+    def remove_highlight_styles(element):
+        element.style.boxShadow = ""
+        element.style.transform = ""
+        element.style.transition = ""
 
 
     def on_close(_):
@@ -289,10 +346,23 @@ const base = import.meta.env.BASE_URL; // e.g. '/' or '/dashboard/'
 </section>
 
 <style is:global>
+    html {
+        scroll-behavior: smooth;
+        scroll-padding-top: 100px; /* 스크롤 시 여유 공간 */
+    }
+
+    * {
+        transition: box-shadow 0.3s ease, transform 0.3s ease;
+    }
+
+    section, article, .content-section {
+        transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    }
+
     #chatbot {
         --squircle-radius: 40px;
         height: 97vh;
-        transition: margin-top 0.1s ease-out;
+        transition: margin-top 0.15s cubic-bezier(0.25, 0.46, 0.45, 0.94);
     }
 
     #chatbot h1 {
