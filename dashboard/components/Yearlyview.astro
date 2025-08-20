@@ -1,161 +1,281 @@
 ---
-// Frontmatter 부분은 이전과 동일합니다.
 import agedHomesData from './data/agedHomes.json';
 import satisfactionData from './data/satisfaction.json';
 import renewedHomesData from './data/renewedHomes.json';
 
-const availableYears = Object.keys(agedHomesData.agedHomes).sort((a, b) => b.localeCompare(a));
+const availableYears = Object.keys(agedHomesData.agedHomes).sort((a,b)=>b.localeCompare(a));
 ---
 
-<html lang="ko">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>천안시 노후 주택 재생 프로젝트 현황</title>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <style>
-        body { font-family: 'Pretendard', sans-serif; background-color: #f4f7f6; color: #333; display: flex; flex-direction: column; align-items: center; padding: 2rem; margin: 0; }
-        h1 { text-align: center; margin-bottom: 2rem; }
-        @media (prefers-color-scheme: dark) {
-            /* 어두운 모드 스타일 */
-            h1 {
-                color: #eeece8;
-            }
-        }
 
-        @media (prefers-color-scheme: light) {
-            /* 밝은 모드 스타일 */
-            h1 {
-                color: #2c3e50;
-            }
-        }
-        .chart-container { width: 100%; max-width: 800px; background-color: transparent; border-radius: 8px; box-shadow: none 4px 6px rgba(0, 0, 0, 0.1); padding: 1.5rem; margin-bottom: 2rem; }
-        .chart-header { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem; }
-        h2 { font-size: 1.5rem; color: #34495e; border-bottom: 2px solid #eeeeee; padding-bottom: 0.5rem; margin-top: 0; flex-grow: 1; }
-        .view-toggle { display: flex; flex-wrap: wrap; }
-        .view-toggle button { padding: 0.5rem 1rem; border: 1px solid #ddd; background-color: #f9f9f9; cursor: pointer; font-size: 0.9rem; transition: background-color 0.2s, color 0.2s; }
-        .view-toggle button:first-of-type { border-radius: 5px 0 0 5px; }
-        .view-toggle button:last-of-type { border-radius: 0 5px 5px 0; }
-        .view-toggle button:not(:last-child) { border-right: none; }
-        .view-toggle button.active { background-color: #3498db; color: white; border-color: #3498db; }
-    </style>
-</head>
-<body>
-    <h1>천안시 노후 주택 재생 프로젝트 현황 🏘️</h1>
+<section class="wrap">
+  <h1>노후 주택 재생 대시보드</h1>
 
-    <div class="chart-container">
-        <div class="chart-header">
-            <h2 id="agedHomesTitle"></h2>
-            <div id="agedHomesToggle" class="view-toggle">
-                <button data-view="yearly" class="active">연간</button>
-                {availableYears.map(year => <button data-view={year}>{year}</button>)}
-            </div>
+  <div class="grid">
+    <!-- 1행: 전폭 라인 -->
+    <article class="card wide">
+      <header class="card__header">
+        <h2 id="agedHomesTitle">노후화 주택 현황</h2>
+        <div id="agedHomesToggle" class="toggle">
+          <button data-view="yearly" class="active">연간</button>
+          {availableYears.map(y => <button data-view={y}>{y}</button>)}
         </div>
-        <canvas id="agedHomesChart"></canvas>
-    </div>
+      </header>
+      <div class="chart"><canvas id="agedHomesChart"></canvas></div>
+    </article>
 
-    <div class="chart-container">
-        <div class="chart-header">
-            <h2 id="satisfactionTitle"></h2>
-            <div id="satisfactionToggle" class="view-toggle">
-                <button data-view="yearly" class="active">연간</button>
-                {availableYears.map(year => <button data-view={year}>{year}</button>)}
-            </div>
+    <!-- 2행 좌: 파이 -->
+    <article class="card">
+      <header class="card__header">
+        <h2 id="satisfactionTitle">시민 만족도</h2>
+        <div id="satisfactionToggle" class="toggle">
+          <button data-view="yearly" class="active">연간</button>
+          {availableYears.map(y => <button data-view={y}>{y}</button>)}
         </div>
-        <canvas id="satisfactionChart"></canvas>
-    </div>
+      </header>
+      <div class="chart"><canvas id="satisfactionChart"></canvas></div>
+    </article>
 
-    <div class="chart-container">
-        <div class="chart-header">
-            <h2 id="renewedHomesTitle"></h2>
-            <div id="renewedHomesToggle" class="view-toggle">
-                <button data-view="yearly" class="active">연간</button>
-                {availableYears.map(year => <button data-view={year}>{year}</button>)}
-            </div>
+    <!-- 2행 우: 막대 -->
+    <article class="card">
+      <header class="card__header">
+        <h2 id="renewedHomesTitle">재생 완료 주택</h2>
+        <div id="renewedHomesToggle" class="toggle">
+          <button data-view="yearly" class="active">연간</button>
+          {availableYears.map(y => <button data-view={y}>{y}</button>)}
         </div>
-        <canvas id="renewedHomesChart"></canvas>
-    </div>
+      </header>
+      <div class="chart"><canvas id="renewedHomesChart"></canvas></div>
+    </article>
+  </div>
+</section>
 
-    <script define:vars={{ agedHomesData, satisfactionData, renewedHomesData, availableYears }}>
-        // --- 전역 변수 및 인스턴스 ---
-        let agedHomesChart, satisfactionChart, renewedHomesChart;
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
-        const chartStates = {
-            agedHomes: { view: 'yearly' },
-            satisfaction: { view: 'yearly' },
-            renewedHomes: { view: 'yearly' }
-        };
-        
-        // --- 데이터 변환 함수들은 이전과 동일 (맨 아래에 첨부) ---
-        function transformAgedHomesData(data, view) { /* ... */ }
-        function transformSatisfactionData(data, view) { /* ... */ }
-        function transformRenewedHomesData(data, view) { /* ... */ }
+<script is:inline define:vars={{ agedHomesData, satisfactionData, renewedHomesData, availableYears }}>
+  // ===== 공통 팔레트(월별 분석과 통일) =====
+  const COLOR = {
+    blue: '#60a5fa',
+    pink: '#fb7185',
+    orange: '#fbbf24',
+    gray: '#94a3b8'
+  };
 
-        // --- 💡 그래프별 개별 업데이트 함수 생성 ---
-        function updateAgedHomesChart() {
-            const view = chartStates.agedHomes.view;
-            const data = transformAgedHomesData(agedHomesData, view);
-            document.getElementById('agedHomesTitle').innerText = `📈 노후화 주택 현황 (${view === 'yearly' ? '연간' : view + '년'})`;
-            if (agedHomesChart) { agedHomesChart.data = data; agedHomesChart.update(); } 
-            else { agedHomesChart = new Chart(document.getElementById('agedHomesChart'), { type: 'line', data, options: { responsive: true, plugins: { legend: { position: 'top' } } } }); }
+  // ===== 상태 =====
+  let agedHomesChart, satisfactionChart, renewedHomesChart;
+  const state = { agedHomes: 'yearly', satisfaction: 'yearly', renewedHomes: 'yearly' };
+
+  // ===== 변환 =====
+  // ===== 변환 =====
+// ⬇️ 이 함수만 기존 것을 교체
+function transformAgedHomesData(data, view) {
+  const labelsMap = { total: '전체', reported: '신고', inspected: '점검', resolved: '조치 완료' };
+  // 순서도 고정(전체 → 신고 → 점검 → 완료)
+  const keys = ['total', 'reported', 'inspected', 'resolved'];
+  const colorMap = {
+    total:   COLOR.gray,   // 중립
+    reported:COLOR.orange, // 이슈
+    inspected:COLOR.pink,  // 진행
+    resolved:COLOR.blue    // 완료
+  };
+
+  if (view !== 'yearly') {
+    const year = data.agedHomes[view] || {};
+    const months = Object.keys(year);
+    const datasets = keys.map(k => ({
+      label: labelsMap[k],
+      data: months.map(m => year[m]?.[k] ?? 0),
+      borderColor: colorMap[k],
+      backgroundColor: colorMap[k],
+      tension: .2,
+      fill: false,
+      pointRadius: 0,
+      borderWidth: 2
+    }));
+    return { labels: months, datasets };
+  } else {
+    const years = Object.keys(data.agedHomes).sort();
+    const datasets = keys.map(k => ({
+      label: labelsMap[k],
+      data: years.map(y =>
+        Object.values(data.agedHomes[y]).reduce((s, m) => s + (m[k] ?? 0), 0)
+      ),
+      borderColor: colorMap[k],
+      backgroundColor: colorMap[k],
+      tension: .2,
+      fill: false,
+      pointRadius: 0,
+      borderWidth: 2
+    }));
+    return { labels: years, datasets };
+  }
+}
+
+  function transformSatisfactionData(data, view) {
+    const labels = ['긍정','부정','중립'];
+    const bg = [COLOR.blue, COLOR.pink, COLOR.gray];
+    if (view !== 'yearly') {
+      const year = data.satisfaction[view] || {};
+      const months = Object.keys(year);
+      const sum = months.reduce((a,m)=>({
+        like:a.like+(year[m]?.like||0),
+        dislike:a.dislike+(year[m]?.dislike||0),
+        neutral:a.neutral+(year[m]?.neutral||0)
+      }),{like:0,dislike:0,neutral:0});
+      const avg = months.length ? [sum.like, sum.dislike, sum.neutral].map(v=>Math.round(v/months.length)) : [0,0,0];
+      return { labels, datasets:[{ data: avg, backgroundColor:bg }] };
+    } else {
+      const all = Object.values(data.satisfaction).flatMap(y=>Object.values(y));
+      const sum = all.reduce((a,m)=>({
+        like:a.like+(m?.like||0),dislike:a.dislike+(m?.dislike||0),neutral:a.neutral+(m?.neutral||0)
+      }),{like:0,dislike:0,neutral:0});
+      const avg = all.length ? [sum.like,sum.dislike,sum.neutral].map(v=>Math.round(v/all.length)) : [0,0,0];
+      return { labels, datasets:[{ data: avg, backgroundColor:bg }] };
+    }
+  }
+
+  function transformRenewedHomesData(data, view) {
+    // 막대: 유형별 누적(파랑 하나로 통일)
+    if (view !== 'yearly') {
+      const year = data.renewedHomes[view] || {};
+      const totals = {};
+      Object.values(year).forEach(m=>{ for (const [k,v] of Object.entries(m)) totals[k]=(totals[k]||0)+v; });
+      const labels = Object.keys(totals);
+      return { labels, datasets:[{ label:`${view}년`, data: labels.map(k=>totals[k]), backgroundColor: COLOR.blue }] };
+    } else {
+      const years = Object.keys(data.renewedHomes).sort();
+      const types = [...new Set(years.flatMap(y => Object.values(data.renewedHomes[y]).flatMap(m => Object.keys(m))))];
+      const dataPerType = types.map(t => years.reduce((s,y)=>{
+        const yearTotals = Object.values(renewedHomesData.renewedHomes[y]).reduce((acc,m)=>acc+(m[t]||0),0);
+        return s+yearTotals;
+      },0));
+      return { labels: types, datasets:[{ label:'연간', data: dataPerType, backgroundColor: COLOR.blue }] };
+    }
+  }
+
+  // ===== 렌더 =====
+  function renderAgedHomes(){
+    const v = state.agedHomes;
+    const data = transformAgedHomesData(agedHomesData, v);
+    document.getElementById('agedHomesTitle').textContent = `노후화 주택 현황 (${v==='yearly'?'연간':v+'년'})`;
+    const el = document.getElementById('agedHomesChart');
+    if (agedHomesChart) { agedHomesChart.data = data; agedHomesChart.update(); }
+    else {
+      agedHomesChart = new Chart(el, {
+        type:'line', data,
+        options:{
+          responsive:true, maintainAspectRatio:false,
+          plugins:{ legend:{ position:'top' } },
+          scales:{
+            x:{ grid:{ display:false } },
+            y:{ beginAtZero:true, grid:{ color:'rgba(148,163,184,.2)' } }
+          }
         }
+      });
+    }
+  }
 
-        function updateSatisfactionChart() {
-            const view = chartStates.satisfaction.view;
-            const data = transformSatisfactionData(satisfactionData, view);
-            document.getElementById('satisfactionTitle').innerText = `😊 시민 만족도 (${view === 'yearly' ? '연간 종합' : view + '년 평균'})`;
-            if (satisfactionChart) { satisfactionChart.data = data; satisfactionChart.update(); } 
-            else { satisfactionChart = new Chart(document.getElementById('satisfactionChart'), { type: 'pie', data, options: { responsive: true, plugins: { legend: { position: 'top' } } } }); }
+  function renderSatisfaction(){
+    const v = state.satisfaction;
+    const data = transformSatisfactionData(satisfactionData, v);
+    document.getElementById('satisfactionTitle').textContent = `시민 만족도 (${v==='yearly'?'연간 종합':v+'년 평균'})`;
+    const el = document.getElementById('satisfactionChart');
+    if (satisfactionChart) { satisfactionChart.data = data; satisfactionChart.update(); }
+    else {
+      satisfactionChart = new Chart(el, {
+        type:'pie', data,
+        options:{
+          responsive:true, maintainAspectRatio:false,
+          plugins:{ legend:{ position:'bottom' } }
         }
+      });
+    }
+  }
 
-        function updateRenewedHomesChart() {
-            const view = chartStates.renewedHomes.view;
-            const data = transformRenewedHomesData(renewedHomesData, view);
-            document.getElementById('renewedHomesTitle').innerText = `🏠 재생 완료 주택 현황 (${view === 'yearly' ? '연간' : view + '년 누적'})`;
-            if (renewedHomesChart) { renewedHomesChart.data = data; renewedHomesChart.update(); } 
-            else { renewedHomesChart = new Chart(document.getElementById('renewedHomesChart'), { type: 'bar', data, options: { responsive: true, scales: { y: { beginAtZero: true } }, plugins: { legend: { display: false } } } }); }
+  function renderRenewed(){
+    const v = state.renewedHomes;
+    const data = transformRenewedHomesData(renewedHomesData, v);
+    document.getElementById('renewedHomesTitle').textContent = `재생 완료 주택 (${v==='yearly'?'연간':v+'년 누적'})`;
+    const el = document.getElementById('renewedHomesChart');
+    if (renewedHomesChart) { renewedHomesChart.data = data; renewedHomesChart.update(); }
+    else {
+      renewedHomesChart = new Chart(el, {
+        type:'bar', data,
+        options:{
+          responsive:true, maintainAspectRatio:false,
+          plugins:{ legend:{ display:false } },
+          scales:{
+            x:{ grid:{ display:false } },
+            y:{ beginAtZero:true, grid:{ color:'rgba(148,163,184,.2)' } }
+          }
         }
-        
-        // --- 이벤트 리스너 설정 함수 ---
-        // 💡 각 차트에 맞는 업데이트 함수를 호출하도록 수정
-        function setupEventListeners(chartId, toggleId) {
-            const toggleContainer = document.getElementById(toggleId);
-            const updaters = {
-                agedHomes: updateAgedHomesChart,
-                satisfaction: updateSatisfactionChart,
-                renewedHomes: updateRenewedHomesChart
-            };
+      });
+    }
+  }
 
-            toggleContainer.addEventListener('click', (e) => {
-                if (e.target.tagName === 'BUTTON') {
-                    const newView = e.target.dataset.view;
-                    chartStates[chartId].view = newView;
+  // ===== 토글 =====
+  function setupToggle(id, key, onUpdate){
+    const el = document.getElementById(id);
+    el.addEventListener('click', (e)=>{
+      if (e.target.tagName !== 'BUTTON') return;
+      el.querySelector('.active')?.classList.remove('active');
+      e.target.classList.add('active');
+      state[key] = e.target.dataset.view;
+      onUpdate();
+    });
+  }
 
-                    toggleContainer.querySelector('.active').classList.remove('active');
-                    e.target.classList.add('active');
+  document.addEventListener('DOMContentLoaded', ()=>{
+    setupToggle('agedHomesToggle','agedHomes',renderAgedHomes);
+    setupToggle('satisfactionToggle','satisfaction',renderSatisfaction);
+    setupToggle('renewedHomesToggle','renewedHomes',renderRenewed);
 
-                    // 💡 해당 차트의 업데이트 함수만 정확히 호출
-                    updaters[chartId]();
-                }
-            });
-        }
+    renderAgedHomes(); renderSatisfaction(); renderRenewed();
+  });
+</script>
 
-        // --- 최초 실행 ---
-        window.addEventListener('DOMContentLoaded', () => {
-            setupEventListeners('agedHomes', 'agedHomesToggle');
-            setupEventListeners('satisfaction', 'satisfactionToggle');
-            setupEventListeners('renewedHomes', 'renewedHomesToggle');
-            
-            // 💡 최초 로딩 시, 각 차트를 한 번씩 그려줍니다.
-            updateAgedHomesChart();
-            updateSatisfactionChart();
-            updateRenewedHomesChart();
-        });
+<style>
+  :root{
+    --bg:#f4f7f6;
+    --card:#ffffff;
+    --border:rgba(0,0,0,.06);
+    --text:#111827;
+    --muted:#6b7280;
+    --blue:#60a5fa; --pink:#fb7185; --orange:#fbbf24; --gray:#94a3b8;
+  }
+  @media (prefers-color-scheme: dark){
+    :root{ --bg:#0f1115; --card:#121417; --border:rgba(255,255,255,.08); --text:#e5e7eb; --muted:#a1a1aa; }
+  }
 
-        // --- 데이터 변환 함수들 (참고용) ---
-        function transformAgedHomesData(data, view) {const KOR_LABELS = { total: "Total (전체)", reported: "Reported (신고)", inspected: "Inspected (점검)", resolved: "Resolved (조치 완료)" };const COLORS = ['#3498db', '#f1c40f', '#e67e22', '#2ecc71']; const keys = ["total", "reported", "inspected", "resolved"]; if (view !== 'yearly') {const yearData = data.agedHomes[view] || {}; const labels = Object.keys(yearData); const datasets = keys.map((key, index) => ({ label: KOR_LABELS[key], data: labels.map(month => yearData[month][key] || 0), borderColor: COLORS[index], tension: 0.1, fill: false, })); return { labels, datasets };} else {const allYears = Object.keys(data.agedHomes).sort(); const datasets = keys.map((key, index) => ({ label: KOR_LABELS[key], data: allYears.map(yr => Object.values(data.agedHomes[yr]).reduce((sum, monthData) => sum + (monthData[key] || 0), 0)), borderColor: COLORS[index], tension: 0.1, fill: false, })); return { labels: allYears, datasets };}}
-        function transformSatisfactionData(data, view) {const labels = ['긍정 (Like)', '부정 (Dislike)', '중립 (Neutral)']; const backgroundColor = ['#2ecc71', '#e74c3c', '#95a5a6']; if (view !== 'yearly') {const yearData = data.satisfaction[view] || {}; const months = Object.keys(yearData); if (months.length === 0) return { labels: [], datasets: [] }; const total = { like: 0, dislike: 0, neutral: 0 }; months.forEach(month => { total.like += yearData[month].like; total.dislike += yearData[month].dislike; total.neutral += yearData[month].neutral; }); const datasets = [{ data: [total.like / months.length, total.dislike / months.length, total.neutral / months.length], backgroundColor, hoverOffset: 4, }]; return { labels, datasets };} else {const allData = Object.values(data.satisfaction).flatMap(year => Object.values(year)); if (allData.length === 0) return { labels: [], datasets: [] }; const total = { like: 0, dislike: 0, neutral: 0 }; allData.forEach(month => { total.like += month.like; total.dislike += month.dislike; total.neutral += month.neutral; }); const datasets = [{ data: [total.like / allData.length, total.dislike / allData.length, total.neutral / allData.length], backgroundColor, hoverOffset: 4, }]; return { labels, datasets };}}
-        function transformRenewedHomesData(data, view) {if (view !== 'yearly') {const yearData = data.renewedHomes[view] || {}; if (Object.keys(yearData).length === 0) return { labels: [], datasets: [] }; const totals = {}; Object.values(yearData).forEach(monthData => { for (const [key, value] of Object.entries(monthData)) { totals[key] = (totals[key] || 0) + value; } }); const labels = Object.keys(totals); const datasets = [{ label: `${view}년 누적 완료`, data: Object.values(totals), backgroundColor: ['rgba(54, 162, 235, 0.7)', 'rgba(255, 99, 132, 0.7)', 'rgba(75, 192, 192, 0.7)', 'rgba(255, 206, 86, 0.7)', 'rgba(153, 102, 255, 0.7)', 'rgba(255, 159, 64, 0.7)'], }]; return { labels, datasets };} else {const allYears = Object.keys(data.renewedHomes).sort(); const allTypes = [...new Set(allYears.flatMap(year => Object.values(data.renewedHomes[year]).flatMap(month => Object.keys(month))))]; const datasets = allYears.map(year => { const yearTotals = {}; Object.values(data.renewedHomes[year]).forEach(monthData => { for (const [type, count] of Object.entries(monthData)) { yearTotals[type] = (yearTotals[type] || 0) + count; } }); return { label: `${year}년`, data: allTypes.map(type => yearTotals[type] || 0), backgroundColor: `rgba(${Math.floor(Math.random()*150+50)}, ${Math.floor(Math.random()*150+50)}, ${Math.floor(Math.random()*150+50)}, 0.7)` }; }); return { labels: allTypes, datasets };}}
-    </script>
-</body>
-</html>
+  .wrap{ max-width: 1100px; margin:0 auto; padding: 12px 16px 28px; }
+  h1{ margin:10px 0 18px; font-size:26px; color:var(--text); }
+
+  .grid{ display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:16px; }
+  .card{
+    background:var(--card); border:1px solid var(--border);
+    border-radius:16px; padding:14px 16px;
+  }
+  .card.wide{ grid-column:span 2; }
+  .card__header{ display:flex; align-items:center; justify-content:space-between; gap:8px; margin-bottom:8px; }
+  .card__header h2{ margin:0; font-size:18px; }
+
+  .toggle{ display:flex; flex-wrap:wrap; gap:0; }
+  .toggle button{
+    padding:6px 10px; font-size:13px; border:1px solid var(--border);
+    background:#f8fafc; color:#0f172a; cursor:pointer;
+  }
+  .toggle button + button{ border-left:0; }
+  .toggle button:first-child{ border-radius:8px 0 0 8px; }
+  .toggle button:last-child{ border-radius:0 8px 8px 0; }
+  .toggle button.active{ background:var(--blue); color:#fff; border-color:var(--blue); }
+
+  .chart{ height:260px; }
+  canvas{ width:100% !important; height:100% !important; }
+
+  body{ background:var(--bg); }
+  *{ font-family:'Pretendard',system-ui,Segoe UI,Apple SD Gothic Neo,Arial,sans-serif; }
+  
+  @media (max-width:1024px){
+    .grid{ grid-template-columns:1fr; }
+    .card.wide{ grid-column:span 1; }
+  }
+</style>

@@ -1,0 +1,16 @@
+{
+  "2025": {
+    "January":   { "received": 120, "in_progress": 40, "resolved": 60 },
+    "February":  { "received": 110, "in_progress": 35, "resolved": 70 },
+    "March":     { "received": 130, "in_progress": 42, "resolved": 75 },
+    "April":     { "received": 150, "in_progress": 50, "resolved": 80 },
+    "May":       { "received": 160, "in_progress": 55, "resolved": 90 },
+    "June":      { "received": 140, "in_progress": 48, "resolved": 88 },
+    "July":      { "received": 170, "in_progress": 60, "resolved": 100 },
+    "August":    { "received": 165, "in_progress": 58, "resolved": 98 },
+    "September": { "received": 155, "in_progress": 52, "resolved": 95 },
+    "October":   { "received": 150, "in_progress": 50, "resolved": 92 },
+    "November":  { "received": 145, "in_progress": 48, "resolved": 90 },
+    "December":  { "received": 140, "in_progress": 45, "resolved": 88 }
+  }
+}

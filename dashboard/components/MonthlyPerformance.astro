@@ -1,0 +1,261 @@
+---
+import complaints from './data/perfComplaints.json';
+import participation from './data/perfParticipation.json';
+import monthlyBudget from './data/monthlyBudget.json'; // 이미 있으면 그대로 사용
+import social from './data/perfSocial.json';
+
+const YEAR = '2025';
+const MONTH_LABELS = ['1월','2월','3월','4월','5월','6월','7월','8월','9월','10월','11월','12월'];
+const MONTH_KEYS   = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+
+// ① 월별 민원 건수
+const received    = MONTH_KEYS.map(m => complaints[YEAR][m]?.received ?? 0);
+const inProgress  = MONTH_KEYS.map(m => complaints[YEAR][m]?.in_progress ?? 0);
+const resolved    = MONTH_KEYS.map(m => complaints[YEAR][m]?.resolved ?? 0);
+
+// (YTD) 민원 처리율
+const receivedSum = received.reduce((a,b)=>a+b,0);
+const resolvedSum = resolved.reduce((a,b)=>a+b,0);
+const complaintRate = Math.round((resolvedSum / Math.max(receivedSum,1)) * 1000) / 10; // x.x%
+
+// ② 주민 참여도 (도넛: 참여 vs 미참여)
+const eligible = participation[YEAR]?.eligible ?? 1;
+const participants = participation[YEAR]?.participants ?? 0;
+const nonParticipants = Math.max(eligible - participants, 0);
+const participationRate = Math.round((participants/Math.max(eligible,1))*1000)/10; // x.x%
+
+// ③ 예산 집행율 (도넛: 집행 vs 미집행) - 월별 예산 JSON에서 집계
+const allocatedSum = MONTH_KEYS.reduce((s, m) => s + (monthlyBudget[YEAR][m]?.allocated ?? 0), 0);
+const spentSum     = MONTH_KEYS.reduce((s, m) => s + (monthlyBudget[YEAR][m]?.spent ?? 0), 0);
+const remainSum    = Math.max(allocatedSum - spentSum, 0);
+const budgetRate   = Math.round((spentSum / Math.max(allocatedSum, 1)) * 1000) / 10; // 예: 87.3%
+
+// ④ 홍보/소통 반응 (라인: 조회수)
+const views = MONTH_KEYS.map(m => social[YEAR][m]?.views ?? 0);
+---
+
+<section class="layout">
+  <!-- 왼쪽: 3 카드 -->
+  <div class="left">
+    <!-- 카드 1: 월별 민원 건수 -->
+    <div class="card big">
+      <div class="card__header">
+        <h3>월별 민원 건수 ({YEAR})</h3>
+      </div>
+      <div class="chart-wrap h-240">
+        <canvas id="c-complaints"></canvas>
+      </div>
+    </div>
+
+    <!-- 카드 2: 주민 참여도 (도넛) -->
+    <div class="card">
+      <div class="card__header">
+        <h3>주민 참여도</h3>
+        <small class="muted">{Math.round((participants/Math.max(eligible,1))*100)}%</small>
+      </div>
+      <div class="chart-wrap h-220">
+        <canvas id="c-participation"></canvas>
+      </div>
+      <div class="meta">
+        <span>참여 {participants.toLocaleString()}명</span>
+        <span>대상 {eligible.toLocaleString()}명</span>
+      </div>
+    </div>
+
+    <!-- 카드 3: 예산 집행율 (도넛) -->
+    <div class="card">
+      <div class="card__header">
+        <h3>예산 집행율</h3>
+        <small class="muted">{budgetRate}%</small>
+      </div>
+      <div class="chart-wrap h-220">
+        <canvas id="c-budget"></canvas>
+      </div>
+      <div class="meta">
+        <span>집행 {spentSum.toLocaleString()}원</span>
+        <span>배정 {allocatedSum.toLocaleString()}원</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- 오른쪽: 홍보 반응 + KPI 미니 카드 -->
+  <aside class="right">
+    <div class="card">
+      <div class="card__header">
+        <h3>홍보 반응 (조회수)</h3>
+      </div>
+      <div class="chart-wrap h-240">
+        <canvas id="c-social"></canvas>
+      </div>
+    </div>
+
+    <!-- 🔹 새로 추가: 핵심 지표 카드 -->
+    <div class="card kpi">
+      <div class="card__header"><h3>핵심 지표</h3></div>
+      <ul class="kpis">
+        <li>
+          <div class="kpi__top">
+            <span class="kpi__label">민원 처리율</span>
+            <strong class="kpi__value">{complaintRate}%</strong>
+          </div>
+          <div class="bar"><div class="bar__in" style={`width:${complaintRate}%`}></div></div>
+        </li>
+        <li>
+          <div class="kpi__top">
+            <span class="kpi__label">참여율</span>
+            <strong class="kpi__value">{participationRate}%</strong>
+          </div>
+          <div class="bar"><div class="bar__in" style={`width:${participationRate}%`}></div></div>
+        </li>
+        <li>
+          <div class="kpi__top">
+            <span class="kpi__label">예산 집행율</span>
+            <strong class="kpi__value">{budgetRate}%</strong>
+          </div>
+          <div class="bar"><div class="bar__in" style={`width:${budgetRate}%`}></div></div>
+        </li>
+      </ul>
+      <div class="kpi__foot">
+        <span>민원 {resolvedSum.toLocaleString()}건 처리 / 접수 {receivedSum.toLocaleString()}건</span>
+      </div>
+    </div>
+  </aside>
+</section>
+
+<!-- Chart.js (CDN) -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<script is:inline define:vars={{
+  MONTH_LABELS, received, inProgress, resolved, 
+  participants, nonParticipants,
+  spentSum, remainSum,
+  views
+}}>
+  function once(id, make) {
+    const el = document.getElementById(id);
+    if (!el || el._chart) return;
+    el._chart = make(el.getContext('2d'));
+  }
+
+  function mount() {
+    // 1) 민원 막대(누적)
+    once('c-complaints', (ctx) => new Chart(ctx, {
+      type: 'bar',
+      data: {
+        labels: MONTH_LABELS,
+        datasets: [
+          { label: '접수',     data: received,   borderWidth: 0, stack: 'a' },
+          { label: '처리 중',  data: inProgress, borderWidth: 0, stack: 'a' },
+          { label: '처리 완료', data: resolved,   borderWidth: 0, stack: 'a' }
+        ]
+      },
+      options: {
+        responsive: true, maintainAspectRatio: false,
+        plugins: { legend: { position: 'top' }, tooltip: { mode:'index', intersect:false } },
+        scales: {
+          x: { grid: { display:false } },
+          y: { beginAtZero:true, grid: { display:false }, ticks:{ precision:0 } }
+        }
+      }
+    }));
+
+    // 2) 참여도 도넛
+    once('c-participation', (ctx) => new Chart(ctx, {
+      type: 'doughnut',
+      data: {
+        labels: ['참여','미참여'],
+        datasets: [{ data: [participants, nonParticipants] }]
+      },
+      options: {
+        responsive:true, maintainAspectRatio:false,
+        plugins: { legend:{ position:'bottom' } },
+        cutout: '65%'
+      }
+    }));
+
+    // 3) 예산 집행율 도넛
+    once('c-budget', (ctx) => new Chart(ctx, {
+      type: 'doughnut',
+      data: {
+        labels: ['집행','미집행'],
+        datasets: [{ data: [spentSum, remainSum] }]
+      },
+      options: {
+        responsive:true, maintainAspectRatio:false,
+        plugins: { legend:{ position:'bottom' } },
+        cutout: '65%'
+      }
+    }));
+
+    // 4) 홍보 반응 라인
+    once('c-social', (ctx) => new Chart(ctx, {
+      type: 'line',
+      data: { labels: MONTH_LABELS, datasets: [{ label:'조회수', data: views, tension: .3, borderWidth: 2, pointRadius: 0 }] },
+      options: {
+        responsive:true, maintainAspectRatio:false,
+        plugins: { legend:{ display:false } },
+        scales: {
+          x:{ grid:{ display:false } },
+          y:{ beginAtZero:true, grid:{ display:false } }
+        }
+      }
+    }));
+  }
+
+  document.addEventListener('astro:page-load', mount);
+  document.addEventListener('DOMContentLoaded', mount);
+</script>
+
+<style>
+  .layout {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 360px; /* 왼쪽 메인, 오른쪽 사이드 */
+    gap: 16px;
+    align-items: start;
+  }
+
+  /* 왼쪽 2×2 카드 */
+  .left {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 16px;
+  }
+
+  .right {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  .card {
+    width: 100%;
+    padding: 14px 16px;
+    border-radius: 16px;
+    background: #fff;
+    border: 1px solid rgba(0,0,0,.06);
+  }
+  .card.big { grid-column: span 2; } /* 첫 카드 가로로 크게 */
+  .card__header { display:flex; align-items:center; justify-content:space-between; margin-bottom:8px; }
+  .muted { opacity:.6; }
+  .meta { display:flex; justify-content:space-between; margin-top:8px; font-size:.85rem; opacity:.8; }
+
+  .chart-wrap { width:100%; height: 220px; }
+  .h-220 { height: 220px; }
+  .h-240 { height: 260px; }
+  canvas { width:100% !important; height:100% !important; background: transparent !important; }
+
+  /* KPI 카드 */
+  .kpi .kpis { list-style:none; margin:0; padding:0; display:flex; flex-direction:column; gap:12px; }
+  .kpi .kpi__top { display:flex; justify-content:space-between; align-items:center; margin-bottom:6px; }
+  .kpi .kpi__label { font-size:.92rem; opacity:.8; }
+  .kpi .kpi__value { font-size:1.05rem; }
+  .kpi .bar { height:8px; border-radius:999px; background:rgba(0,0,0,.06); overflow:hidden; }
+  .kpi .bar__in { height:100%; border-radius:999px; background:linear-gradient(90deg,#60a5fa,#34d399); }
+  .kpi .kpi__foot { margin-top:10px; font-size:.85rem; opacity:.7; }
+
+  /* 반응형 */
+  @media (max-width: 1024px) {
+    .layout { grid-template-columns: 1fr; }
+    .right { order: 2; }
+  }
+</style>

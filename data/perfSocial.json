@@ -1,0 +1,16 @@
+{
+  "2025": {
+    "January":  3200,
+    "February": 3600,
+    "March":    4100,
+    "April":    3900,
+    "May":      4500,
+    "June":     4700,
+    "July":     5200,
+    "August":   5100,
+    "September":4900,
+    "October":  5300,
+    "November": 5600,
+    "December": 6000
+  }
+}
