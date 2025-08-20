@@ -1,14 +1,13 @@
 ---
-import agedHomesData from './data/agedHomes.json';
-import satisfactionData from './data/satisfaction.json';
-import renewedHomesData from './data/renewedHomes.json';
+import agedHomesData from '../../data/agedHomes.json';
+import satisfactionData from '../../data/satisfaction.json';
+import renewedHomesData from '../../data/renewedHomes.json';
 
 const availableYears = Object.keys(agedHomesData.agedHomes).sort((a,b)=>b.localeCompare(a));
 ---
 
 
 <section class="wrap">
-  <h1>노후 주택 재생 대시보드</h1>
 
   <div class="grid">
     <!-- 1행: 전폭 라인 -->
@@ -68,11 +67,10 @@ const availableYears = Object.keys(agedHomesData.agedHomes).sort((a,b)=>b.locale
   // ===== 변환 =====
 // ⬇️ 이 함수만 기존 것을 교체
 function transformAgedHomesData(data, view) {
-  const labelsMap = { total: '전체', reported: '신고', inspected: '점검', resolved: '조치 완료' };
+  const labelsMap = { reported: '신고', inspected: '점검', resolved: '조치 완료' };
   // 순서도 고정(전체 → 신고 → 점검 → 완료)
-  const keys = ['total', 'reported', 'inspected', 'resolved'];
+  const keys = ['reported', 'inspected', 'resolved'];
   const colorMap = {
-    total:   COLOR.gray,   // 중립
     reported:COLOR.orange, // 이슈
     inspected:COLOR.pink,  // 진행
     resolved:COLOR.blue    // 완료
