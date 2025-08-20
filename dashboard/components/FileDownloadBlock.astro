@@ -1,0 +1,180 @@
+---
+import { asset, url } from '../lib/data.js';
+import { getPdfFiles, type FileInfo } from '../lib/fileUtils';
+
+interface Props {
+	title: string;
+	description?: string;
+	files?: FileInfo[];
+	autoLoad?: boolean;
+}
+
+const { title, description, files: propFiles, autoLoad = true } = Astro.props;
+
+// 파일 목록 가져오기
+let files: FileInfo[] = [];
+
+if (autoLoad) {
+	try {
+		files = await getPdfFiles();
+	} catch (error) {
+		console.error('Error loading PDF files:', error);
+		files = propFiles || [];
+	}
+} else {
+	files = propFiles || [];
+}
+---
+
+<div class="squircle-container" style="--squircle-radius: 24px; --squircle-fill: #ffffff; --squircle-fill-dark: #1f2937;">
+	<div class="p-6">
+		<h3 class="mb-2 text-xl font-bold text-gray-900 dark:text-white">
+			{title}
+		</h3>
+		{description && (
+			<p class="mb-4 text-sm text-gray-500 dark:text-gray-400">
+				{description}
+			</p>
+		)}
+		
+		<div class="space-y-3">
+			{files.map((file) => (
+				<div class="squircle-item flex items-center justify-between p-4" style="--squircle-radius: 16px; --squircle-fill: #f9fafb; --squircle-fill-dark: #374151;">
+					<div class="flex items-center space-x-3">
+						<!-- PDF 아이콘 -->
+						<div class="flex-shrink-0">
+							<svg class="w-8 h-8 text-red-500" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+								<path fill-rule="evenodd" d="M4 4a2 2 0 012-2h4.586A2 2 0 0112 2.586L15.414 6A2 2 0 0116 7.414V16a2 2 0 01-2 2H6a2 2 0 01-2-2V4zm2 6a1 1 0 011-1h6a1 1 0 110 2H7a1 1 0 01-1-1zm1 3a1 1 0 100 2h6a1 1 0 100-2H7z" clip-rule="evenodd"></path>
+							</svg>
+						</div>
+						
+						<div class="flex-1 min-w-0">
+							<p class="text-sm font-medium text-gray-900 dark:text-white truncate not-prose">
+								{file.name}
+							</p>
+							<div class="flex items-center space-x-2 text-xs text-gray-500 dark:text-gray-400">
+								{file.type && (
+									<span class="squircle-badge px-2 py-1" style="--squircle-radius: 8px; --squircle-fill: #e5e7eb; --squircle-fill-dark: #4b5563;">
+										{file.type}
+									</span>
+								)}
+								{file.size && (
+									<span>{file.size}</span>
+								)}
+								{file.year && (
+									<span>• {file.year}</span>
+								)}
+							</div>
+						</div>
+					</div>
+					
+					<!-- 다운로드 버튼 -->
+					<a 
+						href={file.url}
+						download={file.name}
+						class="squircle-button inline-flex items-center px-3 py-2 text-sm font-medium text-center text-gray-900 dark:text-gray-300 transition-all duration-200"
+						style="--squircle-radius: 8px; --squircle-fill: #ffffff; --squircle-fill-dark: #1f2937;"
+					>
+						<svg class="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+							<path fill-rule="evenodd" d="M3 17a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm3.293-7.707a1 1 0 011.414 0L9 10.586V3a1 1 0 112 0v7.586l1.293-1.293a1 1 0 111.414 1.414l-3 3a1 1 0 01-1.414 0l-3-3a1 1 0 010-1.414z" clip-rule="evenodd"></path>
+						</svg>
+						다운로드
+					</a>
+				</div>
+			))}
+		</div>
+		
+		<!-- 전체 다운로드 버튼 (파일이 여러개일 때) -->
+		{files.length > 1 && (
+			<div class="mt-6 pt-4 border-t border-gray-200 dark:border-gray-600">
+				<button 
+					type="button"
+					class="squircle-button w-full inline-flex items-center justify-center px-4 py-2 text-sm font-medium text-center text-gray-900 dark:text-gray-300 transition-all duration-200"
+					style="--squircle-radius: 8px; --squircle-fill: #ffffff; --squircle-fill-dark: #1f2937;"
+					onclick="downloadAllFiles()"
+				>
+					<svg class="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+						<path fill-rule="evenodd" d="M3 17a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zM6.293 6.707a1 1 0 010-1.414l3-3a1 1 0 011.414 0l3 3a1 1 0 01-1.414 1.414L11 5.414V13a1 1 0 11-2 0V5.414L7.707 6.707a1 1 0 01-1.414 0z" clip-rule="evenodd"></path>
+					</svg>
+					전체 다운로드
+				</button>
+			</div>
+		)}
+	</div>
+</div>
+
+<style>
+	.squircle-container,
+	.squircle-item,
+	.squircle-badge,
+	.squircle-button {
+		background: var(--squircle-fill);
+		border-radius: var(--squircle-radius);
+		position: relative;
+	}
+	
+	@media (prefers-color-scheme: dark) {
+		.squircle-container,
+		.squircle-item,
+		.squircle-badge,
+		.squircle-button {
+			background: var(--squircle-fill-dark);
+		}
+	}
+	
+	:global(.dark) .squircle-container,
+	:global(.dark) .squircle-item,
+	:global(.dark) .squircle-badge,
+	:global(.dark) .squircle-button {
+		background: var(--squircle-fill-dark);
+	}
+	
+	.squircle-item {
+		transition: all 0.2s ease;
+		border: 1px solid rgba(229, 231, 235, 0.5);
+	}
+	
+	.squircle-item:hover {
+		--squircle-fill: #f3f4f6;
+		--squircle-fill-dark: #4b5563;
+		transform: translateY(-1px);
+		box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+	}
+	
+	:global(.dark) .squircle-item {
+		border: 1px solid rgba(75, 85, 99, 0.5);
+	}
+	
+	.squircle-button {
+		border: 1px solid rgba(209, 213, 219, 0.8);
+		transition: all 0.2s ease;
+	}
+	
+	.squircle-button:hover {
+		--squircle-fill: #f3f4f6;
+		--squircle-fill-dark: #4b5563;
+		transform: translateY(-1px);
+		box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+		color: #1f2937;
+	}
+	
+	:global(.dark) .squircle-button {
+		border: 1px solid rgba(75, 85, 99, 0.8);
+	}
+	
+	:global(.dark) .squircle-button:hover {
+		color: #f9fafb;
+	}
+</style>
+
+<script>
+	function downloadAllFiles() {
+		const fileLinks = document.querySelectorAll('a[download]');
+		fileLinks.forEach(link => {
+			// 각 파일을 순차적으로 다운로드
+			setTimeout(() => {
+				link.click();
+			}, 100);
+		});
+	}
+</script>
