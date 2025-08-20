@@ -256,14 +256,11 @@ const base = import.meta.env.BASE_URL; // e.g. '/' or '/dashboard/'
 </script>
 
 <section id="chatbot">
-    <div class="center-name text-center">
-        <a href="https://www.cheonanurc.or.kr/">천안시 도시재생지원센터</a>
-    </div>
-    <br><br>
     <div class="container chat-container">
-        <ul class="chatbot-msg" id="messages"></ul>
-        <p class="text-center italic text-gray-500">
-            <small class="text-white">PUBLIKAI는 실수를 할 수 있습니다. 중요한 정보는 재차 확인해 주세요.</small>
+        <ul class="chatbot-msg" id="messages">
+        </ul>
+        <p class="text-center italic text-gray-500 px-7">
+            <small class="text-white">PUBLIKAI는 실수를 할 수 있습니다. &nbsp&nbsp중요한 정보는 재차 확인해 주세요.</small>
         </p>
         <form id="send_chat" class="flex flex-nowrap items-center mt-3">
             <textarea id="message_text" class="form-control flex-grow mr-2" autocomplete="off" placeholder="챗봇에게 문의하기"></textarea>
@@ -274,7 +271,6 @@ const base = import.meta.env.BASE_URL; // e.g. '/' or '/dashboard/'
 
 <style is:global>
     #chatbot {
-        height: 90vh;
         --squircle-radius: 40px;
     }
 
@@ -282,7 +278,6 @@ const base = import.meta.env.BASE_URL; // e.g. '/' or '/dashboard/'
         font-size: 20px;
         font-weight: 800;
         color: #666666;
-        position: absolute;
         top: 10px;
         left: 10px;
         margin: 0;
@@ -296,54 +291,10 @@ const base = import.meta.env.BASE_URL; // e.g. '/' or '/dashboard/'
         background-color: #e0e0e0;
     }
 
-    #chatbot .center-name {
-        height: auto;
-        width: auto;
-        padding: 10px;
-        
-        z-index: 10;
-    }
-
-    #chatbot .center-name a {
-        display: block; 
-        max-width: 100%;
-        white-space: normal; 
-        overflow-wrap: anywhere;
-        color: #333;
-        font-weight: bold;
-        font-size: 20px;
-        text-decoration: none;
-    }
-
-    @media (prefers-color-scheme: dark) {
-       /* 어두운 모드 스타일 */
-       #chatbot .center-name {
-            background: paint(squircle);
-            --squircle-fill: #f5f4f1;
-       }
-       #chatbot .center-name a {
-            color: #333;
-       }
-     }
-
-     @media (prefers-color-scheme: light) {
-       /* 밝은 모드 스타일 */
-       #chatbot .center-name {
-            background: paint(squircle);
-            --squircle-fill: #1e1e1e;
-       }
-       #chatbot .center-name a {
-            color: #fff;
-       }
-     }
-
     #chatbot .chat-container {
-        width: 100%;
-        height: 90%;
-        margin: 0 auto;
         padding: 20px;
         background: paint(squircle);
-        --squircle-fill:#1e1e1e;
+        --squircle-fill: #1e1e1e;
         box-shadow: none;
         border: none;
         flex-grow: 1;
@@ -358,8 +309,6 @@ const base = import.meta.env.BASE_URL; // e.g. '/' or '/dashboard/'
 
     #chatbot .chatbot-msg {
         list-style-type: none;
-        padding: 0;
-        margin: 0;
         overflow-y: auto;
         scrollbar-width: none;
         padding-bottom: 10px;
@@ -500,35 +449,35 @@ const base = import.meta.env.BASE_URL; // e.g. '/' or '/dashboard/'
     }
 
     #chatbot .btn-icon {
-        border: none; /* 테두리 제거 */
-        background-color: #ffffff; /* 버튼 배경색 */
-        border-radius: 50%; /* 원형으로 만들기 */
-        padding: 10px; /* 내부 여백 */
-        font-size: 18px; /* 아이콘 크기 조정 */
-        color: #1e1e1e; /* 아이콘 색상 */
-        cursor: pointer; /* 마우스 포인터를 클릭 커서로 변경 */
-        display: flex; /* 아이콘을 중앙에 위치시키기 위해 flexbox 사용 */
+        border: none;
+        background-color: #ffffff;
+        border-radius: 50%;
+        padding: 10px;
+        font-size: 18px;
+        color: #1e1e1e;
+        cursor: pointer;
+        display: flex;
         align-items: center;
         justify-content: center;
         margin-left: 2.5px;
         margin-right: 2.5px;
-        height: 40px; /* 버튼 높이 */
-        width: 40px; /* 버튼 너비 */
+        height: 40px;
+        width: 40px;
     }
 
     #chatbot .btn-icon:hover {
-        color: #bcbcbc; /* 호버 시 아이콘 색상을 흰색으로 유지 */
+        color: #bcbcbc;
         margin-left: 0px;
         margin-right: 0px;
-        height: 45px; /* 버튼 높이 */
-        width: 45px; /* 버튼 너비 */
+        height: 45px;
+        width: 45px;
     }
 
     #chatbot .btn-icon:focus {
         border-color: #ddd;
         outline: none;
         box-shadow: none;
-        color: #fff; /* 아이콘 색상 */
-        outline: none; /* 포커스 시 테두리 제거 */
+        color: #fff;
+        outline: none;
     }
 </style>

@@ -6,14 +6,14 @@ import SideBar from './SideBar.astro';
 ---
 
 <LayoutCommon>
-	<!--<NavBarSidebar />-->
+	<NavBarSidebar />
 
 	<SideBar />
 
-	<div class="flex pt-8 overflow-hidden" ><!-- style="background-color: #eeece8;"> -->
+	<div class="flex mt-14 lg:mt-0 pt-8 overflow-hidden bg-[#eeece8]">
 		<div
 			id="main-content"
-			class="relative w-full h-full overflow-y-auto lg:ml-32 min-h-screen lg:pr-[34rem]"
+			class="relative w-full h-full overflow-y-auto lg:ml-32"
 		>
 			<slot />
 
@@ -21,21 +21,3 @@ import SideBar from './SideBar.astro';
 		</div>
 	</div>
 </LayoutCommon>
-
-<style>
-	 @media (prefers-color-scheme: dark) {
-       /* 어두운 모드 스타일 */
-       body {
-         background-color: #302e32;
-         color: #eeece8;
-       }
-     }
-
-     @media (prefers-color-scheme: light) {
-       /* 밝은 모드 스타일 */
-       body {
-         background-color: #eeece8;
-         color: #1f2937;
-       }
-     }
-</style>
