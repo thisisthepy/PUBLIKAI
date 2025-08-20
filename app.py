@@ -87,7 +87,6 @@ async def greetings(websocket: WebSocket):
 
 
 @app.websocket("/api/chat")
-@spaces.GPU(duration=300)
 async def chat_with_streaming(websocket: WebSocket):
     """ Chat via Websocket endpoint """
     await websocket.accept()
@@ -95,7 +94,6 @@ async def chat_with_streaming(websocket: WebSocket):
     try:
         session_id = json.loads(await websocket.receive_text()).get("session_id")
         session = Session(session_id=session_id)
-        model, model_name = session.model, session.model_name
     except Exception:
         traceback.print_exc()
         await websocket.close(code=1008, reason="Invalid session ID or model not found.")
@@ -105,7 +103,17 @@ async def chat_with_streaming(websocket: WebSocket):
     chat_history.extend(json.loads(await websocket.receive_text()))
     user_prompt = await websocket.receive_text()
 
-    for token in model.chat(chat_history, user_prompt, system_prompt(model_name), print_output=True):
+    @spaces.GPU(duration=300)
+    def run():
+        model, model_name = session.model, session.model_name
+        yield from model.chat(
+            chat_history,
+            user_prompt,
+            system_prompt(model_name),
+            print_output=True,
+        )
+    
+    for token in run():
         await websocket.send_text(token)
         await asyncio.sleep(0.0001)  # 0.1ms delay between tokens
 
