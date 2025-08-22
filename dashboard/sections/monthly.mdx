@@ -4,6 +4,35 @@ order: 5
 ---
 import ChartApex from '../components/ChartApex.astro';
 
+
+<style>{`
+    .chart-card {
+        --squircle-radius: 20px;
+        background: paint(squircle);
+        padding: 24px;
+        border-radius: 20px;
+    }
+
+    .chart-card-1 {
+        --squircle-fill: #fafafa;
+    }
+
+    .chart-card-2 {
+        --squircle-fill: #fafafa;
+    }
+
+    .chart-card-3 {
+        --squircle-fill: #ff9062;
+        color: #ffffff;
+    }
+
+    .chart-card-4 {
+        --squircle-fill: #fafafa;
+    }
+`}
+</style>
+
+
 # 월별 성과 분석
 
 <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 w-full">
@@ -16,7 +45,7 @@ import ChartApex from '../components/ChartApex.astro';
             options={{
                 xaxis: { categories: ['1월','2월','3월','4월','5월','6월'] },
                 dataLabels: { enabled: false },
-                colors: ['#dc2626'],
+                colors: ['#8B5CF6'],
                 tooltip: { y: { formatter: (val) => `${val} 건` } },
                 title: { text: '천안시 노후화 주택 현황', style: { fontSize: '14px', color: '#374151' } },
                 chart: { width: '100%' }
@@ -32,7 +61,7 @@ import ChartApex from '../components/ChartApex.astro';
             options={{
                 xaxis: { categories: ['만족', '불만족', '보통'] },
                 dataLabels: { enabled: true },
-                colors: ['#16a34a', '#dc2626', '#f59e0b'],
+                colors: ['#F59E0B', '#F97316', '#06B6D4'],
                 tooltip: { y: { formatter: (val) => `${val}%` } },
                 title: { text: '시민 만족도 설문조사 결과', style: { fontSize: '14px', color: '#374151' } },
                 chart: { width: '100%' },
@@ -55,9 +84,9 @@ import ChartApex from '../components/ChartApex.astro';
             options={{
                 xaxis: { categories: ['1월','2월','3월','4월','5월','6월'] },
                 dataLabels: { enabled: false },
-                colors: ['#16a34a'],
+                colors: ['#a14300ff'],
                 tooltip: { y: { formatter: (val) => `${val} 건` } },
-                title: { text: '재생 완료된 주택 현황', style: { fontSize: '14px', color: '#374151' } },
+                title: { text: '재생 완료된 주택 현황', style: { fontSize: '14px', color: '#ffffff' } },
                 chart: { width: '100%' },
                 stroke: { curve: 'smooth', width: 3 }
             }}
@@ -76,7 +105,7 @@ import ChartApex from '../components/ChartApex.astro';
             options={{
                 xaxis: { categories: ['1월','2월','3월','4월','5월','6월'] },
                 dataLabels: { enabled: false },
-                colors: ['#2563eb', '#f59e0b', '#8b5cf6'],
+                colors: ['#06B6D4', '#F59E0B', '#8B5CF6'],
                 tooltip: { y: { formatter: (val) => `${val} 만원` } },
                 title: { text: '예산 사용 내역', style: { fontSize: '14px', color: '#374151' } },
                 chart: { width: '100%', stacked: true },
@@ -85,76 +114,3 @@ import ChartApex from '../components/ChartApex.astro';
         />
     </div>
 </div>
-
-<style is:global>
-{`
-    .chart-card {
-        --squircle-radius: 20px;
-        background: paint(squircle);
-        padding: 24px;
-        border-radius: 20px;
-    }
-
-    .chart-card-1 {
-        --squircle-fill: #fef7f0;
-        background: #fef7f0;
-    }
-
-    .chart-card-2 {
-        --squircle-fill: #f8fafc;
-        background: #f8fafc;
-    }
-
-    .chart-card-3 {
-        --squircle-fill: #f0fdf4;
-        background: #f0fdf4;
-    }
-
-    .chart-card-4 {
-        --squircle-fill: #fefce8;
-        background: #fefce8;
-    }
-
-    @supports (background: paint(squircle)) {
-        .chart-card-1,
-        .chart-card-2,
-        .chart-card-3,
-        .chart-card-4 {
-            background: paint(squircle);
-        }
-    }
-
-    @media (prefers-color-scheme: dark) {
-        .chart-card-1 {
-            --squircle-fill: #1f2937;
-            background: #1f2937;
-        }
-        
-        .chart-card-2 {
-            --squircle-fill: #111827;
-            background: #111827;
-        }
-        
-        .chart-card-3 {
-            --squircle-fill: #064e3b;
-            background: #064e3b;
-        }
-        
-        .chart-card-4 {
-            --squircle-fill: #365314;
-            background: #365314;
-        }
-    }
-
-    @supports (background: paint(squircle)) {
-        @media (prefers-color-scheme: dark) {
-            .chart-card-1,
-            .chart-card-2,
-            .chart-card-3,
-            .chart-card-4 {
-                background: paint(squircle);
-            }
-        }
-    }
-`}
-</style>

@@ -224,7 +224,7 @@ async def chat_with_streaming(websocket: WebSocket):
     chat_history.extend(json.loads(await websocket.receive_text()))
     user_prompt = await websocket.receive_text()
 
-    @spaces.GPU(duration=300)
+    @spaces.GPU(duration=1200)
     def run():
         model, model_name = session.model, session.model_name
         yield from model.chat(
@@ -261,4 +261,4 @@ app = gr.mount_gradio_app(app, gradio_interface, path="/gradio")
 
 
 if __name__ == '__main__':
-    uvicorn.run(app, host="127.0.0.1", port=8000)
+    uvicorn.run(app, host="127.0.0.1", port=8000, ws_ping_interval=500, ws_ping_timeout=500, ws_per_message_deflate=False)

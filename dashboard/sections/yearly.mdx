@@ -1,54 +1,40 @@
 ---
-title: 년도별 분석
+title: 연도별 분석
 order: 6
 ---
 
 import ChartApex from "../components/ChartApex.astro";
 
 <style>{`
-.chart-card {
-    position: relative;
-    padding: 24px;
-    border-radius: 16px;
-    background: paint(squircle);
-    --squircle-radius: 16px;
-}
-
-.chart-card-1 {
-    --squircle-fill: #fef7f0;
-}
-.chart-card-2 {
-    --squircle-fill: #f8fafc;
-}
-.chart-card-3 {
-    --squircle-fill: #f0fdf4;
-}
-.chart-card-4 {
-    --squircle-fill: #fefce8;
-}
-
-@media (prefers-color-scheme: dark) {
-    .chart-card-1 {
-        --squircle-fill: #292524;
+    .chart-card-year {
+        position: relative;
+        padding: 24px;
+        border-radius: 16px;
+        background: paint(squircle);
+        --squircle-radius: 16px;
     }
-    .chart-card-2 {
-        --squircle-fill: #1e293b;
+    .chart-card-year-1 {
+        --squircle-fill: #f1765b;
+        color: #ffffff;
     }
-    .chart-card-3 {
-        --squircle-fill: #14532d;
+    .chart-card-year-2 {
+        --squircle-fill: #fafafa;
     }
-    .chart-card-4 {
-        --squircle-fill: #365314;
+    .chart-card-year-3 {
+        --squircle-fill: #fafafa;
+        color: #101423;
     }
-}
+    .chart-card-year-4 {
+        --squircle-fill: #fafafa;
+    }
 `}</style>
 
-# 년도별 성과 분석
+# 연도별 성과 분석
 
 연도별 도시재생 프로젝트의 주요 성과와 예산 집행 현황을 종합적으로 분석합니다.
 
 <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 w-full">
-    <div class="chart-card chart-card-1">
+    <div class="chart-card-year chart-card-year-1">
         <ChartApex
             type="line"
             height={600}
@@ -60,16 +46,16 @@ import ChartApex from "../components/ChartApex.astro";
             options={{
                 xaxis: { categories: ['2019','2020','2021','2022','2023','2024'] },
                 dataLabels: { enabled: false },
-                colors: ['#2563eb', '#16a34a'],
+                colors: ['#164d57ff', '#fde0cbff'],
                 tooltip: { y: { formatter: (val) => `${val} 건` } },
-                title: { text: '연도별 도시재생 사업 현황', style: { fontSize: '14px', color: '#374151' } },
+                title: { text: '연도별 도시재생 사업 현황', style: { fontSize: '14px', color: '#ffffff' } },
                 chart: { width: '100%' },
                 stroke: { curve: 'smooth', width: 3 },
                 legend: { position: 'top' }
             }}
         />
     </div>
-    <div class="chart-card chart-card-2">
+    <div class="chart-card-year chart-card-year-2">
         <ChartApex
             type="bar"
             height={600}
@@ -78,7 +64,7 @@ import ChartApex from "../components/ChartApex.astro";
             options={{
                 xaxis: { categories: ['2019','2020','2021','2022','2023','2024'] },
                 dataLabels: { enabled: true },
-                colors: ['#f59e0b'],
+                colors: ['#F59E0B'],
                 tooltip: { y: { formatter: (val) => `${val}%` } },
                 title: { text: '연도별 예산 집행률', style: { fontSize: '14px', color: '#374151' } },
                 chart: { width: '100%' },
@@ -86,7 +72,7 @@ import ChartApex from "../components/ChartApex.astro";
             }}
         />
     </div>
-    <div class="chart-card chart-card-3">
+    <div class="chart-card-year chart-card-year-3">
         <ChartApex
             type="bar"
             height={600}
@@ -99,15 +85,15 @@ import ChartApex from "../components/ChartApex.astro";
             options={{
                 xaxis: { categories: ['2019','2020','2021','2022','2023','2024'] },
                 dataLabels: { enabled: false },
-                colors: ['#dc2626', '#2563eb', '#16a34a'],
+                colors: ['#8B5CF6', '#06B6D4', '#F97316'],
                 tooltip: { y: { formatter: (val) => `${val} 백만원` } },
-                title: { text: '연도별 재원별 투자액', style: { fontSize: '14px', color: '#374151' } },
+                title: { text: '연도별 재원별 투자액', style: { fontSize: '14px', color: '#494141ff' } },
                 chart: { width: '100%', stacked: true },
                 legend: { position: 'top' }
             }}
         />
     </div>
-    <div class="chart-card chart-card-4">
+    <div class="chart-card-year chart-card-year-4">
         <ChartApex
             type="area"
             height={600}
@@ -119,12 +105,12 @@ import ChartApex from "../components/ChartApex.astro";
             options={{
                 xaxis: { categories: ['2019','2020','2021','2022','2023','2024'] },
                 dataLabels: { enabled: false },
-                colors: ['#8b5cf6', '#06b6d4'],
+                colors: ['#8B5CF6', '#06B6D4'],
                 tooltip: { y: { formatter: (val) => `${val} 명` } },
                 title: { text: '연도별 사회적 성과', style: { fontSize: '14px', color: '#374151' } },
                 chart: { width: '100%' },
                 stroke: { curve: 'smooth', width: 2 },
-                fill: { type: 'gradient', gradient: { opacityFrom: 0.6, opacityTo: 0.2 } },
+                fill: { type: 'gradient', gradient: { opacityFrom: 0.2, opacityTo: 1 } },
                 legend: { position: 'top' }
             }}
         />

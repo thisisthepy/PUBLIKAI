@@ -115,14 +115,18 @@ PublikaiFunctions = FunctionCalling(
             parameters={
                 "type": "object",
                 "properties": {
+                    "nick": {
+                        "type": "string",
+                        "description": "구독자의 닉네임 (공개)"
+                    },
                     "email": {
                         "type": "string",
-                        "description": "구독할 이메일 주소",
+                        "description": "구독할 이메일 주소 (비공개)",
                         "format": "email"
                     },
                     "name": {
                         "type": "string",
-                        "description": "구독자의 이름"
+                        "description": "구독자의 이름 (비공개)"
                     },
                     "retry": {
                         "type": "integer",
@@ -130,7 +134,7 @@ PublikaiFunctions = FunctionCalling(
                         "default": 3
                     }
                 },
-                "required": ["email", "name"]
+                "required": ["nick", "email", "name"]
             }
         )
     ] + FunctionCalling.DEFAULT.schemas,
