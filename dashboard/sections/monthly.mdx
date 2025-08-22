@@ -5,21 +5,112 @@ order: 5
 import ChartApex from '../components/ChartApex.astro';
 
 
-# 월별 분석
+<style>{`
+    .chart-card {
+        --squircle-radius: 20px;
+        background: paint(squircle);
+        padding: 24px;
+        border-radius: 20px;
+    }
 
-차트가 포함된 예시 섹션입니다.
+    .chart-card-1 {
+        --squircle-fill: #fafafa;
+    }
 
-<ChartApex
-  type="bar"
-  height={320}
-  series={[{ name: '매출', data: [10, 18, 14, 22, 30, 27] }]}
-  options={{
-    xaxis: { categories: ['1월','2월','3월','4월','5월','6월'] },
-    dataLabels: { enabled: false },
-    colors: ['#2563eb'],
-    tooltip: { y: { formatter: (val) => `${val} 건` } },
-    title: { text: '월별 매출', style: { fontSize: '14px' } }
-  }}
-/>
+    .chart-card-2 {
+        --squircle-fill: #fafafa;
+    }
 
-> 이 섹션은 MDX 이므로 Astro 컴포넌트를 직접 임포트해 사용할 수 있습니다.
+    .chart-card-3 {
+        --squircle-fill: #ff9062;
+        color: #ffffff;
+    }
+
+    .chart-card-4 {
+        --squircle-fill: #fafafa;
+    }
+`}
+</style>
+
+
+# 월별 성과 분석
+
+<div class="grid grid-cols-1 lg:grid-cols-2 gap-8 w-full">
+    <div class="chart-card chart-card-1">
+        <ChartApex
+            type="bar"
+            height={600}
+            width="100%"
+            series={[{ name: '노후화 주택', data: [45, 52, 38, 61, 47, 59] }]}
+            options={{
+                xaxis: { categories: ['1월','2월','3월','4월','5월','6월'] },
+                dataLabels: { enabled: false },
+                colors: ['#8B5CF6'],
+                tooltip: { y: { formatter: (val) => `${val} 건` } },
+                title: { text: '천안시 노후화 주택 현황', style: { fontSize: '14px', color: '#374151' } },
+                chart: { width: '100%' }
+            }}
+        />
+    </div>
+    <div class="chart-card chart-card-2">
+        <ChartApex
+            type="bar"
+            height={600}
+            width="100%"
+            series={[{ name: '응답 비율', data: [65, 20, 15] }]}
+            options={{
+                xaxis: { categories: ['만족', '불만족', '보통'] },
+                dataLabels: { enabled: true },
+                colors: ['#F59E0B', '#F97316', '#06B6D4'],
+                tooltip: { y: { formatter: (val) => `${val}%` } },
+                title: { text: '시민 만족도 설문조사 결과', style: { fontSize: '14px', color: '#374151' } },
+                chart: { width: '100%' },
+                plotOptions: {
+                    bar: {
+                        distributed: true,
+                        horizontal: false
+                    }
+                },
+                legend: { show: false }
+            }}
+        />
+    </div>
+    <div class="chart-card chart-card-3">
+        <ChartApex
+            type="line"
+            height={600}
+            width="100%"
+            series={[{ name: '재생 완료', data: [12, 18, 25, 32, 28, 41] }]}
+            options={{
+                xaxis: { categories: ['1월','2월','3월','4월','5월','6월'] },
+                dataLabels: { enabled: false },
+                colors: ['#a14300ff'],
+                tooltip: { y: { formatter: (val) => `${val} 건` } },
+                title: { text: '재생 완료된 주택 현황', style: { fontSize: '14px', color: '#ffffff' } },
+                chart: { width: '100%' },
+                stroke: { curve: 'smooth', width: 3 }
+            }}
+        />
+    </div>
+    <div class="chart-card chart-card-4">
+        <ChartApex
+            type="bar"
+            height={600}
+            width="100%"
+            series={[
+                { name: '인건비', data: [850, 920, 780, 1100, 950, 1080] },
+                { name: '자재비', data: [1200, 1350, 1180, 1450, 1300, 1520] },
+                { name: '기타', data: [300, 280, 350, 420, 380, 450] }
+            ]}
+            options={{
+                xaxis: { categories: ['1월','2월','3월','4월','5월','6월'] },
+                dataLabels: { enabled: false },
+                colors: ['#06B6D4', '#F59E0B', '#8B5CF6'],
+                tooltip: { y: { formatter: (val) => `${val} 만원` } },
+                title: { text: '예산 사용 내역', style: { fontSize: '14px', color: '#374151' } },
+                chart: { width: '100%', stacked: true },
+                legend: { position: 'top' }
+            }}
+        />
+    </div>
+</div>

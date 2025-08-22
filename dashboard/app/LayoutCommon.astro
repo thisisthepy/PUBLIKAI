@@ -51,10 +51,11 @@ const { class: clazz, prose = false } = Astro.props;
 			}
 		</script>
 	</head>
-	<body
+	<body style="float: left;"
 		class:list={[
 			//
 			clazz,
+			'min-h-screen w-full', 
 			'scrollbar scrollbar-w-3 scrollbar-thumb-rounded-[0.25rem]',
 			'scrollbar-track-slate-200  scrollbar-thumb-gray-400',
 			'dark:scrollbar-track-gray-900 dark:scrollbar-thumb-gray-700',
@@ -79,5 +80,34 @@ const { class: clazz, prose = false } = Astro.props;
 	}
 	body, code {
 		font-family: 'SUITE-Regular', 'Arial', sans-serif;
+	}
+
+	pre {
+		max-width: 100%;
+		overflow-x: auto;
+		white-space: pre-wrap;
+		word-wrap: break-word;
+		padding: 1rem;
+		border-radius: 0.5rem;
+		background-color: #f8f9fa;
+		border: 1px solid #e9ecef;
+	}
+
+	code {
+		max-width: 100%;
+		overflow-wrap: break-word;
+		word-break: break-word;
+	}
+
+	@media (max-width: 768px) {
+		pre {
+			font-size: 0.875rem;
+			padding: 0.75rem;
+			margin: 0.5rem 0;
+		}
+
+		code {
+			font-size: 0.875rem;
+		}
 	}
 </style>

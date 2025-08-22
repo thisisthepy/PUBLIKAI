@@ -148,8 +148,76 @@ const base = import.meta.env.BASE_URL; // e.g. '/' or '/dashboard/'
                         if "history" in tool_call:
                             chat_history.raw_extend(tool_call['history'])
                             print("Tool call history updated")
+                            for call in tool_call['history'][0]['tool_calls']:
+                                f_name = call['function']['name']
+                                match f_name:
+                                    case "get_center_information":
+                                        smooth_scroll_to_hash("#introduction")
+                                    case "get_business_information":
+                                        smooth_scroll_to_hash("#monthly")
+                                    case "get_upcoming_programs" | "get_program_history" | "get_tour_information":
+                                        smooth_scroll_to_hash("#participation")
+                                    case "subscribe_newsletter":
+                                        smooth_scroll_to_hash("#news")
                         else:  # TODO: tool call notification 처리 (call, result)
                             pass
+
+
+    def smooth_scroll_to_hash(hash_id):
+        try:
+            target_element = document.querySelector(hash_id)
+
+            current_scroll = window.pageYOffset
+            target_offset = target_element.offsetTop - 100
+            scroll_distance = abs(target_offset - current_scroll)
+
+            scroll_duration = min(1500, max(800, scroll_distance * 0.8))
+
+            def ease_in_out_cubic(t):
+                return 4 * t * t * t if t < 0.5 else 1 - pow(-2 * t + 2, 3) / 2
+
+            start_time = window.performance.now()
+            start_scroll = current_scroll
+
+            def animate_scroll(current_time):
+                elapsed = current_time - start_time
+                progress = min(elapsed / scroll_duration, 1)
+                eased_progress = ease_in_out_cubic(progress)
+
+                new_scroll = start_scroll + (target_offset - start_scroll) * eased_progress
+                window.scrollTo(0, new_scroll)
+                
+                if progress < 1:
+                    window.requestAnimationFrame(animate_scroll)
+                else:
+                    def gentle_highlight():
+                        window.location.hash = hash_id
+                        target_element.style.transition = "box-shadow 1.5s ease-out, transform 1s ease-out"
+                        target_element.style.boxShadow = "0 0 20px rgba(66, 66, 66, 0.15)"
+                        target_element.style.transform = "scale(1.002)"
+
+                        window.setTimeout(lambda: fade_out_highlight(target_element), 1500)
+
+                    window.setTimeout(gentle_highlight, 200)
+
+            window.requestAnimationFrame(animate_scroll)
+        except Exception as e:
+            print(f"Smooth scroll error: {e}")
+            window.location.hash = hash_id
+
+
+    def fade_out_highlight(element):
+        element.style.transition = "box-shadow 2s ease-out, transform 1s ease-out"
+        element.style.boxShadow = "none"
+        element.style.transform = "scale(1)"
+
+        window.setTimeout(lambda: remove_highlight_styles(element), 2000)
+    
+    
+    def remove_highlight_styles(element):
+        element.style.boxShadow = ""
+        element.style.transform = ""
+        element.style.transition = ""
 
 
     def on_close(_):
@@ -253,17 +321,24 @@ const base = import.meta.env.BASE_URL; // e.g. '/' or '/dashboard/'
 
     aio.run(get_session_id())
 
+    def update_chatbot_position():
+        chatbot = document['chatbot']
+
+        if window.innerWidth < 1024:
+            chatbot.style.marginTop = "0px"
+        else:
+            chatbot.style.marginTop = f"{window.pageYOffset}px"
+    
+    window.addEventListener('scroll', lambda e: update_chatbot_position())
+    window.addEventListener('resize', lambda e: update_chatbot_position())
+    update_chatbot_position()  # 초기화
 </script>
 
 <section id="chatbot">
-    <div class="center-name text-center">
-        <a href="https://www.cheonanurc.or.kr/">천안시 도시재생지원센터</a>
-    </div>
-    <br><br>
     <div class="container chat-container">
         <ul class="chatbot-msg" id="messages"></ul>
-        <p class="text-center italic text-gray-500">
-            <small class="text-white">PUBLIKAI는 실수를 할 수 있습니다. 중요한 정보는 재차 확인해 주세요.</small>
+        <p class="text-center italic text-gray-500 px-7">
+            <small class="text-white">PUBLIKAI 챗봇 시스템은 실수를 할 수 있습니다.<br>중요한 정보는 재차 확인해 주세요.</small>
         </p>
         <form id="send_chat" class="flex flex-nowrap items-center mt-3">
             <textarea id="message_text" class="form-control flex-grow mr-2" autocomplete="off" placeholder="챗봇에게 문의하기"></textarea>
@@ -273,56 +348,51 @@ const base = import.meta.env.BASE_URL; // e.g. '/' or '/dashboard/'
 </section>
 
 <style is:global>
+    html {
+        scroll-behavior: smooth;
+        scroll-padding-top: 100px; /* 스크롤 시 여유 공간 */
+    }
+
+    * {
+        transition: box-shadow 0.3s ease, transform 0.3s ease;
+    }
+
+    section, article, .content-section {
+        transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    }
+
     #chatbot {
-        height: 90vh;
         --squircle-radius: 40px;
+        height: 97vh;
+        transition: margin-top 0.15s cubic-bezier(0.25, 0.46, 0.45, 0.94);
     }
 
     #chatbot h1 {
         font-size: 20px;
         font-weight: 800;
-        color: #666666;
-        position: absolute;
+        color: #78716c;
         top: 10px;
         left: 10px;
         margin: 0;
         z-index: 1000;
-        background-color: #ffffff;
+        background-color: #f7f5f3;
         padding: 5px 10px;
         border-radius: 5px;
     }
 
     #chatbot h1:hover {
-        background-color: #e0e0e0;
-    }
-
-    #chatbot .center-name {
-        height: auto;
-        width: auto;
-        padding: 10px;
-        background: paint(squircle);
-        --squircle-fill: #f5f4f1;
-        z-index: 10;
-    }
-
-    #chatbot .center-name a {
-        display: block; 
-        max-width: 100%;
-        white-space: normal; 
-        overflow-wrap: anywhere;
-        color: #333;
-        font-weight: bold;
-        font-size: 20px;
-        text-decoration: none;
+        background-color: #f1ede7;
     }
 
     #chatbot .chat-container {
-        width: 100%;
         height: 90%;
-        margin: 0 auto;
         padding: 20px;
+        --squircle-radius-top-left: 40px;
+        --squircle-radius-top-right: 40px;
+        --squircle-radius-bottom-right: 0px;
+        --squircle-radius-bottom-left: 0px;
         background: paint(squircle);
-        --squircle-fill:#1e1e1e;
+        --squircle-fill: #1e1e1e;
         box-shadow: none;
         border: none;
         flex-grow: 1;
@@ -331,14 +401,14 @@ const base = import.meta.env.BASE_URL; // e.g. '/' or '/dashboard/'
         justify-content: flex-end;
     }
 
-    #chatbot .message {
-        --squircle-radius: 20px;
+    @media (max-width: 1024px) {
+        #chatbot .chat-container {
+            height: 100%;
+        }
     }
 
     #chatbot .chatbot-msg {
         list-style-type: none;
-        padding: 0;
-        margin: 0;
         overflow-y: auto;
         scrollbar-width: none;
         padding-bottom: 10px;
@@ -355,21 +425,20 @@ const base = import.meta.env.BASE_URL; // e.g. '/' or '/dashboard/'
     }
 
     #chatbot .message-client {
-        background-color: #e1f5fe;
-        color: #0277bd;
+        background-color: #fef3e2;
+        color: #92400e;
         text-align: left;
         margin-left: auto;
-        border: 1px solid #b3e5fc;
+        border: 1px solid #fde5c7;
         border-radius: 15px;
         float: right;
     }
 
     #chatbot .message-user {
-        color: #333333;
+        color: #57534e;
         text-align: left;
         margin-left: auto;
-        background: paint(squircle);
-        --squircle-fill: #f4f4f4;
+        background: #f7f5f3;
         width: fit-content;
         padding: 4px 12px;
         word-wrap: break-word;
@@ -377,8 +446,7 @@ const base = import.meta.env.BASE_URL; // e.g. '/' or '/dashboard/'
     }
 
     #chatbot .message-server-container .message-server {
-        background: paint(squircle);
-        --squircle-fill: #3c3c3c;
+        background: #3c3c3c;
         color: #dbdbdb;
         text-align: left;
         overflow: visible;
@@ -439,13 +507,13 @@ const base = import.meta.env.BASE_URL; // e.g. '/' or '/dashboard/'
     }
 
     #chatbot .message-server-container .think-content {
-        background-color: #f8f9fa;
-        border: 1px solid #e9ecef;
+        background-color: #fefbf3;
+        border: 1px solid #f9b968;
         border-radius: 10px;
         padding: 10px;
         margin: 4px 18px;
         font-size: 13px;
-        color: #666;
+        color: #78716c;
         white-space: pre-wrap;
         word-wrap: break-word;
     }
@@ -458,7 +526,8 @@ const base = import.meta.env.BASE_URL; // e.g. '/' or '/dashboard/'
 
     #chatbot .form-control {
         background: paint(squircle);
-        --squircle-fill: #f0eeeeff;
+        color: #57534e;
+        --squircle-fill: #faf8f5ff;
         border: none;
         outline: none;
         padding: 10px 15px;
@@ -473,40 +542,43 @@ const base = import.meta.env.BASE_URL; // e.g. '/' or '/dashboard/'
 
     #chatbot .form-control:focus {
         background: paint(squircle);
-        --squircle-fill: #f4f4f4;
+        --squircle-fill: #f7f5f3;
         box-shadow: none;
     }
 
     #chatbot .btn-icon {
-        border: none; /* 테두리 제거 */
-        background-color: #ffffff; /* 버튼 배경색 */
-        border-radius: 50%; /* 원형으로 만들기 */
-        padding: 10px; /* 내부 여백 */
-        font-size: 18px; /* 아이콘 크기 조정 */
-        color: #1e1e1e; /* 아이콘 색상 */
-        cursor: pointer; /* 마우스 포인터를 클릭 커서로 변경 */
-        display: flex; /* 아이콘을 중앙에 위치시키기 위해 flexbox 사용 */
+        border: none;
+        background-color: #f9b968;
+        border-radius: 50%;
+        padding: 10px;
+        font-size: 18px;
+        color: #ffffff;
+        cursor: pointer;
+        display: flex;
         align-items: center;
         justify-content: center;
         margin-left: 2.5px;
         margin-right: 2.5px;
-        height: 40px; /* 버튼 높이 */
-        width: 40px; /* 버튼 너비 */
+        height: 40px;
+        width: 40px;
+        box-shadow: 0 2px 8px rgba(249, 185, 104, 0.3);
     }
 
     #chatbot .btn-icon:hover {
-        color: #bcbcbc; /* 호버 시 아이콘 색상을 흰색으로 유지 */
+        background-color: #f59e0b;
+        color: #ffffff;
         margin-left: 0px;
         margin-right: 0px;
-        height: 45px; /* 버튼 높이 */
-        width: 45px; /* 버튼 너비 */
+        height: 45px;
+        width: 45px;
+        box-shadow: 0 4px 16px rgba(249, 185, 104, 0.4);
     }
 
     #chatbot .btn-icon:focus {
         border-color: #ddd;
         outline: none;
         box-shadow: none;
-        color: #fff; /* 아이콘 색상 */
-        outline: none; /* 포커스 시 테두리 제거 */
+        color: #fff;
+        outline: none;
     }
 </style>

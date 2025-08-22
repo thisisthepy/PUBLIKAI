@@ -46,7 +46,7 @@ dashboard_tour_description = """
 """  # TODO: 실제 대시보드 정보로 대체 필요
 
 
-def get_tour_information(*args) -> str:
+def get_tour_information(*args, **kwargs) -> str:
     return dashboard_tour_description
 
 

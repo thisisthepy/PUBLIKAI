@@ -108,6 +108,34 @@ PublikaiFunctions = FunctionCalling(
                 },
                 "required": []
             }
+        ),
+        FunctionSchema(
+            name="subscribe_newsletter",
+            description="센터의 뉴스레터를 구독합니다",
+            parameters={
+                "type": "object",
+                "properties": {
+                    "nick": {
+                        "type": "string",
+                        "description": "구독자의 닉네임 (공개)"
+                    },
+                    "email": {
+                        "type": "string",
+                        "description": "구독할 이메일 주소 (비공개)",
+                        "format": "email"
+                    },
+                    "name": {
+                        "type": "string",
+                        "description": "구독자의 이름 (비공개)"
+                    },
+                    "retry": {
+                        "type": "integer",
+                        "description": "홈페이지 조회 실패시 재시도 횟수",
+                        "default": 3
+                    }
+                },
+                "required": ["nick", "email", "name"]
+            }
         )
     ] + FunctionCalling.DEFAULT.schemas,
     implementations=dict(
@@ -118,6 +146,7 @@ PublikaiFunctions = FunctionCalling(
         get_program_history=program.get_program_history,
         get_tour_information=tour.get_tour_information,
         get_center_news=news.get_center_news,
+        subscribe_newsletter=news.subscribe_newsletter,
         **FunctionCalling.DEFAULT.implementations
     )
 )

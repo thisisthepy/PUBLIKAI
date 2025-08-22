@@ -1,0 +1,16 @@
+{
+  "2025": {
+    "January": { "started": 5, "completed": 3 },
+    "February": { "started": 7, "completed": 4 },
+    "March": { "started": 6, "completed": 5 },
+    "April": { "started": 8, "completed": 6 },
+    "May": { "started": 9, "completed": 7 },
+    "June": { "started": 10, "completed": 8 },
+    "July": { "started": 12, "completed": 10 },
+    "August": { "started": 11, "completed": 9 },
+    "September": { "started": 13, "completed": 11 },
+    "October": { "started": 14, "completed": 12 },
+    "November": { "started": 15, "completed": 14 },
+    "December": { "started": 16, "completed": 15 }
+  }
+}

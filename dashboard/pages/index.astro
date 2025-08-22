@@ -16,8 +16,8 @@ const sections = Object.entries(raw)
 	.sort((a,b)=> a.order - b.order);
 ---
 
-<LayoutSidebar>
-	<div class="flex flex-col lg:flex-row lg:items-start">
+<div class="flex flex-col lg:flex-row min-h-screen bg-[#eeece8]">
+	<LayoutSidebar>
 		<div class="flex-1 px-6 lg:px-8">
 			{sections.map(s => (
 				<article id={s.id} class="section-content hidden prose dark:prose-invert max-w-none" data-section={s.id}>
@@ -25,11 +25,11 @@ const sections = Object.entries(raw)
 				</article>
 			))}
 		</div>
-		<div class="lg:w-[30rem] w-full px-4 lg:pe-12">
-			<ChatBot />
-		</div>
+	</LayoutSidebar>
+	<div class="w-full lg:sticky lg:max-w-[450px] px-4 lg:pe-12 lg:mt-24">
+		<ChatBot />
 	</div>
-</LayoutSidebar>
+</div>
 
 <script is:inline>
 // Hash-based section navigation (robust)
@@ -75,5 +75,6 @@ const sections = Object.entries(raw)
 
 <style>
 	.section-content { animation: fade .25s ease; }
+	.section-content span { max-width: 100%; word-wrap: break-word; white-space: pre-wrap; overflow-y: auto;}
 	@keyframes fade { from { opacity:0; transform: translateY(4px);} to { opacity:1; transform: translateY(0);} }
 </style>
